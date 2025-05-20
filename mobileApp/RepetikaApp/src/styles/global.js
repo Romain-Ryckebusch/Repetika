@@ -44,7 +44,7 @@ const globalStyles = {
     textAlign:'left',
     width: '100%',
     left: 30,
-    left: 30,
+
     top:20,
     bottom: 10,
   },

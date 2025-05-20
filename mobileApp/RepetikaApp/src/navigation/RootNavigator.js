@@ -12,7 +12,7 @@ export default function RootNavigator() {
     const showAuth = false;
 
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{ headerShown: false }} id={"navigator"}>
             {showAuth ? (
                 <Stack.Screen name="Auth" component={AuthTabs} />
             ) : (
