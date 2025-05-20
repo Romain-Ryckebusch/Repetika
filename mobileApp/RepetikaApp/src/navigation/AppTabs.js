@@ -1,18 +1,28 @@
-// navigation/AppTabs.js
+// bibliothèques
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {View,Text} from 'react-native';
-
+import {View, Text, Image} from 'react-native';
 import {PlatformPressable} from '@react-navigation/elements';
+
+//pages
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
+//style
+import styles from '../styles/AppTabs.style';
+
+//autres
+import { useTranslation } from 'react-i18next';
+
 const Tab = createBottomTabNavigator();
 
+const tabIcons={
+    Home:require("../assets/navbarIcons/cours.png"),
+    Profile:require("../assets/navbarIcons/account.png")
+}
+
 function MyTabBar({ state, descriptors, navigation }) {
-
-
     return (
-        <View style={{ flexDirection: 'row' }}>
+        <View style={ styles.tabBarContainer}>
             {state.routes.map((route, index) => {
                 const { options } = descriptors[route.key];
                 const label =
@@ -23,6 +33,8 @@ function MyTabBar({ state, descriptors, navigation }) {
                             : route.name;
 
                 const isFocused = state.index === index;
+                const iconSource = tabIcons[route.name];
+
 
                 const onPress = () => {
                     const event = navigation.emit({
@@ -38,14 +50,15 @@ function MyTabBar({ state, descriptors, navigation }) {
 
 
                 return (
-                    <PlatformPressable
+                    <PlatformPressable style={styles.tabButton} key={route.key}
                         accessibilityState={isFocused ? { selected: true } : {}}
                         accessibilityLabel={options.tabBarAccessibilityLabel}
                         testID={options.tabBarButtonTestID}
                         onPress={onPress}
-                        style={{ flex: 1 }}
+
                     >
-                        <Text>
+                        <Image style={styles.navBarIcon} source={iconSource}/>
+                        <Text style={isFocused ? styles.tabTextFocused : styles.tabText}>
                             {label}
                         </Text>
                     </PlatformPressable>
@@ -57,12 +70,17 @@ function MyTabBar({ state, descriptors, navigation }) {
 
 
 const AppTabs=()=> {
+    const { t } = useTranslation();
     return (
         <Tab.Navigator
             tabBar={(props) => <MyTabBar {...props} />}
+            screenOptions={{animation:'shift'}}
+            id={"appTabsNavigator"}
+
+
         >
-            <Tab.Screen name="Home"  component={HomeScreen} />
-            <Tab.Screen name="Profile" component={ProfileScreen} />
+            <Tab.Screen name="Home" options={{title:t('bottomNavbar.home')}}  component={HomeScreen} />
+            <Tab.Screen name="Profile" options={{title:t('bottomNavbar.social')}} component={ProfileScreen} />
         </Tab.Navigator>
     );
 }
