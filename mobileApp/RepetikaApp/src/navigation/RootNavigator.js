@@ -1,20 +1,20 @@
 // navigation/RootNavigator.js
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import AuthStack from './AuthStack';
+import AuthTabs from './AuthTabs';
 import AppTabs from './AppTabs';
-import { useAuth } from '../hooks/useAuth'; // hook fictif pour la logique d'auth
+
 
 const Stack = createNativeStackNavigator();
 
 export default function RootNavigator() {
-    const { isAuthenticated, isFirstLaunch } = useAuth();
 
-    const showAuth = !isAuthenticated || isFirstLaunch;
+
+    const showAuth = false;
 
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             {showAuth ? (
-                <Stack.Screen name="Auth" component={AuthStack} />
+                <Stack.Screen name="Auth" component={AuthTabs} />
             ) : (
                 <Stack.Screen name="MainApp" component={AppTabs} />
             )}
