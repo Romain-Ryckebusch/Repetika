@@ -1,8 +1,13 @@
+// src/components/btn_fill.js
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import colors from './constants/colors';
+import colors from '../styles/colors';
+import { useGlobalFonts } from '../styles/globalFonts';
 
 const Btn_Fill = ({ title, onPress, style, textStyle, disabled }) => {
+  const fontsLoaded = useGlobalFonts();
+  if (!fontsLoaded) return null;
+
   return (
     <TouchableOpacity
       style={[styles.button, style, disabled && styles.disabled]}
@@ -22,11 +27,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
     alignItems: 'center',
+    width: '80%',
   },
   text: {
     color: colors.white,
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: 'OpenSans_Regular',
   },
   disabled: {
     backgroundColor: colors.disabled,
