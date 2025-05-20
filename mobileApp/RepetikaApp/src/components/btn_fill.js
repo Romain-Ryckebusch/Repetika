@@ -1,5 +1,3 @@
-// src/components/btn_fill.js
-import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import colors from '../styles/colors';
 import { useGlobalFonts } from '../styles/globalFonts';
