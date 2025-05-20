@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: servicetest1-deployment
+  name: TimeService-deployment
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: servicetest1
+      app: TimeService
   template:
     metadata:
       labels:
-        app: servicetest1
+        app: TimeService
     spec:
       containers:
-      - name: servicetest1
-        image: myregistry.com/servicetest1:latest
+      - name: TimeService
+        image: myregistry.com/TimeService:latest
         ports:
         - containerPort: 8000
         env:
