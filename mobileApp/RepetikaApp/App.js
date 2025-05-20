@@ -4,9 +4,9 @@ import { useGlobalFonts } from './src/styles/globalFonts';
 import colors from './src/styles/colors';
 import globalStyles from './src/styles/global';
 
-//import Btn_fill from './src/components/btn_fill';
-//import Btn_empty from './src/components/btn_empty';
-//import Input from './src/components/frm_input';
+import Btn_fill from './src/components/btn_fill';
+import Btn_empty from './src/components/btn_empty';
+import Input from './src/components/frm_input';
 
 import Crd_trophy from './src/components/crd_trophy';
 import Crd_lesson from './src/components/crd_lesson';
@@ -22,7 +22,10 @@ export default function App() {
 
   return (
     <ScrollView>
+
       <View style={styles.container}>
+
+        <Btn_empty title="S'inscrire" onPress={() => console.log('cliqué')}/>
 
 
         <Text style={globalStyles.chapter}>crd_trophy</Text>
