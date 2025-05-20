@@ -1,0 +1,4 @@
+# Install your core project in “editable” mode:
+-e ../../core
+
+# Add all service-specific packages

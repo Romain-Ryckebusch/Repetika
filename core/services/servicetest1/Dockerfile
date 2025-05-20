@@ -1,0 +1,33 @@
+# services/<service-name>/Dockerfile
+
+# 1. Base image
+FROM python:3.11-slim
+
+# 2. Prevent Python buffering logs
+ENV PYTHONUNBUFFERED=1
+
+# 3. Set working directory
+WORKDIR /app
+
+# 4. Copy & install requirements
+COPY requirements.txt ./
+RUN pip install --upgrade pip \
+ && pip install --no-cache-dir -r requirements.txt
+
+# 5. Copy in the shared core code and this service’s app
+COPY ../../core      ./core
+COPY ./app           ./core/<service_name>   # e.g. core/users_app
+
+# 6. Move into the Django project
+WORKDIR /app/core
+
+# 7. Ensure Python can import core/ and the service app
+ENV PYTHONPATH=/app/core
+ENV DJANGO_SETTINGS_MODULE=core.settings
+
+# 8. (Optional) collect static files if you use them
+RUN python manage.py collectstatic --noinput
+
+# 9. Default command: run Gunicorn binding on port 8000
+CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+

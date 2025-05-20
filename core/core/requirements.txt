@@ -1,0 +1,27 @@
+# Django itself (shared by all services)
+Django>=4.2,<5
+
+# Database driver (PostgreSQL example)
+psycopg2-binary>=2.9
+
+# Gunicorn for production serving
+gunicorn>=20.1
+
+# (Optional) Common extensions:
+# If all services use these, keep them here. Otherwise, move to individual service requirements.
+
+# Django REST Framework
+djangorestframework>=3.14
+
+# CORS headers
+django-cors-headers>=4.0
+
+# Environment variable support (if used)
+python-dotenv>=1.0
+
+# Celery (if used across multiple services)
+celery>=5.3
+
+# Shared utility libraries
+requests>=2.31
+
