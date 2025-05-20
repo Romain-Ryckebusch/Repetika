@@ -1,1 +1,1 @@
-# add additional depedencies specific to the current microservice
+djangorestframework

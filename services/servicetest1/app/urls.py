@@ -1,7 +1,6 @@
 from django.urls import path
-from . import views
+from .views import CurrentDateTimeView
 
 urlpatterns = [
-    path("now/", views.current_datetime, name="current_datetime"),
+    path('api/current-datetime/', CurrentDateTimeView.as_view(), name='current-datetime'),
 ]
-
