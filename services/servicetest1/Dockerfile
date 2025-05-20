@@ -21,7 +21,7 @@ RUN pip install --upgrade pip \
         -r core-requirements.txt
 
 # 5. Copy in the shared core code and this service’s app
-COPY services/servicetest1/app  ./app
+COPY services/servicetest1/app  ./core/servicetest1
 
 # 6. Move into the Django project
 WORKDIR /app/core
