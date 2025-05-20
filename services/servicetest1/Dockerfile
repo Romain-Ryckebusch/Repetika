@@ -5,6 +5,7 @@ FROM python:3.11-slim
 
 # 2. Prevent Python buffering logs
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app:/app/services/servicetest1/app
 
 # 3. Set working directory
 WORKDIR /app
@@ -28,6 +29,8 @@ WORKDIR /app/core
 # 7. Ensure Python can import core/ and the service app
 ENV PYTHONPATH=/app/core
 ENV DJANGO_SETTINGS_MODULE=core.settings
+
+EXPOSE 8000
 
 # 9. Default command: run Gunicorn binding on port 8000
 CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
