@@ -25,7 +25,6 @@ const globalStyles = {
     width: '100%',
     padding: 30,
   },
-
   chapter:{
     fontFamily: 'KronaOne_Regular',
     fontSize: 31,
@@ -49,6 +48,12 @@ const globalStyles = {
     top:20,
     bottom: 10,
   },
+  input:{
+    fontFamily: 'OpenSans_Regular',
+    fontSize: 15,
+    textAlign: 'left',
+    width: '100%',
+  }
 };
 
 export default globalStyles;
