@@ -1,8 +1,7 @@
 
-import {Platform, StyleSheet} from 'react-native';
-import { Shadow } from 'react-native-shadow-2';
-import './colors'
-import colors from "./colors";
+import {StyleSheet} from 'react-native';
+import '../colors'
+import colors from "../colors";
 export default StyleSheet.create({
     tabBarContainer: {
         flexDirection: 'row',
