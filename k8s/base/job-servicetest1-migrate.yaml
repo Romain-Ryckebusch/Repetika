@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: servicetest1-migrate
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: migrate
+        image: servicetest1:latest
+        command: ["python", "manage.py", "migrate", "--no-input"]
+        env:
+        - name: DJANGO_SETTINGS_MODULE
+          value: core.settings
+        - name: DB_HOST
+          value: postgres.default.svc.cluster.local
+        envFrom:
+        - secretRef:
+            name: django-secrets
+

@@ -1,4 +1,4 @@
-# services/<service-name>/Dockerfile
+# services/servicetest1/Dockerfile
 
 # 1. Base image
 FROM python:3.11-slim
@@ -15,8 +15,8 @@ RUN pip install --upgrade pip \
  && pip install --no-cache-dir -r requirements.txt
 
 # 5. Copy in the shared core code and this service’s app
-COPY ../../core      ./core
-COPY ./app           ./core/<service_name>   # e.g. core/users_app
+COPY core                       /app/core
+COPY services/servicetest1/app  /app/core/servicetest1
 
 # 6. Move into the Django project
 WORKDIR /app/core

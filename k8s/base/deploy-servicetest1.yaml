@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: servicetest1-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: servicetest1
+  template:
+    metadata:
+      labels:
+        app: servicetest1
+    spec:
+      containers:
+      - name: servicetest1
+        image: myregistry.com/servicetest1:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DJANGO_SETTINGS_MODULE
+          value: core.settings
+        - name: DJANGO_DEBUG
+          value: "0"
+        - name: DB_HOST
+          value: postgres.default.svc.cluster.local
+        envFrom:
+        - secretRef:
+            name: django-secrets
+        volumeMounts:
+        - name: settings-volume
+          mountPath: /app/core/core/settings.py
+          subPath: settings.py
+      volumes:
+      - name: settings-volume
+        configMap:
+          name: django-settings
+
