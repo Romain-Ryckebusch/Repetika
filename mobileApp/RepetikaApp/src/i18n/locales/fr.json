@@ -8,7 +8,18 @@
   "profileScreen":{
     "title": "Mon profil",
     "section_trophies_title": "Trophées",
-    "section_info_title" : "Informations générales"
+    "section_info_title" : "Informations générales",
+    "section_info_accountDate" : "Compté créé le {{date}}",
+    "section_info_editBtn" : "Modifier la photo",
+    "section_info":{
+      "username": "Nom d'utilisateur",
+      "name": "Prénom",
+      "surname": "Nom",
+      "mail": "Mail",
+      "password": "Nouveau mot de passe",
+      "passwordConfirm": "Confirmer le nouveau mot de passe",
+      "editBtn":"Enregistrer"
+      }
   },
   "homeScreen": {
     "splashMessage": "Qu'est ce qu'on apprend aujourd'hui, {{prenom}} ?"
@@ -17,4 +28,5 @@
   "crd_lesson":{
     "dueLabel" : "Cartes à revoir aujourd'hui :"
   }
+
 }

@@ -3,10 +3,13 @@ import colors from './colors';
 import globalStyles from './global';   
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     padding:5,
   },
+
+  // ---------- Section trophées ------------------------------------------
   trophy_container: {
     flexDirection: 'column',
     gap: 20,
@@ -24,6 +27,92 @@ const styles = StyleSheet.create({
     marginTop: -35,
     zIndex: -1,
   },
+
+
+  // ---------- Section infos générales ------------------------------------
+  generalInfo_container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent:'center',
+    gap:20,
+  },
+
+  profilePicture:{
+    height: 130,
+    width: 130,
+  },
+
+  generalInfo_Right:{
+    flexDirection: 'column',
+  },
+
+  generalInfo_name: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    fontSize: 20,
+    fontFamily: 'OpenSans_Regular',
+  },
+  generalInfo_accountCreation: {
+    fontFamily: 'OpenSans_Regular',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  // Je récupère ça depuis les fichiers d'Aymeric. Merci le sang !
+  levelSection:{
+      width: '60%',
+      flexDirection: 'row',
+      justifyContent: 'space-evenly',
+      alignItems: 'center',
+    },
+  circle: {
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      borderColor: 'black',
+      justifyContent: 'center',
+      alignItems: 'center',
+  },
+  streakSection:{
+      width: '20%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      fontWeight: 'bold',
+  },
+  streakIcon:{
+      width: 16,
+      height: 16,
+  },
+  streakText:{
+      fontWeight: 'bold',
+      fontSize: 20,
+  },
+  
+  editPictureBtn:{
+      backgroundColor: colors.primary,
+      paddingVertical: 8,
+      borderRadius: 8,
+      alignItems: 'center',
+      width: '80%',
+    },
+  editPictureBtnText:{
+      color: colors.white,
+      fontSize: 14,
+      fontFamily: 'OpenSans_Regular',
+  },
+
+  // ------- Section infos utilisateur (qu'il peut modifier) ---------------
+  editableInfos_Form:{
+    fontSize: 20,
+  },
+
+  saveBtn:{
+    width: '50%',
+    margin:30,
+  },
+
 });
 
 export default styles

@@ -6,9 +6,20 @@
     "profile": "Profile"
   },
   "profileScreen": {
-    "title": "My Profile",
+    "title": "Profile",
     "section_trophies_title": "Trophies",
-    "section_info_title": "General Information"
+    "section_info_title" : "General information",
+    "section_info_accountDate" : "Account created on {{date}}",
+    "section_info_editBtn" : "Edit photo",
+    "section_info":{
+      "username": "Username",
+      "name": "Name",
+      "surname": "Surname",
+      "mail": "Mail",
+      "password": "New password",
+      "passwordConfirm": "Confirm new password",
+      "editBtn":"Save"
+      }
   },
   "homeScreen": {
     "splashMessage": "What are we learning today, {{prenom}}?"
