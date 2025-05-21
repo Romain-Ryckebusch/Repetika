@@ -2,13 +2,9 @@ import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import * as Progress from 'react-native-progress';
 
 import colors from '../styles/colors';
-import { useGlobalFonts } from '../styles/globalFonts';
 import globalStyles from '../styles/global';
 
-
 const Crd_lesson = ({ title, corpus, crd_number, progress, onPress}) => {
-  const fontsLoaded = useGlobalFonts();
-  if (!fontsLoaded) return null;
 
   return (
     <TouchableOpacity style={globalStyles.card} onPress={onPress}>

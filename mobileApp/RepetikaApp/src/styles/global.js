@@ -73,8 +73,9 @@ const globalStyles = {
     borderRadius: 20,
     alignItems: 'center',
     width: '93%',
-    
+    height: 180,
   },
+
   card_title: {
     fontFamily: 'KronaOne_Regular',
     fontSize: 23,
