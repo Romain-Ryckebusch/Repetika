@@ -4,7 +4,7 @@ const globalStyles = {
 
   title: {
     fontFamily: 'KronaOne_Regular',
-    fontSize: 41,
+    fontSize: 35,
     color: colors.black,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -13,7 +13,7 @@ const globalStyles = {
 
   subtitle: {
     fontFamily: 'KronaOne_Regular',
-    fontSize: 31,
+    fontSize: 25,
     color: colors.black,
     fontWeight: 'bold',
     textAlign: 'center',

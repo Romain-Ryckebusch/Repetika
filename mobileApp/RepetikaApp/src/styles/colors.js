@@ -15,4 +15,6 @@ export default {
 
   dark_background: '#000000',
 
+  shelf: '#563E2F',
+
 };

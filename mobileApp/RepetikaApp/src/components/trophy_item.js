@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   label: {
-    fontSize: 12,
+    fontSize: 10,
     textAlign: 'center',
     fontFamily: 'KronaOne_Regular', 
     bottom: 5,
