@@ -3,15 +3,18 @@ import * as Progress from 'react-native-progress';
 
 import colors from '../styles/colors';
 import globalStyles from '../styles/global';
+import {useTranslation} from "react-i18next";
+
 
 const Crd_lesson = ({ title, corpus, crd_number, progress, onPress}) => {
+  const {t}=useTranslation();
 
   return (
       <TouchableOpacity style={[globalStyles.card, globalStyles.card_lesson,globalStyles.shadowDefault]} onPress={onPress}>
         <Text style={globalStyles.card_title}>{title}</Text>
         <Text style={globalStyles.card_corpus}>{corpus}</Text>
         <Text style={globalStyles.card_due}>
-          Cartes à revoir aujourd'hui : <Text style={{ color: '#ff7e7e' }}>{crd_number}</Text>
+          {t("crd_lesson.dueLabel")} <Text style={{ color: '#ff7e7e' }}>{crd_number}</Text>
         </Text>
         <Progress.Bar 
           style={globalStyles.card_progressbar}
