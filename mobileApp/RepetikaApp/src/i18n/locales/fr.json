@@ -5,9 +5,13 @@
     "statistics": "Stats",
     "profile": "Profil"
   },
+
   "profileScreen":{
     "title": "Mon profil",
     "section_trophies_title": "Trophées",
     "section_info_title" : "Informations générales"
+  },
+  "homeScreen": {
+    "splashMessage": "Qu'est ce qu'on apprend aujourd'hui, {{prenom}}?"
   }
 }

@@ -9,5 +9,8 @@
     "title": "My Profile",
     "section_trophies_title": "Trophies",
     "section_info_title": "General Information"
+  },
+  "homeScreen": {
+    "splashMessage": "What are we learning today, {{prenom}}?"
   }
 }

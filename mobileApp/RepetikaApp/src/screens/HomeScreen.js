@@ -7,6 +7,7 @@ import styles from '../styles/HomeScreen.style';
 
 import Crd_lesson from '../components/crd_lesson';
 import ScreenWrapper from "../components/navigation/screenWrapper";
+import {useTranslation} from "react-i18next";
 
 const lessons = [
   { id:'1', title: 'Cours 1', corpus: 'Apprenez les bases de la physique à l\'échelle atomique.', progress: '9', crd_number: '10', onPress: () => console.log("Clic sur la leçon !") },
@@ -16,13 +17,13 @@ const lessons = [
 ];
 
 export default function HomeScreen() {
-
+    const {t}=useTranslation();
     return (
         <ScreenWrapper scrollable>
             <View style={{ flex: 1 }}>
 
                 <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={true} keyboardShouldPersistTaps="always">
-                    <Text style={[globalStyles.title, styles.title]}>Qu'est-ce qu'on apprend aujourd'hui, Louis ?</Text>
+                    <Text style={[globalStyles.title, styles.title]}>{t("homeScreen.splashMessage",{prenom:"Louis"})}</Text>
 
                     <View style={styles.Crd_container}>
 
