@@ -51,9 +51,11 @@ export default StyleSheet.create({
     },
     tabText: {
         color: colors.white,
+        fontFamily: 'OpenSans_Regular',
     },
     tabTextFocused: {
         color:colors.white,
         fontWeight: 'bold',
+        fontFamily: 'OpenSans_Regular',
     },
 });

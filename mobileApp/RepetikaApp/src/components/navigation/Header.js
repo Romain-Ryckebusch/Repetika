@@ -15,7 +15,6 @@ const DefaultHeader = ({ progress, lvl, streakDays, profilePicture }) => {
     if (routeName !== "Profile") {
         return (
             <View style={styles.container}>
-                <Text>{routeName}</Text>
                 <View style={styles.levelSection}>
                     <Progress.Bar
                         style={[globalStyles.card_progressbar, styles.progressBar]}
