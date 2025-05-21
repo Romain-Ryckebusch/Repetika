@@ -7,9 +7,9 @@ import { ActivityIndicator, View } from "react-native";
 
 export default function App() {
     const [fontsLoaded] = useFonts({
-        KronaOne_Regular: require('./assets/fonts/Krona_One/KronaOne-Regular.ttf'),
-        OpenSans_Regular: require('./assets/fonts/Open_Sans/static/OpenSans-Regular.ttf'),
-        OpenSans_Bold: require('./assets/fonts/Open_Sans/static/OpenSans-Bold.ttf'),
+        KronaOne_Regular: require('./src/assets/fonts/Krona_One/KronaOne-Regular.ttf'),
+        OpenSans_Regular: require('./src/assets/fonts/Open_Sans/static/OpenSans-Regular.ttf'),
+        OpenSans_Bold: require('./src/assets/fonts/Open_Sans/static/OpenSans-Bold.ttf'),
     });
 
     if (!fontsLoaded) {
