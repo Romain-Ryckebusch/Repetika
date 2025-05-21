@@ -12,8 +12,6 @@ import {useTranslation} from "react-i18next";
 const lessons = [
   { id:'1', title: 'Cours 1', corpus: 'Apprenez les bases de la physique à l\'échelle atomique.', progress: '9', crd_number: '10', onPress: () => console.log("Clic sur la leçon !") },
   { id:'2', title: 'Cours 2', corpus: 'Apprenez les bases de la chimie à l\'échelle atomique.', progress: '20', crd_number: '5', onPress: () => console.log("Clic sur la leçon !") },
-  { id:'3', title: 'Cours 3', corpus: 'Apprenez les bases de la biologie à l\'échelle atomique.', progress: '25', crd_number: '2', onPress: () => console.log("Clic sur la leçon !") },
-  { id:'4', title: 'Cours 4', corpus: 'Apprenez les bases de la biologie à l\'échelle atomique.', progress: '25', crd_number: '2', onPress: () => console.log("Clic sur la leçon !") },
 ];
 
 export default function HomeScreen() {

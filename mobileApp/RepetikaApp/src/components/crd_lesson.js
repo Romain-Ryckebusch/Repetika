@@ -7,7 +7,7 @@ import globalStyles from '../styles/global';
 const Crd_lesson = ({ title, corpus, crd_number, progress, onPress}) => {
 
   return (
-      <TouchableOpacity style={[globalStyles.card,globalStyles.shadowDefault]} onPress={onPress}>
+      <TouchableOpacity style={[globalStyles.card, globalStyles.card_lesson,globalStyles.shadowDefault]} onPress={onPress}>
         <Text style={globalStyles.card_title}>{title}</Text>
         <Text style={globalStyles.card_corpus}>{corpus}</Text>
         <Text style={globalStyles.card_due}>
