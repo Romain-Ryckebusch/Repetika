@@ -1,25 +1,52 @@
 import React from 'react';
-import { View, Text} from 'react-native';
+import { View, Text, Image, Pressable } from 'react-native';
 import globalStyles from "../../styles/global";
 import * as Progress from 'react-native-progress';
 import styles from '../../styles/navigation/TopBar.style';
+import { navigate, getCurrentRoute } from '../../navigation/NavigationService';
 
-const DefaultHeader = ({ progress }) => {
-    return (
-        <View style={styles.container}>
-            <Progress.Bar
-                style={globalStyles.card_progressbar}
-                height={15}
-                color="#0dc800"
-                unfilledColor="#d9d9d9"
-                borderWidth={0}
-                progress={progress/100}
-                width={321}
-            />
-            <Text>51</Text>
-        </View>
-    );
+const DefaultHeader = ({ progress, lvl, streakDays, profilePicture }) => {
+    const streakIcon = require('../../assets/streakIcon.png');
+    const settingsIcon = require('../../assets/settings.png');
+
+    const currentRoute = getCurrentRoute();
+    const routeName = currentRoute?.name ?? null;
+
+    if (routeName !== "Profile") {
+        return (
+            <View style={styles.container}>
+                <Text>{routeName}</Text>
+                <View style={styles.levelSection}>
+                    <Progress.Bar
+                        style={[globalStyles.card_progressbar, styles.progressBar]}
+                        height={16}
+                        color="#F1C40F"
+                        unfilledColor="#d9d9d9"
+                        borderWidth={0}
+                        progress={progress / 100}
+                    />
+                    <View style={styles.circle}>
+                        <Text>{lvl}</Text>
+                    </View>
+                </View>
+                <View style={styles.streakSection}>
+                    <Text style={styles.streakText}>{streakDays}</Text>
+                    <Image style={styles.streakIcon} source={streakIcon}></Image>
+                </View>
+                <Pressable style={styles.profilePictureButton} onPress={() => navigate('Profile')}>
+                    <Image style={styles.profilePictureImage} source={profilePicture}></Image>
+                </Pressable>
+            </View>
+        );
+    } else {
+        return (
+            <View style={styles.container}>
+                <Pressable style={styles.profilePictureButton} onPress={() => navigate('Profile')}>
+                    <Image style={styles.profilePictureImage} source={settingsIcon}></Image>
+                </Pressable>
+            </View>
+        );
+    }
 };
 
 export default DefaultHeader;
-

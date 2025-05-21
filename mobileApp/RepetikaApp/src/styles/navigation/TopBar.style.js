@@ -1,27 +1,58 @@
 
-import {Platform, StyleSheet} from 'react-native';
-import '../colors'
+import {StyleSheet} from 'react-native';
 import colors from "../colors";
 export default StyleSheet.create({
         container: {
-            height: Platform.OS === 'ios' ? 100 : 80,
-            paddingTop: Platform.OS === 'ios' ? 50 : 30,
-            backgroundColor: '#fff',
-            borderBottomWidth: 1,
-            borderBottomColor: '#ddd',
+            height: 100, // ← ici tu agrandis la hauteur
+            paddingHorizontal: 16,
+            paddingTop: 20, // un peu d’espace en haut
+            justifyContent: 'space-between', // ou 'space-between' selon ce que tu veux
+            flexDirection: 'row',
+            alignItems: 'center',
+
+        },
+        levelSection:{
+            width: '60%',
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            alignItems: 'center',
+        },
+        progressBar:{
+
+        },
+        circle: {
+            width: 20,
+            height: 20,
+            borderRadius: 10, // moitié de width/height
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            borderColor: 'black',
             justifyContent: 'center',
             alignItems: 'center',
-            elevation: 4, // Android shadow
-            shadowColor: '#000', // iOS shadow
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.2,
-            shadowRadius: 2,
-            flex:1,
-            flexDirection:'row'
         },
-        title: {
-            fontSize: 18,
+        streakSection:{
+            width: '20%',
+            flexDirection: 'row',
+            alignItems: 'center',
             fontWeight: 'bold',
         },
+        streakIcon:{
+            width: 16,
+            height: 16,
+        },
+        streakText:{
+            fontWeight: 'bold',
+            fontSize: 20,
+        },
+        profilePictureButton:{
+            width: '20%',
+        },
+        profilePictureImage:{
+            width: 48,
+            height: 48,
+        }
+
+
 }
 );
+

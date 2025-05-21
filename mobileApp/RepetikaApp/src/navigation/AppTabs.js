@@ -8,20 +8,23 @@ import ProfileScreen from '../screens/ProfileScreen';
 import { useTranslation } from 'react-i18next';
 import TabBar from "../components/navigation/bottomNavBar";
 import Header from "../components/navigation/Header";
+import {useNavigation} from "@react-navigation/native";
+
+
 
 const Tab = createBottomTabNavigator();
 
-
-
-
 const AppTabs=()=> {
     const { t } = useTranslation();
+    const userProfilePicture = require('../assets/Profile.png');
+    const navigation = useNavigation();
     return (
         <Tab.Navigator
             tabBar={(props) => <TabBar {...props} />}
             screenOptions={({ route }) => ({
                 animation: 'shift',
-                header: () => <Header progress={50} /> // remplace par t(...) si besoin
+                headerShown:false,
+
             })}
             id={"appTabsNavigator"}
         >
