@@ -1,6 +1,5 @@
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text } from 'react-native';
 import * as Progress from 'react-native-progress';
-import { Shadow } from 'react-native-shadow-2';
 
 import colors from '../styles/colors';
 import globalStyles from '../styles/global';
@@ -8,7 +7,7 @@ import globalStyles from '../styles/global';
 const Crd_lesson = ({ title, corpus, crd_number, progress, onPress}) => {
 
   return (
-      <TouchableOpacity style={globalStyles.card} onPress={onPress}>
+      <TouchableOpacity style={[globalStyles.card,globalStyles.shadowDefault]} onPress={onPress}>
         <Text style={globalStyles.card_title}>{title}</Text>
         <Text style={globalStyles.card_corpus}>{corpus}</Text>
         <Text style={globalStyles.card_due}>

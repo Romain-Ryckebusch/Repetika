@@ -1,4 +1,5 @@
 import colors from './colors';
+import { Platform } from 'react-native';
 
 const globalStyles = {
 
@@ -144,6 +145,22 @@ const globalStyles = {
     alignItems: 'center',
     padding: 16,
   },
+
+  
+  // ---------------------------------------------------------------------
+  // --------- SHADOW STYLES ---------------------------------------------
+  shadowDefault:{
+    ...Platform.select({
+        ios: {
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.5,
+          shadowRadius: 6,
+        },
+        android: {
+          elevation: 6,
+        },
+  })},
 
 };
 
