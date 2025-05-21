@@ -4,5 +4,10 @@
     "social": "Social",
     "statistics": "Stats",
     "profile": "Profil"
+  },
+  "profileScreen":{
+    "title": "Mon profil",
+    "section_trophies_title": "Trophées",
+    "section_info_title" : "Informations générales"
   }
 }

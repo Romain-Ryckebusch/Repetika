@@ -1,21 +1,26 @@
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView} from "react-native";
+import { View, Text, ScrollView} from "react-native";
 import globalStyles from '../styles/global';
-import colors from '../styles/colors';
+import styles from '../styles/ProfileScreen.style';
+
 import TrophyItem from "../components/trophy_item";
 import ScreenWrapper from "../components/navigation/screenWrapper";
 
+import { useTranslation } from "react-i18next";
+
+
 export default function ProfileScreen() {
+    const { t } = useTranslation();
 
     return (
         <ScreenWrapper scrollable>
             <View style={{ flex: 1 }}>
                 <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={true} keyboardShouldPersistTaps="handled">
-
-                    <Text style={globalStyles.title}>Mon profil</Text>
-                    <Text style={globalStyles.subtitle}>Trophées</Text>
-
+                
+                    <Text style={globalStyles.title}>{t("profileScreen.title")}</Text>
+                    
+                    
+                    <Text style={globalStyles.subtitle}>{t("profileScreen.section_trophies_title")}</Text>
                     <View style={styles.trophy_container}>
-
                         <View style={styles.trophy_row}>
                             <TrophyItem label="Apprenant" unlocked={true} corpus="Vous vous êtes inscrit(e) sur Repetika." date="19/05/2025"/>
                             <TrophyItem label="Thierry" unlocked={true} corpus="Vous n'êtes pas sensé lire ça. Si vous arrivez à le lire, contactez-moi, lol." date="21/05/2025"/>
@@ -32,35 +37,15 @@ export default function ProfileScreen() {
                         <View style={styles.shelf}></View>
                     </View>
 
-                    <Text style={globalStyles.subtitle}>Informations générales</Text>
-                    <View></View>
 
+                    <Text style={globalStyles.subtitle}>{t("profileScreen.section_info_title")}</Text>
+                    <View>
+                    
+                    </View>
+                
                 </ScrollView>
             </View>
         </ScreenWrapper>
     )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding:5,
-  },
-  trophy_container: {
-    flexDirection: 'column',
-    gap: 20,
-    alignItems: 'center',
-    marginTop: 40,
-  },
-  trophy_row: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  shelf:{
-    backgroundColor: colors.shelf,
-    height: '8%',
-    width: '95%',
-    marginTop: -35, // chevauche un peu les trophées pour qu'ils "reposent" dessus
-    zIndex: -1, // facultatif si tu veux qu’elle passe derrière
-  }
-});

@@ -1,7 +1,9 @@
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView} from "react-native";
 import { useGlobalFonts } from '../styles/globalFonts';
+
 import globalStyles from '../styles/global';
 import colors from '../styles/colors';
+import styles from '../styles/HomeScreen.style';
 
 import Crd_lesson from '../components/crd_lesson';
 import ScreenWrapper from "../components/navigation/screenWrapper";
@@ -46,33 +48,3 @@ export default function HomeScreen() {
     )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    gap: 40,
-  },
-  Crd_container: {
-    width: '100%',
-    gap: 10,
-    alignItems: 'center',
-  },
-  title: {
-    textAlign: 'left',
-    fontSize: 21,
-    padding: 10,
-    paddingTop: 30,
-  },
-  addCard: {
-    width: '93%',
-    backgroundColor: 'transparent',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderStyle: 'dotted',
-    borderWidth: 3,
-    borderColor: colors.grey,
-    height: 180,
-    },
-});
