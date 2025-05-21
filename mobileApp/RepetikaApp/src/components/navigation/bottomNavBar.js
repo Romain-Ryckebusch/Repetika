@@ -4,6 +4,7 @@ import { Shadow } from 'react-native-shadow-2';
 
 //style
 import styles from '../../styles/navigation/AppTabs.style';
+import globalStyles from "../../styles/global";
 
 
 
