@@ -4,11 +4,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 //pages
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import SocialScreen from "../screens/SocialScreen";
 //autres
 import { useTranslation } from 'react-i18next';
 import TabBar from "../components/navigation/bottomNavBar";
 import Header from "../components/navigation/Header";
 import {useNavigation} from "@react-navigation/native";
+import StatisticsScreen from "../screens/StatisticsScreen";
+
 
 
 
@@ -30,8 +33,8 @@ const AppTabs=()=> {
 
         >
             <Tab.Screen name="Home" options={{title:t('bottomNavbar.home')}}  component={HomeScreen} />
-            <Tab.Screen name="Social" options={{title:t('bottomNavbar.social')}} component={ProfileScreen} />
-            <Tab.Screen name="Stats" options={{title:t('bottomNavbar.statistics')}} component={ProfileScreen} />
+            <Tab.Screen name="Social" options={{title:t('bottomNavbar.social')}} component={SocialScreen} />
+            <Tab.Screen name="Stats" options={{title:t('bottomNavbar.statistics')}} component={StatisticsScreen} />
             <Tab.Screen  name="Profile" options={{title:t('bottomNavbar.profile'),headerShown:false}} component={ProfileScreen} />
         </Tab.Navigator>
     );
