@@ -17,106 +17,104 @@ export default function ProfileScreen() {
     const streakIcon = require('../assets/streakIcon.png');
 
     return (
-        <ScreenWrapper scrollable>
-            
-                    <Text style={globalStyles.title}>{t("profileScreen.title")}</Text>
+        <ScreenWrapper scrollable style={styles.container}>
+    
+            <Text style={globalStyles.title}>{t("profileScreen.title")}</Text>
 
+            <Text style={globalStyles.subtitle}>{t("profileScreen.section_trophies_title")}</Text>
+            <View style={styles.trophy_container}>
+                <View style={styles.trophy_row}>
+                    <TrophyItem label="Apprenant" unlocked={true} corpus="Vous vous êtes inscrit(e) sur Repetika." date="19/05/2025"/>
+                    <TrophyItem label="Thierry" unlocked={true} corpus="Vous n'êtes pas sensé lire ça. Si vous arrivez à le lire, contactez-moi, lol." date="21/05/2025"/>
+                    <TrophyItem label="Fraise" unlocked={true} corpus="Vous vous êtes inscrit(e) sur Repetika." date="19/05/2025"/>
+                    <TrophyItem label="Poulet" unlocked={true} corpus="Vous n'êtes pas sensé lire ça. Si vous arrivez à le lire, contactez-moi, lol." date="21/05/2025"/>
+                </View>
+                <View style={styles.shelf}></View>
+                <View style={styles.trophy_row}>
+                    <TrophyItem label="Requin" unlocked={true} corpus="Vous vous êtes inscrit(e) sur Repetika." date="19/05/2025"/>
+                    <TrophyItem label="Mayonnaise" unlocked={true} corpus="On A Escalator" date="22/05/2025"/>
+                    <TrophyItem label="Turbo" unlocked={true} corpus="Vous vous êtes inscrit(e) sur Repetika." date="19/05/2025"/>
+                    <TrophyItem label="Russie" unlocked={false} corpus="Vous n'êtes pas sensé lire ça. Si vous arrivez à le lire, contactez-moi, lol." date="21/05/2025"/>
+                </View>
+                <View style={styles.shelf}></View>
+            </View>
+
+
+            <Text style={globalStyles.subtitle}>{t("profileScreen.section_info_title")}</Text>
+            <View style={styles.generalInfo_container}>
+
+                <Image source={require('../assets/Profile.png')} style={styles.profilePicture} />
+
+                <View style={styles.generalInfo_Right}>
+                    <Text style={styles.generalInfo_name}>Louis</Text>
+                    <Text style={styles.generalInfo_accountCreation}>{t("profileScreen.section_info_accountDate",{date:"19/02/2025"})}</Text>
                     
-                    <Text style={globalStyles.subtitle}>{t("profileScreen.section_trophies_title")}</Text>
-                    <View style={styles.trophy_container}>
-                        <View style={styles.trophy_row}>
-                            <TrophyItem label="Apprenant" unlocked={true} corpus="Vous vous êtes inscrit(e) sur Repetika." date="19/05/2025"/>
-                            <TrophyItem label="Thierry" unlocked={true} corpus="Vous n'êtes pas sensé lire ça. Si vous arrivez à le lire, contactez-moi, lol." date="21/05/2025"/>
-                            <TrophyItem label="Fraise" unlocked={true} corpus="Vous vous êtes inscrit(e) sur Repetika." date="19/05/2025"/>
-                            <TrophyItem label="Poulet" unlocked={true} corpus="Vous n'êtes pas sensé lire ça. Si vous arrivez à le lire, contactez-moi, lol." date="21/05/2025"/>
+                    <View style={styles.streakSection}>
+                        <Text>10</Text>
+                        <Image style={styles.streakIcon} source={streakIcon}></Image>
+                    </View>
+
+                    <View style={styles.levelSection}>
+                        <Progress.Bar
+                            style={[globalStyles.card_progressbar, styles.progressBar]}
+                            height={16}
+                            color="#F1C40F"
+                            unfilledColor="#d9d9d9"
+                            borderWidth={0}
+                            progress={20}
+                        />
+                        <View style={styles.circle}>
+                            <Text>5</Text>
                         </View>
-                        <View style={styles.shelf}></View>
-                        <View style={styles.trophy_row}>
-                            <TrophyItem label="Requin" unlocked={true} corpus="Vous vous êtes inscrit(e) sur Repetika." date="19/05/2025"/>
-                            <TrophyItem label="Mayonnaise" unlocked={true} corpus="On A Escalator" date="22/05/2025"/>
-                            <TrophyItem label="Turbo" unlocked={true} corpus="Vous vous êtes inscrit(e) sur Repetika." date="19/05/2025"/>
-                            <TrophyItem label="Russie" unlocked={false} corpus="Vous n'êtes pas sensé lire ça. Si vous arrivez à le lire, contactez-moi, lol." date="21/05/2025"/>
-                        </View>
-                        <View style={styles.shelf}></View>
                     </View>
 
-
-                    <Text style={globalStyles.subtitle}>{t("profileScreen.section_info_title")}</Text>
-                    <View style={styles.generalInfo_container}>
-
-                        <Image source={require('../assets/Profile.png')} style={styles.profilePicture} />
-
-                        <View style={styles.generalInfo_Right}>
-                            <Text style={styles.generalInfo_name}>Louis</Text>
-                            <Text style={styles.generalInfo_accountCreation}>{t("profileScreen.section_info_accountDate",{date:"19/02/2025"})}</Text>
-                            
-                            <View style={styles.streakSection}>
-                                <Text>10</Text>
-                                <Image style={styles.streakIcon} source={streakIcon}></Image>
-                            </View>
-
-                            <View style={styles.levelSection}>
-                                <Progress.Bar
-                                    style={[globalStyles.card_progressbar, styles.progressBar]}
-                                    height={16}
-                                    color="#F1C40F"
-                                    unfilledColor="#d9d9d9"
-                                    borderWidth={0}
-                                    progress={20}
-                                />
-                                <View style={styles.circle}>
-                                    <Text>5</Text>
-                                </View>
-                            </View>
-
-                            <TouchableOpacity style={styles.editPictureBtn}>
-                                <Text style={styles.editPictureBtnText}>{t("profileScreen.section_info_editBtn")}</Text>
-                            </TouchableOpacity>
-
-                         </View>
+                    <TouchableOpacity style={styles.editPictureBtn}>
+                        <Text style={styles.editPictureBtnText}>{t("profileScreen.section_info_editBtn")}</Text>
+                    </TouchableOpacity>
 
                     </View>
 
-
-                    <View style={styles.editableInfos_Form}>
-                        <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.username")}</Text>
-                        <Input
-                            placeholder={"K"}
-                            onChangeText={() => {}}
-                            style={styles.input}>
-                        </Input>
-
-                        <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.surname")}</Text>
-                        <Input
-                            placeholder={"name"}
-                            onChangeText={() => {}}
-                            style={styles.input}>
-                        </Input>
-
-                        <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.mail")}</Text>
-                        <Input
-                            placeholder={"name"}
-                            onChangeText={() => {}}
-                            style={styles.input}>
-                        </Input>
-
-                        <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.password")}</Text>
-                        <Input
-                            placeholder={"name"}
-                            onChangeText={() => {}}
-                            style={styles.input}>
-                        </Input>
-
-                        <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.passwordConfirm")}</Text>
-                        <Input
-                            placeholder={"name"}
-                            onChangeText={() => {}}
-                            style={styles.input}>
-                        </Input>
-                    </View>
+            </View>
 
 
-                <Btn_Fill title={t("profileScreen.section_info.editBtn")} onPress={() => console.log('cliqué')} style={styles.saveBtn}/>
+            <View style={styles.editableInfos_Form}>
+                <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.username")}</Text>
+                <Input
+                    placeholder={"K"}
+                    onChangeText={() => {}}
+                    style={styles.input}>
+                </Input>
+
+                <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.surname")}</Text>
+                <Input
+                    placeholder={"name"}
+                    onChangeText={() => {}}
+                    style={styles.input}>
+                </Input>
+
+                <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.mail")}</Text>
+                <Input
+                    placeholder={"name"}
+                    onChangeText={() => {}}
+                    style={styles.input}>
+                </Input>
+
+                <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.password")}</Text>
+                <Input
+                    placeholder={"name"}
+                    onChangeText={() => {}}
+                    style={styles.input}>
+                </Input>
+
+                <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.passwordConfirm")}</Text>
+                <Input
+                    placeholder={"name"}
+                    onChangeText={() => {}}
+                    style={styles.input}>
+                </Input>
+            </View>
+
+            <Btn_Fill title={t("profileScreen.section_info.editBtn")} onPress={() => console.log('cliqué')} style={styles.saveBtn}/>
 
         </ScreenWrapper>
     )

@@ -5,10 +5,9 @@ import globalStyles from './global';
 const styles = StyleSheet.create({
 
   container: {
-    flex: 1,
     padding:5,
   },
-
+  
   // ---------- Section trophées ------------------------------------------
   trophy_container: {
     flexDirection: 'column',
@@ -32,9 +31,9 @@ const styles = StyleSheet.create({
   // ---------- Section infos générales ------------------------------------
   generalInfo_container: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent:'center',
     gap:20,
+    alignItems: 'center',
+    alignSelf: 'center',
   },
 
   profilePicture:{
@@ -106,11 +105,16 @@ const styles = StyleSheet.create({
   // ------- Section infos utilisateur (qu'il peut modifier) ---------------
   editableInfos_Form:{
     fontSize: 20,
+    width: '90%',
+    alignSelf: 'center',
+    marginTop: 20,
   },
 
   saveBtn:{
     width: '50%',
     margin:30,
+    alignSelf: 'center',
+    marginBottom: 180,
   },
 
 });
