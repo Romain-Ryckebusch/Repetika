@@ -38,6 +38,7 @@ export default function RootNavigator() {
                     name="MainApp"
                     component={AppTabs}
                     options={{ headerShown: true }} // header affiché sur AppTabs
+
                 />
             )}
         </Stack.Navigator>

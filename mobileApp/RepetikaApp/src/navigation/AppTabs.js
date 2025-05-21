@@ -27,6 +27,7 @@ const AppTabs=()=> {
 
             })}
             id={"appTabsNavigator"}
+
         >
             <Tab.Screen name="Home" options={{title:t('bottomNavbar.home')}}  component={HomeScreen} />
             <Tab.Screen name="Social" options={{title:t('bottomNavbar.social')}} component={ProfileScreen} />

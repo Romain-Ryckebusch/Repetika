@@ -1,5 +1,5 @@
 
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import '../colors'
 import colors from "../colors";
 export default StyleSheet.create({
@@ -18,6 +18,15 @@ export default StyleSheet.create({
         bottom: 32,
         left: '5%',
         right: 0,
+        elevation:6,
+        ...Platform.select({
+            ios: {
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 3 },
+                shadowOpacity: 0.27,
+                shadowRadius: 4.65,
+            },
+        }),
     },
     tabButton: {
         alignItems: 'center',
