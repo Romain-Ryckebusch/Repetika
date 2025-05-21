@@ -12,5 +12,9 @@
   },
   "homeScreen": {
     "splashMessage": "What are we learning today, {{prenom}}?"
+  },
+  
+  "crd_lesson":{
+    "dueLabel" : "Cards to review today:"
   }
 }

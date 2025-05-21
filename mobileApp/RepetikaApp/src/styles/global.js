@@ -69,8 +69,10 @@ const globalStyles = {
     paddingHorizontal: 20,
     borderRadius: 20,
     alignItems: 'center',
-    width: '93%',
-    height: 180,
+  },
+
+  card_lesson:{
+    width: '95%',
   },
 
   card_title: {

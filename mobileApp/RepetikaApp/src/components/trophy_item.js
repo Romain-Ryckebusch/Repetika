@@ -66,9 +66,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
   },
   modalContent: {
-    width: '100%',
     padding: 20,
-    },
+    alignSelf: 'center',
+    width: '99%',      // limite la largeur à 80% de l'écran
+  },
+
+
 });

@@ -5,7 +5,7 @@ import colors from "../colors";
 export default StyleSheet.create({
     tabBarContainer: {
         flexDirection: 'row',
-        backgroundColor: colors.primary,
+        backgroundColor: colors.primary_var1,
         paddingVertical: 8,
         paddingHorizontal: '10%',
         height: 60,
@@ -34,7 +34,7 @@ export default StyleSheet.create({
         height: 60,
         paddingVertical: 8,
         flex: 1,
-        backgroundColor:colors.primary,
+        backgroundColor:colors.primary_var1,
     },
     tabButtonFocused:{
         flex: 1,
@@ -42,7 +42,7 @@ export default StyleSheet.create({
         justifyContent: 'center',
         marginTop: -15,
         marginBottom: -15,
-        backgroundColor:colors.primary,
+        backgroundColor:colors.primary_var1,
         borderRadius:8,
         paddingHorizontal:16,
         zIndex:10

@@ -1,9 +1,11 @@
 export default {
   
   primary: '#991cca',
+  primary_var1 :'#b95bde',
 
-  // Si vous voulez offrir une bonne surprise à Aymeric, utilisez plutôt cette couleur.
-  // primary: '#1cca7f',
+  // Si vous voulez offrir une bonne surprise à Aymeric, utilisez plutôt ces couleurs.
+  /* primary: '#1cca7f',
+  primary_darker :'#1cca7f', */
   
   secondary: '#6c757d',
   background: '#fffbff',
