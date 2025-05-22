@@ -83,7 +83,7 @@
     "loginBtn": "Login",
     "forgotPassword": "Forgot your password?",
     "register": "No account yet? Register now",
-    "passError": "Incorrect password",
-    "error": "An error occurred, please try again"
+    "passError": "Incorrect password.",
+    "error": "An error occurred, please try again."
   }
 }

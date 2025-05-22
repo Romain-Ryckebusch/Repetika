@@ -11,7 +11,7 @@ import ScreenWrapper from "../components/navigation/screenWrapper";
 import { useTranslation } from "react-i18next";
 
 
-export default function HomeScreen() {
+export default function LoginScreen() {
     const {t}=useTranslation();
     return (
         <ScreenWrapper scrollable>
@@ -21,24 +21,29 @@ export default function HomeScreen() {
                 <Text style={styles.subtitle}>{t('LoginScreen.subtitle')}</Text>
 
                 <View style={styles.inputContainer}>
-                    <Text style={styles.label}>{t('LoginScreen.username_mail')}</Text>
-                    <Input placeholder={t('LoginScreen.username')} />
+                    <View style={[styles.inputContainerLefter]}>
+                        <Text style={styles.label}>{t('LoginScreen.username_mail')}</Text>
+                        <Input placeholder={t('LoginScreen.username')} />
 
-                    <Text style={styles.label}>{t('LoginScreen.password')}</Text>
-                    <Input placeholder={t('LoginScreen.password')} />
+                        <Text style={styles.label}>{t('LoginScreen.password')}</Text>
+                        <Input placeholder={t('LoginScreen.password')} />
 
-                    <Text style={styles.label}>{t('LoginScreen.passwordConfirm')}</Text>
-                    
-                    <Btn_Fill
-                    style={{ marginTop: 20 }}
-                    title={t('LoginScreen.loginBtn')}
-                    onPress={() => { }}
-                    />
+
+                        <Text style={styles.label_error}>{t('LoginScreen.passError')}</Text>
+                        <Text style={styles.label_error}>{t('LoginScreen.error')}</Text>
+                        
+                        <Btn_Fill
+                        style={{ marginTop: 20 }}
+                        title={t('LoginScreen.loginBtn')}
+                        onPress={() => {console.log("Register")}}
+                        />
+                    </View>
                 </View>
                 
+                
 
-                <Text style={styles.ask_label}>{t('LoginScreen.forgotPassword')}</Text>
-                <Text style={styles.ask_label}>{t('LoginScreen.register')}</Text>
+                <Text style={styles.ask_label} onPress={() => console.log("Forgot password")}>{t('LoginScreen.forgotPassword')}</Text>
+                <Text style={styles.ask_label} onPress={() => console.log("Register")}>{t('LoginScreen.register')}</Text>
                 
             </View>
         </ScreenWrapper>

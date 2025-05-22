@@ -81,8 +81,8 @@
     "loginBtn": "Se connecter",
     "forgotPassword": "Mot de passe oublié ?",
     "register": "Pas encore de compte ? S'inscrire",
-    "passError": "Incorrect password",
-    "error": "An error occurred, please try again"
+    "passError": "Mot de passe ou nom d'utilisateur incorrect.",
+    "error": "Une erreur est survenue, veuillez réessayer."
   }
  
 }

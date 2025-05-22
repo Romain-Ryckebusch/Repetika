@@ -6,25 +6,37 @@ const styles = StyleSheet.create({
 
     container:{
         flex: 1,
-        alignContent: 'center',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 20,
     },
 
     subtitle:{
         ...globalStyles.subtitle,
         fontSize: 15,
     },
-
-    inputContainer: {
-        width: '100%',
+    
+    inputContainer:{
+        width: '80%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        marginTop: 20,
     },
+
+    inputContainerLefter: {
+        width: '100%',
+        alignItems: 'flex-start',
+    },
+
 
     label:{
         ...globalStyles.corpus,
         fontSize: 14,
         padding:0,
+    },
+
+    label_error:{
+        color: colors.red,
     },
 
     credits:{
@@ -39,7 +51,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         textAlign: 'center',
         color: colors.grey,
-        marginTop: 20,
+        padding:0,
     }
 
 });
