@@ -3,6 +3,8 @@ export default {
   primary: '#991cca',
   primary_var1 :'#b95bde',
 
+  orange:'#ED8A34',
+
   // Si vous voulez offrir une bonne surprise à Aymeric, utilisez plutôt ces couleurs.
   /* primary: '#1cca7f',
   primary_darker :'#1cca7f', */
