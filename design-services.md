@@ -49,6 +49,7 @@ L'utilisateur veut voir une première fois les cartes correspondant à un chapit
 **Services** | **Entrées** | **Sorties** | **Flux**
 ---|---|---|---
 *Main* | //////// | //////// | [1] Appel à *Cours* pour avoir la liste des chapitres finis ; Appel à "Deck" pour avoir la liste des id des cartes correspondant à ces chapitres ; Appel à *Quiz* pour ; [2] Envoi des cartes créées à "Decks" ; Envoi des cartes créées à "Planification" ; Envoi des cartes créées à "Quiz"
+---
 
 ### Connexion
 Une fois l’utilisateur connecté, l’application ouvre « profil », applique ses paramètres préenregistrés si ils existent sinon elle applique ceux par défaut. (Elle vérifie le nombre de notifications pour l’afficher) 
