@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AuthTabs from './AuthTabs';
 import AppTabs from './AppTabs';
 import Header from '../components/navigation/Header';
-
+import SettingsScreen from '../screens/SettingsScreen'
 
 const Stack = createNativeStackNavigator();
 
@@ -34,12 +34,21 @@ export default function RootNavigator() {
                     options={{ headerShown: false }} // pas de header sur Auth
                 />
             ) : (
-                <Stack.Screen
-                    name="MainApp"
-                    component={AppTabs}
-                    options={{ headerShown: true }} // header affiché sur AppTabs
+                <>
+                    <Stack.Screen
+                        name="MainApp"
+                        component={AppTabs}
+                        options={{ headerShown: true }} // header affiché sur AppTabs
+                    />
+                    <Stack.Screen
+                        name="settingsScreen"
+                        component={SettingsScreen}
+                        options={{headerShown:true}}
+                    >
 
-                />
+                    </Stack.Screen>
+
+                </>
             )}
         </Stack.Navigator>
     );
