@@ -36,5 +36,25 @@
   },
   "crd_lesson":{
     "dueLabel" : "Cards to review today:"
+  },
+
+  "SettingsScreen":{
+    "title": "Settings",
+    "section1":{
+      "title": "General",
+      "param1": "Get notifications",
+      "param2": "Download lessons",
+      "param3": "Download les images",
+      "param4": "Download les sons",
+      "param5": "Download vidéos",
+      "param6": "Download leçons en arrière plan",
+      "param7": "Download leçons en Wi-Fi et données mobiles"
+    },
+    "section2":{
+      "title": "Language and texts",
+      "param1": "Application language",
+      "param2": "Display texts in a dyslexic font",
+      "param3": "Support development by sending anonymous statistics"
+    }
   }
 }

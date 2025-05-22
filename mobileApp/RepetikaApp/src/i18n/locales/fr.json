@@ -36,6 +36,26 @@
   },
   "crd_lesson":{
     "dueLabel" : "Cartes à revoir aujourd'hui :"
+  },
+
+  "SettingsScreen":{
+    "title": "Paramètres",
+    "section1":{
+      "title": "Général",
+      "param1": "Recevoir des notifications",
+      "param2": "Télécharger les leçons",
+      "param3": "Télécharger les images",
+      "param4": "Télécharger les sons",
+      "param5": "Télécharger les vidéos",
+      "param6": "Télécharger les leçons en arrière plan",
+      "param7": "Télécharger les leçons en Wi-Fi et données mobiles"
+    },
+    "section2":{
+      "title": "Langue et textes",
+      "param1": "Langue de l'application",
+      "param2": "Afficher les textes avec une police adaptée aux dyslexiques",
+      "param3": "Soutenir le développement en envoyant des statistiques anonymes"
+    }
   }
 
 }
