@@ -56,6 +56,14 @@
       "param2": "Afficher les textes avec une police adaptée aux dyslexiques",
       "param3": "Soutenir le développement en envoyant des statistiques anonymes"
     }
+  },
+  "courseIndexScreen": {
+    "coursLabel": "Cours",
+    "reviewLabel": "Revisions",
+    "reviewMainTextStart": "Tu as ",
+    "reviewMainTextEnd": " cartes à révisier aujourd'hui !",
+    "reviewStartButtonText":"Commencer",
+    "reviewManageReviewCard": "Gérer mes cartes à réviser"
   }
 
 }

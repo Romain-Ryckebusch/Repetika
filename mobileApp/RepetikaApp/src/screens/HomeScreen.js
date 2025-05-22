@@ -8,6 +8,7 @@ import styles from '../styles/HomeScreen.style';
 import Crd_lesson from '../components/crd_lesson';
 import ScreenWrapper from "../components/navigation/screenWrapper";
 import {useTranslation} from "react-i18next";
+import {navigate} from "../navigation/NavigationService";
 
 const lessons = [
   { id:'1', title: 'Cours 1', corpus: 'Apprenez les bases de la physique à l\'échelle atomique.', progress: '9', crd_number: '10', onPress: () => console.log("Clic sur la leçon !") },
@@ -32,7 +33,7 @@ export default function HomeScreen() {
                                 corpus={lesson.corpus}
                                 progress={lesson.progress}
                                 crd_number={lesson.crd_number}
-                                onPress={lesson.onPress}
+                                onPress={()=>navigate("gameScreens")}
                             />
                         ))}
 

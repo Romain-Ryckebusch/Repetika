@@ -4,7 +4,7 @@ import AuthTabs from './AuthTabs';
 import AppTabs from './AppTabs';
 import Header from '../components/navigation/Header';
 import SettingsScreen from '../screens/SettingsScreen'
-
+import GameScreens from '../navigation/gameScreens';
 const Stack = createNativeStackNavigator();
 
 const userProfilePicture = require('../assets/Profile.png'); // si besoin
@@ -44,9 +44,12 @@ export default function RootNavigator() {
                         name="settingsScreen"
                         component={SettingsScreen}
                         options={{headerShown:true}}
-                    >
+                    />
 
-                    </Stack.Screen>
+                    <Stack.Screen
+                        name="gameScreens"
+                        component={GameScreens}
+                    />
 
                 </>
             )}

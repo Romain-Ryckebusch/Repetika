@@ -50,6 +50,17 @@ export default StyleSheet.create({
         profilePictureImage:{
             width: 48,
             height: 48,
+        },
+        headerTitle:{
+            fontSize: 16,
+            fontFamily: 'KronaOne_Regular'
+        },
+        backArrowBtn:{
+            marginRight:8
+        },
+        backArrowImg:{
+            width: 24,
+            height: 24
         }
 
 
