@@ -70,6 +70,19 @@
       "logInBtn":"Me connecter",
       "text":"Déjà un compte?"
     }
+  },
+
+  "LoginScreen": {
+    "title": "Bienvenue sur Repetika",
+    "subtitle": "Connecte-toi pour commencer à apprendre",
+    "username_mail": "Identifiant",
+    "username": "Nom d'utilisateur ou adresse e-mail",
+    "password": "Mot de passe",
+    "loginBtn": "Se connecter",
+    "forgotPassword": "Mot de passe oublié ?",
+    "register": "Pas encore de compte ? S'inscrire",
+    "passError": "Incorrect password",
+    "error": "An error occurred, please try again"
   }
  
 }
