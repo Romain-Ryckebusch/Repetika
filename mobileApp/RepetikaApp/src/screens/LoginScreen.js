@@ -46,10 +46,14 @@ export default function LoginScreen() {
                 </View>
                 
                 
+                <View onPress={() => console.log("Forgot password")}>
+                    <Text style={styles.ask_label}>{t('LoginScreen.forgotPassword')}</Text>                     
+                </View>
 
-                <Text style={styles.ask_label} onPress={() => console.log("Forgot password")}>{t('LoginScreen.forgotPassword')}</Text>
-                <Text style={styles.ask_label} onPress={() => console.log("Register")}>{t('LoginScreen.register')}</Text>
-                
+                <View onPress={() => console.log("Register")}>
+                    <Text style={styles.ask_label} >{t('LoginScreen.register')}</Text>
+                </View>
+
             </View>
         </ScreenWrapper>
     )
