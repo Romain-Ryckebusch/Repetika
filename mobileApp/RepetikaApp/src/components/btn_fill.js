@@ -25,12 +25,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
     alignItems: 'center',
-    width: '80%',
+    width: '100%',
   },
   text: {
     color: colors.white,
     fontSize: 16,
-    fontFamily: 'OpenSans_Bold',
+    fontFamily: 'OpenSans_Regular',
   },
   disabled: {
     backgroundColor: colors.disabled,

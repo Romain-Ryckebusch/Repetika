@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Switch } from "react-native";
+import { View, Text, ScrollView, Switch, Button } from "react-native";
 
 import globalStyles from '../styles/global';
 import colors from '../styles/colors';
 import styles from '../styles/SettingsScreen.style';
+import Decoration from "../components/decoration";
 
 import ScreenWrapper from "../components/navigation/screenWrapper";
 import {useTranslation} from "react-i18next";
@@ -34,8 +35,12 @@ export default function StatisticsScreen() {
     });
 
     return (
+    <View>
+    <Decoration radius={900} top={-500} left={-600} />
     <ScreenWrapper scrollable>
+        
         <View style={{ flex: 1 }}>
+
         <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={true} keyboardShouldPersistTaps="always">
 
             <Text style={globalStyles.title}>{t("SettingsScreen.title")}</Text>
@@ -45,51 +50,58 @@ export default function StatisticsScreen() {
 
             return (
                 <View key={`section-${sectionIndex}`} style={styles.section}>
-                <View style={styles.sectionHeader}>
-                    <View style={styles.separator} />
-                    <Text style={styles.sectionTitle}>{t(titleRow[0])}</Text>
-                    <View style={styles.separator} />
-                </View>
-
-                {params.map(([key, type, callback, ...options], index) => (
-                    <View key={key} style={styles.paramLine}>
-                    <Text style={styles.subSectionTitle}>{t(key)}</Text>
-
-                    {type === "boolean" && (
-                        <Switch
-                        trackColor={{ false: colors.grey, true: colors.primary }}
-                        thumbColor={colors.white}
-                        ios_backgroundColor={colors.grey}
-                        onValueChange={(newValue) => {
-                            setSettingsValues(prev => ({ ...prev, [key]: newValue }));
-                            if (callback) callback(newValue);
-                        }}
-                        value={settingsValues[key] || false}
-                        style={{ marginLeft: 'auto' }}
-                        />
-                    )}
-
-                    {type === "choice" && (
-                        <Picker
-                            selectedValue={settingsValues[key] || options[0]}
-                            style={{ width: 150 }}
-                            onValueChange={(itemValue) => {
-                                setSettingsValues(prev => ({ ...prev, [key]: itemValue }));
-                                if (callback) callback(itemValue);
-                            }}
-                        >
-                            {options.map((option) => (
-                                <Picker.Item label={option} value={option} key={option} />
-                            ))}
-                        </Picker>
-                    )}
+                    <View style={styles.sectionHeader}>
+                        <View style={styles.separator} />
+                        <Text style={styles.sectionTitle}>{t(titleRow[0])}</Text>
+                        <View style={styles.separator} />
                     </View>
-                ))}
+
+                    {params.map(([key, type, callback, ...options], index) => (
+                        <View key={key} style={styles.paramLine}>
+                            <Text style={styles.subSectionTitle}>{t(key)}</Text>
+
+                            {type === "boolean" && (
+                                <Switch
+                                trackColor={{ false: colors.grey, true: colors.primary }}
+                                thumbColor={colors.white}
+                                ios_backgroundColor={colors.grey}
+                                onValueChange={(newValue) => {
+                                    setSettingsValues(prev => ({ ...prev, [key]: newValue }));
+                                    if (callback) callback(newValue);
+                                }}
+                                value={settingsValues[key] || false}
+                                style={{ marginLeft: 'auto' }}
+                                />
+                            )}
+
+                            {type === "choice" && (
+                                <Picker
+                                    selectedValue={settingsValues[key] || options[0]}
+                                    style={{ width: 150 }}
+                                    onValueChange={(itemValue) => {
+                                        setSettingsValues(prev => ({ ...prev, [key]: itemValue }));
+                                        if (callback) callback(itemValue);
+                                    }}
+                                >
+                                    {options.map((option) => (
+                                        <Picker.Item label={option} value={option} key={option} />
+                                    ))}
+                                </Picker>
+                            )}
+                        </View>
+                    ))}
                 </View>
             );
             })}
+
+
+            <Text style={styles.credits} onPress={() => console.log("Si tu cliques ici 20 fois, tu obtiendrais un Trophée 'Easter Egg Seaker'.")}>
+                Développé en 2025 par l’équipe PANØRAMA. {"\n"} Version 0.0.0
+            </Text>    
+        
         </ScrollView>
         </View>
     </ScreenWrapper>
+    </View>
     );
 };

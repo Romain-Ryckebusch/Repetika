@@ -9,7 +9,7 @@ export default StyleSheet.create({
             justifyContent: 'space-between', // ou 'space-between' selon ce que tu veux
             flexDirection: 'row',
             alignItems: 'center',
-
+            backgroundColor: 'transparent',
         },
         levelSection:{
             width: '60%',

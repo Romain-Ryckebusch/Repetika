@@ -4,6 +4,7 @@ export default {
   primary_var1 :'#b95bde',
 
   orange:'#ED8A34',
+  red:'#FF3B30',
 
   // Si vous voulez offrir une bonne surprise à Aymeric, utilisez plutôt ces couleurs.
   /* primary: '#1cca7f',

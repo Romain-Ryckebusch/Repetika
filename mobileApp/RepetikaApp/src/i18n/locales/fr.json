@@ -55,6 +55,20 @@
       "param1": "Langue de l'application",
       "param2": "Afficher les textes avec une police adaptée aux dyslexiques",
       "param3": "Soutenir le développement en envoyant des statistiques anonymes"
+    }},
+  "Register":{
+    "title": "Bienvenue sur Repetika",
+    "subtitle":"Inscris toi pour commencer à apprendre",
+    "section_info":{
+      "username": "Username",
+      "name": "Name",
+      "surname": "Surname",
+      "mail": "Mail",
+      "password": "New password",
+      "passwordConfirm": "Confirm new password",
+      "signUpBtn":"S'inscrire",
+      "logInBtn":"Me connecter",
+      "text":"Déjà un compte?"
     }
   },
   "courseIndexScreen": {
@@ -64,6 +78,19 @@
     "reviewMainTextEnd": " cartes à révisier aujourd'hui !",
     "reviewStartButtonText":"Commencer",
     "reviewManageReviewCard": "Gérer mes cartes à réviser"
-  }
+  },
 
+  "LoginScreen": {
+    "title": "Bienvenue sur Repetika",
+    "subtitle": "Connecte-toi pour commencer à apprendre",
+    "username_mail": "Identifiant",
+    "username": "Nom d'utilisateur ou adresse e-mail",
+    "password": "Mot de passe",
+    "loginBtn": "Se connecter",
+    "forgotPassword": "Mot de passe oublié ?",
+    "register": "Pas encore de compte ? S'inscrire",
+    "passError": "Mot de passe ou nom d'utilisateur incorrect.",
+    "error": "Une erreur est survenue, veuillez réessayer."
+  }
+ 
 }
