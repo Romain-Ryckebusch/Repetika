@@ -24,7 +24,16 @@
   "homeScreen": {
     "splashMessage": "What are we learning today, {{prenom}}?"
   },
-  
+  "socialScreen": {
+    "title": "Social",
+    "subTitle": "LeaderBoard",
+    "globalLabel": "Global",
+    "friendsLabel": "Friends",
+      "studiedCardsLabel": "Cards studied",
+    "xpLabel": "XP",
+    "streakLabel": "Streak",
+    "activesCardsLabel": "Active cards"
+  },
   "crd_lesson":{
     "dueLabel" : "Cards to review today:"
   }

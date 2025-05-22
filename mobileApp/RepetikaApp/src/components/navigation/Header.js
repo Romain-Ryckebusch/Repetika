@@ -6,8 +6,8 @@ import styles from '../../styles/navigation/TopBar.style';
 import { navigate, getCurrentRoute } from '../../navigation/NavigationService';
 
 const DefaultHeader = ({ progress, lvl, streakDays, profilePicture }) => {
-    const streakIcon = require('../../assets/streakIcon.png');
-    const settingsIcon = require('../../assets/settings.png');
+    const streakIcon = require('../../assets/icons/streakIcon.png');
+    const settingsIcon = require('../../assets/icons/settings.png');
 
     const currentRoute = getCurrentRoute();
     const routeName = currentRoute?.name ?? null;

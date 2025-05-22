@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 
 export default function ProfileScreen() {
     const { t } = useTranslation();
-    const streakIcon = require('../assets/streakIcon.png');
+    const streakIcon = require('../assets/icons/streakIcon.png');
 
     return (
         <ScreenWrapper scrollable style={styles.container}>

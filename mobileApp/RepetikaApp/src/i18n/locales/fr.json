@@ -24,7 +24,16 @@
   "homeScreen": {
     "splashMessage": "Qu'est ce qu'on apprend aujourd'hui, {{prenom}} ?"
   },
-  
+  "socialScreen": {
+    "title": "Social",
+    "subTitle": "Classement",
+    "globalLabel": "Global",
+    "friendsLabel": "Amis",
+    "studiedCardsLabel": "Cartes étudiées",
+    "xpLabel": "XP",
+    "streakLabel": "Flammes",
+    "activesCardsLabel": "Cartes Actives"
+  },
   "crd_lesson":{
     "dueLabel" : "Cartes à revoir aujourd'hui :"
   }

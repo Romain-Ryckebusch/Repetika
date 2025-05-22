@@ -10,7 +10,7 @@ i18n
     .use(initReactI18next)
     .init({
         // Langue initiale (locale détectée automatiquement)
-        lng: Localization.locale?.split('-')[0] || 'en',
+        lng: Localization.locale?.split('-')[0] || 'fr',
 
 
         // Fichiers de traduction
