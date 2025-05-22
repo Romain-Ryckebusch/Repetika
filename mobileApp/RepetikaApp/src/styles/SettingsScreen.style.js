@@ -41,6 +41,12 @@ const styles = StyleSheet.create({
         paddingVertical: 3,
     },
 
+    credits:{
+        ...globalStyles.corpus,
+        fontSize: 12,
+        textAlign: 'center',
+        color: colors.grey,
+    }
 
 });
 
