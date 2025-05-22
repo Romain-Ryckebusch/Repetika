@@ -55,6 +55,20 @@
       "param1": "Application language",
       "param2": "Display texts in a dyslexic font",
       "param3": "Support development by sending anonymous statistics"
-    }
+    }},
+  "Register":{
+    "title": "Welcome to Repetika",
+    "subtitle":"Sign up to start learning",
+    "section_info":{
+      "username": "Username",
+      "name": "Name",
+      "surname": "Surname",
+      "mail": "Mail",
+      "password": "New password",
+      "passwordConfirm": "Confirm new password",
+      "signUpBtn":"S'inscrire",
+      "logInBtn":"Log in",
+      "text":"Already have an account? "
+      }
   }
 }
