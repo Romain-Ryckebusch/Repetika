@@ -49,3 +49,19 @@ L'utilisateur veut voir une première fois les cartes correspondant à un chapit
 **Services** | **Entrées** | **Sorties** | **Flux**
 ---|---|---|---
 *Main* | //////// | //////// | [1] Appel à *Cours* pour avoir la liste des chapitres finis ; Appel à "Deck" pour avoir la liste des id des cartes correspondant à ces chapitres ; Appel à *Quiz* pour ; [2] Envoi des cartes créées à "Decks" ; Envoi des cartes créées à "Planification" ; Envoi des cartes créées à "Quiz"
+
+### Connexion
+Une fois l’utilisateur connecté, l’application ouvre « profil », applique ses paramètres préenregistrés si ils existent sinon elle applique ceux par défaut. (Elle vérifie le nombre de notifications pour l’afficher) 
+Si l’utilisateur veux changer ses paramètres il va se rendre sur la page dédiée, celle-ci va afficher les paramètres actuels. Une fois que l’utilisateur à validé ses choix les nouveaux paramètres s’appliquent et sont transmis à « profil »
+
+### Social
+- L’utilisateur veux afficher la page Social. Cela ouvre « stats » qui demande à « profil » les amis de l’utilisateur actuel. « stats » transmet les statistiques réduites de l’utilisateur actuel, celles de ses amis ainsi que celles des autres utilisateurs.
+- L’utilisateur veux afficher la page Stats. Cela ouvre « stats » qui transmet les statistiques complètes de l’utilisateur actuel
+- L’utilisateur à révisé un certain nombre de carte ou quitte le mode révision, Cela ouvre « stats » qui  met à jour ses statistiques
+
+**Services** | **Entrées** | **Sorties** | **Flux**
+---|---|---|---
+Profils  |[1] id utilisateur   | [1]liste d’amis|[]
+Stats|[1] id utilisateur,[2]liste id amis | [1] stats réduites utilisateur,[2] liste stats réduites amis,[3] liste stats réduites utilisateurs hors amis|à compléter
+Stats|[1] id utilisateur| [1] stats utilisateur|à compléter
+Stats||à compléter||à compléter||à compléter
