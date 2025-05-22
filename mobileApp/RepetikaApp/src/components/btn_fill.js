@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
   text: {
     color: colors.white,
     fontSize: 16,
-    fontWeight: 'bold',
     fontFamily: 'OpenSans_Regular',
   },
   disabled: {
