@@ -1,7 +1,9 @@
-import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
+import { View, Text } from "react-native";
 import globalStyles from '../styles/global';
 import styles from '../styles/LoginScreen.style';
-import * as Progress from 'react-native-progress';
+
+import Decoration from "../components/decoration";
+import colors from "../styles/colors";
 
 import Input from "../components/frm_input";
 import Btn_Fill from "../components/btn_fill";
@@ -15,6 +17,9 @@ export default function LoginScreen() {
     const {t}=useTranslation();
     return (
         <ScreenWrapper scrollable>
+
+            <Decoration radius={900} color={colors.primary} top={400} left={100} />
+
             <View style={styles.container}>
 
                 <Text style={globalStyles.title}>{t('LoginScreen.title')}</Text>

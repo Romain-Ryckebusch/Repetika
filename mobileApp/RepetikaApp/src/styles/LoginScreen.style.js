@@ -37,6 +37,8 @@ const styles = StyleSheet.create({
 
     label_error:{
         color: colors.red,
+        alignSelf: 'center',
+        
     },
 
     credits:{
@@ -51,7 +53,8 @@ const styles = StyleSheet.create({
         fontSize: 14,
         textAlign: 'center',
         color: colors.grey,
-        padding:0,
+        padding:3,
+        textDecorationLine: 'underline',
     }
 
 });
