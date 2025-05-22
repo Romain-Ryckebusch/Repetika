@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, ScrollView} from "react-native";
 
 import globalStyles from '../styles/global';
-import colors from '../styles/colors';
+import Decoration from "../components/decoration";
 import styles from '../styles/SocialScreen.style';
 
 import ScreenWrapper from "../components/navigation/screenWrapper";
@@ -145,6 +145,10 @@ export default function SocialScreen() {
     }
 
     return (
+        <View>
+        
+        <Decoration radius={900} top={0} left={-600} opacity={0.06} />
+
         <ScreenWrapper scrollable>
             <View style={{ flex: 1 }}>
 
@@ -179,6 +183,7 @@ export default function SocialScreen() {
                 </ScrollView>
             </View>
         </ScreenWrapper>
+        </View>
     )
 }
 

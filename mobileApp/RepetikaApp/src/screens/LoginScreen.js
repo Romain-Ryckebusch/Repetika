@@ -1,9 +1,8 @@
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import globalStyles from '../styles/global';
 import styles from '../styles/LoginScreen.style';
 
 import Decoration from "../components/decoration";
-import colors from "../styles/colors";
 
 import Input from "../components/frm_input";
 import Btn_Fill from "../components/btn_fill";
@@ -18,7 +17,7 @@ export default function LoginScreen() {
     return (
         <ScreenWrapper scrollable>
 
-            <Decoration radius={900} color={colors.primary} top={400} left={100} />
+            <Decoration radius={900} top={400} left={100} />
 
             <View style={styles.container}>
 
@@ -40,19 +39,19 @@ export default function LoginScreen() {
                         <Btn_Fill
                         style={{ marginTop: 20 }}
                         title={t('LoginScreen.loginBtn')}
-                        onPress={() => {console.log("Register")}}
+                        onPress={() => {console.log("Login")}}
                         />
                     </View>
                 </View>
                 
                 
-                <View onPress={() => console.log("Forgot password")}>
-                    <Text style={styles.ask_label}>{t('LoginScreen.forgotPassword')}</Text>                     
-                </View>
+                <Pressable onPress={() => console.log("Forgot password")}>
+                    <Text style={styles.ask_label}>{t('LoginScreen.forgotPassword')}</Text>
+                </Pressable>
 
-                <View onPress={() => console.log("Register")}>
-                    <Text style={styles.ask_label} >{t('LoginScreen.register')}</Text>
-                </View>
+                <Pressable onPress={() => console.log("Register")}>
+                    <Text style={styles.ask_label}>{t('LoginScreen.register')}</Text>
+                </Pressable>
 
             </View>
         </ScreenWrapper>

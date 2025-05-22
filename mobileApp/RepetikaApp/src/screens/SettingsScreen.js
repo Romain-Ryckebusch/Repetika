@@ -4,6 +4,7 @@ import { View, Text, ScrollView, Switch, Button } from "react-native";
 import globalStyles from '../styles/global';
 import colors from '../styles/colors';
 import styles from '../styles/SettingsScreen.style';
+import Decoration from "../components/decoration";
 
 import ScreenWrapper from "../components/navigation/screenWrapper";
 import {useTranslation} from "react-i18next";
@@ -34,8 +35,12 @@ export default function StatisticsScreen() {
     });
 
     return (
+    <View>
+    <Decoration radius={900} top={-500} left={-600} />
     <ScreenWrapper scrollable>
+        
         <View style={{ flex: 1 }}>
+
         <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={true} keyboardShouldPersistTaps="always">
 
             <Text style={globalStyles.title}>{t("SettingsScreen.title")}</Text>
@@ -97,5 +102,6 @@ export default function StatisticsScreen() {
         </ScrollView>
         </View>
     </ScreenWrapper>
+    </View>
     );
 };

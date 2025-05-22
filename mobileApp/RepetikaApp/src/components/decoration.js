@@ -1,6 +1,7 @@
 import { View } from "react-native";
+import colors from "../styles/colors";
 
-const Decoration = ({radius, color, top, left, opacity=0.08 })=> {
+const Decoration = ({radius, color=colors.primary, top, left, opacity=0.05 })=> {
   return (
     <View
         style={{
