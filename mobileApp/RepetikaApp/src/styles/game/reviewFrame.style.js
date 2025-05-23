@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     questionView:{
         width: '80%',
         marginLeft:'10%',
-        height: '90%',
+        height: '80%',
         justifyContent: 'space-between',
         interactives:{
             input:{
@@ -84,10 +84,12 @@ const styles = StyleSheet.create({
         }
     },
     finishedSession:{
-        backgroundColor:colors.primary,
+
+        flex:1,
         height:"100%",
+        justifyContent:"center",
         splashText:{
-            color:colors.white,
+            color:colors.primary,
         }
     }
 
