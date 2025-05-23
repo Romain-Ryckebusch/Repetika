@@ -32,8 +32,12 @@
       "studiedCardsLabel": "Cards studied",
     "xpLabel": "XP",
     "streakLabel": "Streak",
-    "activesCardsLabel": "Active cards"
+    "activesCardsLabel": "Active cards",
+    "addFriend": "Add friend",
+    "addFriendLabel": "Search by username",
+    "addFriendPlaceholder": "Enter the username of your friend"
   },
+
   "crd_lesson":{
     "dueLabel" : "Cards to review today:"
   },

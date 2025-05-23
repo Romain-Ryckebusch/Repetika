@@ -42,8 +42,34 @@ const styles = StyleSheet.create({
     },
     classementView:{
         marginTop:16,
-    }
+    },
 
+
+    modal:{
+        height: '800',
+    },
+
+    modalTitle:{
+        ...globalStyles.title,
+        color: colors.white,
+        fontSize: 24,
+    },
+
+    modalSearchLabel:{
+        fontFamily: 'OpenSans_Regular',
+        fontSize: 15,
+        color: colors.white,
+        textAlign: 'left',
+        width: '100%',
+    },
+
+    closeBtn:{
+        marginTop:16,
+        backgroundColor: colors.primary,
+        borderWidth: 2,
+        borderColor: colors.white,
+
+    }
 
 
 })

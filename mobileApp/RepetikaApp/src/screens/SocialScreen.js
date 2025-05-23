@@ -11,6 +11,10 @@ import {useState} from "react";
 import Badge from "../components/badge";
 import RankedUserLine from "../components/rankedUserLine";
 
+import CustomModal from "../components/customModal";
+import Btn_Fill from "../components/btn_fill"; 
+import Input from "../components/frm_input";
+import AddFriendBadge from "../components/addFriendBadge";
 
 
 export default function SocialScreen() {
@@ -18,6 +22,8 @@ export default function SocialScreen() {
 
     const [scopeSelected, setScopeSelected] = useState("Global");
     const [filterSelected,setFilterSelected] = useState("study");
+    const [addFriendModalVisible, setAddFriendModalVisible] = useState(false);
+
     const UserId = 3
     const GlobalUsers = [
         {
@@ -176,14 +182,44 @@ export default function SocialScreen() {
                                 <RankedUserLine key={user.id} progress={user.progress} level={user.level} rank={index+1} name={user.name} picture={user.profilePicture} streaks={user.streak} studiedCards={user.studiedCardsToday} itsme={user.id===UserId}/>
                                 ))
                         }
-
+                        <Btn_Fill title={t("socialScreen.addFriend")} onPress={() => setAddFriendModalVisible(true)} style={{marginTop:16}}/>
+     
                     </View>
 
 
                 </ScrollView>
+
+                <CustomModal styles={styles.modal} visible={addFriendModalVisible} onClose={() => setAddFriendModalVisible(false)}>
+                    <Text style={styles.modalTitle}>{t("socialScreen.addFriend")}</Text>
+
+                    <Text style={styles.modalSearchLabel}>{t("socialScreen.addFriendLabel")}</Text>
+                    <Input
+                        placeholder={t("socialScreen.addFriendPlaceholder")}
+                        onChangeText={() => {}}
+                        secureTextEntry={false}
+                        style={{marginTop:16}}
+                    />
+                    <ScrollView style={{marginTop:16, maxHeight: 200}} showsVerticalScrollIndicator={true} keyboardShouldPersistTaps="always">
+                        <TouchableOpacity activeOpacity={1}>                      
+                            <AddFriendBadge onPress={() => {}}/>
+                            <AddFriendBadge onPress={() => {}}/>
+                            <AddFriendBadge onPress={() => {}}/>
+                            <AddFriendBadge onPress={() => {}}/>
+                            <AddFriendBadge onPress={() => {}}/>
+                            <AddFriendBadge onPress={() => {}}/>
+                            <AddFriendBadge onPress={() => {}}/>
+                            <AddFriendBadge onPress={() => {}}/>
+                            <AddFriendBadge onPress={() => {}}/>
+                            <AddFriendBadge onPress={() => {}}/>
+                        </TouchableOpacity>
+                    </ScrollView>
+
+                    <Btn_Fill title={t("socialScreen.addFriend")} onPress={() => setAddFriendModalVisible(true)} style={styles.closeBtn}/>
+
+                </CustomModal>
+
             </View>
         </ScreenWrapper>
         </View>
     )
 }
-

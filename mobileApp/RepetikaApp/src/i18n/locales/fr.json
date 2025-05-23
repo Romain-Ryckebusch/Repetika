@@ -32,8 +32,12 @@
     "studiedCardsLabel": "Cartes étudiées",
     "xpLabel": "XP",
     "streakLabel": "Flammes",
-    "activesCardsLabel": "Cartes Actives"
+    "activesCardsLabel": "Cartes Actives",
+    "addFriend": "Ajouter un ami",
+    "addFriendLabel": "Rechercher par nom d'utilisateur",
+    "addFriendPlaceholder": "Entrer un nom d'utilisateur"
   },
+
   "crd_lesson":{
     "dueLabel" : "Cartes à revoir aujourd'hui :"
   },
