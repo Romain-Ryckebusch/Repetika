@@ -17,7 +17,23 @@ function getNewProfilePicture() {
     pickImageAsync()
         .then((uri) => {
             if (uri) { 
+                const formData = new FormData();
+                formData.append('photo', {
+                    uri,
+                    name: 'photo.jpg',
+                    type: 'image/jpeg',
+                });
+                
                 console.log("Image URI:", uri);
+                /*
+                const response = await fetch('https://ton-api/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                    body: formData,
+                });
+                */
             }
         });
 }
