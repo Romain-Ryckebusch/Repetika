@@ -13,6 +13,7 @@ const Input = ({ placeholder, value, onChangeText, secureTextEntry, style, maxLe
     <View style={[styles.inputContainer, style]}>
       <TextInput
         placeholder={placeholder}
+        placeholderTextColor={colors.grey}
         value={value}
         maxLength={maxLength}
         onChangeText={onChangeText}

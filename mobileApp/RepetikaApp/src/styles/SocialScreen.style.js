@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
         ...globalStyles.title,
         color: colors.white,
         fontSize: 24,
+        marginTop: 16,
     },
 
     modalSearchLabel:{
@@ -61,6 +62,8 @@ const styles = StyleSheet.create({
         color: colors.white,
         textAlign: 'left',
         width: '100%',
+        marginTop: 16,
+        marginBottom: 3,
     },
 
     closeBtn:{

@@ -197,7 +197,6 @@ export default function SocialScreen() {
                         placeholder={t("socialScreen.addFriendPlaceholder")}
                         onChangeText={() => {}}
                         secureTextEntry={false}
-                        style={{marginTop:16}}
                     />
                     <ScrollView style={{marginTop:16, maxHeight: 200}} showsVerticalScrollIndicator={true} keyboardShouldPersistTaps="always">
                         <TouchableOpacity activeOpacity={1}>                      
@@ -214,7 +213,7 @@ export default function SocialScreen() {
                         </TouchableOpacity>
                     </ScrollView>
 
-                    <Btn_Fill title={t("socialScreen.addFriend")} onPress={() => setAddFriendModalVisible(true)} style={styles.closeBtn}/>
+                    <Btn_Fill title={t("close")} onPress={() => setAddFriendModalVisible(false)} style={styles.closeBtn}/>
 
                 </CustomModal>
 

@@ -1,19 +1,36 @@
-import { Text, StyleSheet, View, Image} from 'react-native';
+import React, { useState } from 'react';
+import { Text, StyleSheet, View, Image, Pressable} from 'react-native';
 import colors from '../styles/colors';
 import { useGlobalFonts } from '../styles/globalFonts';
 
-
-const AddFriendBadge = ({ title, onPress, style, textStyle, selected }) => {
+const AddFriendBadge = ({ id, onPress, style, textStyle, selected }) => {
     const fontsLoaded = useGlobalFonts();
+    const [isAdded, setIsAdded] = useState(false);
+
     if (!fontsLoaded) return null;
 
+    function addFriendEvent() {
+        setIsAdded(true); // Change l’icône
+        console.log("add friend event");
+        if (onPress) onPress(id);
+    }
+
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, style]}>
 
             <Image style={styles.profilePicture} source={require("../assets/Profile.png")} />
             <Text style={styles.nameView}>BobyArkos275</Text>
-            <Image style={styles.addIcon} source={require("../assets/icons/add_friend.png")} />
-
+            <Pressable style={{flex:1}} onPress={() => addFriendEvent()} >
+                <Image 
+                    style={styles.addIcon} 
+                    source={
+                            isAdded
+                                ? require("../assets/icons/check.png")
+                                : require("../assets/icons/add_friend.png")
+                        }
+                />
+            </Pressable>
+            
         </View>
     );
 };
