@@ -55,20 +55,22 @@
       "param1": "Langue de l'application",
       "param2": "Afficher les textes avec une police adaptée aux dyslexiques",
       "param3": "Soutenir le développement en envoyant des statistiques anonymes"
-    }},
+    }
+  },
+
   "Register":{
     "title": "Bienvenue sur Repetika",
-    "subtitle":"Inscris toi pour commencer à apprendre",
+    "subtitle":"Inscris-toi pour commencer à apprendre",
     "section_info":{
-      "username": "Username",
-      "name": "Name",
-      "surname": "Surname",
+      "username": "Identifiant",
+      "name": "Prénom",
+      "surname": "Nom",
       "mail": "Mail",
-      "password": "New password",
-      "passwordConfirm": "Confirm new password",
+      "password": "Mot de passe",
+      "passwordConfirm": "Confirmer le mot de passe",
       "signUpBtn":"S'inscrire",
       "logInBtn":"Me connecter",
-      "text":"Déjà un compte?"
+      "text":"Vous avez déjà un compte ? Se connecter"
     }
   },
   "courseIndexScreen": {
@@ -91,6 +93,16 @@
     "register": "Pas encore de compte ? S'inscrire",
     "passError": "Mot de passe ou nom d'utilisateur incorrect.",
     "error": "Une erreur est survenue, veuillez réessayer."
+  },
+
+  "StatisticsScreen":{
+    "title":"Révisions",
+    "section_rev":"Statistiques",
+    "section_numbercards":"Nombre de cartes",
+    "section_stab":"Stabilité de la carte",
+    "cards_day":"{{cards_day}} cartes/jour",
+    "cards_week":"{{cards_week}} cartes/semaine",
+    "cards_month":"{{cards_month}} cartes/mois",
+    "cards_year":"{{cards_year}} cartes/an"
   }
- 
 }

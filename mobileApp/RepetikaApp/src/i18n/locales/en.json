@@ -85,5 +85,16 @@
     "register": "No account yet? Register now",
     "passError": "Incorrect password.",
     "error": "An error occurred, please try again."
+  },
+
+  "StatisticsScreen":{
+    "title":"Revisions",
+    "section_rev":"Statistics",
+    "section_numbercards":"Number of cards",
+    "section_stab":"Card stability",
+    "cards_day":"{{cards_day}} cards/day",
+    "cards_week":"{{cards_week}} cards/week",
+    "cards_month":"{{cards_month}} cards/month",
+    "cards_year":"{{cards_year}} cards/year"
   }
 }
