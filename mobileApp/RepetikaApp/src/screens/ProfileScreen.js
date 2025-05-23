@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import globalStyles from '../styles/global';
 import styles from '../styles/ProfileScreen.style';
@@ -8,8 +9,18 @@ import Btn_Fill from "../components/btn_fill";
 
 import TrophyItem from "../components/trophy_item";
 import ScreenWrapper from "../components/navigation/screenWrapper";
+import { pickImageAsync } from "../components/pickImage";
 
 import { useTranslation } from "react-i18next";
+
+function getNewProfilePicture() {
+    pickImageAsync()
+        .then((uri) => {
+            if (uri) { 
+                console.log("Image URI:", uri);
+            }
+        });
+}
 
 
 export default function ProfileScreen() {
@@ -68,7 +79,7 @@ export default function ProfileScreen() {
                         </View>
                     </View>
 
-                    <TouchableOpacity style={styles.editPictureBtn}>
+                    <TouchableOpacity style={styles.editPictureBtn} onPress={() => getNewProfilePicture()}>
                         <Text style={styles.editPictureBtnText}>{t("profileScreen.section_info_editBtn")}</Text>
                     </TouchableOpacity>
 
