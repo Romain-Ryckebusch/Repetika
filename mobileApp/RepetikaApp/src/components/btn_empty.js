@@ -4,7 +4,7 @@ import colors from '../styles/colors';
 import { useGlobalFonts } from '../styles/globalFonts';
 
 
-const Btn_Fill = ({ title, onPress, style, textStyle, disabled }) => {
+const Btn_Empty = ({ title, onPress, style, textStyle, disabled }) => {
   const fontsLoaded = useGlobalFonts();
   if (!fontsLoaded) return null;
 
@@ -43,4 +43,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Btn_Fill;
+export default Btn_Empty;
