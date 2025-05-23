@@ -6,25 +6,25 @@ import styles from '../../styles/game/reviewFrame.style';
 
 import ScreenWrapper from "../../components/navigation/screenWrapper";
 import {useTranslation} from "react-i18next";
-import {PlatformPressable} from "@react-navigation/elements";
+import {getLabel, PlatformPressable} from "@react-navigation/elements";
 import React, {useEffect, useState} from "react";
 import Btn_Fill from "../../components/btn_fill";
 import Input from "../../components/frm_input";
 import {navigate} from "../../navigation/NavigationService";
 import backIcon from "../../assets/icons/back.png";
 import * as Progress from 'react-native-progress';
-
+import ConfettiCannon from 'react-native-confetti-cannon';
 
 const deck=[
     {
         "id":1,
-        "front":"En quelle année à eu lieu la bataille d'Austerlitz?",
-        "back":"En 1805",
+        "front":"Quel président aime les pommes",
+        "back":"Jaques Chirac",
         "correct":false,
     },{
         "id":2,
-        "front":"Quel maréchal est le traitre parmis les traitres?",
-        "back":"Jean Baptiste Bernadotte",
+        "front":"Quelle est la capitale de la Slovénie",
+        "back":"Ljubljana",
         "correct":false,
     },{
         "id":3,
@@ -33,6 +33,7 @@ const deck=[
         "correct":false,
     }
 ]
+
 
 
 export default function ReviewFrame() {
@@ -46,12 +47,13 @@ export default function ReviewFrame() {
     const [correctCards,setCorrectCards] = useState(0);
     const [cardsToReviewRemaining,setCardsToReviewRemaining] = useState(totalCardsCount);
     const [cardToShow, setCardToShow] = useState(0);
-
+    const [shoot, setShoot] = useState(false);
 
     //Fin de la session
     useEffect(() => {
         if (cardsToReviewRemaining === 0) {
             setIsReviewSessionFinish(true);
+            setShoot(true);
         }
     }, [cardsToReviewRemaining]);
 
@@ -105,34 +107,39 @@ export default function ReviewFrame() {
 
 
     return (
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
-        >
-            {/*------------------Header------------------------*/}
-            <View style={styles.header.questionHeaderContainer}>
-                <View style={[styles.header.container,{justifyContent:"start"},{height: 60},{alignItems:"flex-end"}]}>
-                    <Pressable style={[styles.header.backArrowBtn]} onPress={() =>navigate("CourseIndex")}>
-                        <Image style={styles.header.backArrowImg} source={backIcon}></Image>
-                    </Pressable>
-                    <Text style={[styles.header.headerTitle,{paddingBottom:2}]}>Pays du monde</Text>
-                </View>
-                <Progress.Bar
-                    style={[globalStyles.card_progressbar,styles.header.progressBar]}
-                    height={16}
-                    color="#F1C40F"
-                    unfilledColor="#d9d9d9"
-                    borderWidth={0}
-                    progress={correctCards/totalCardsCount}
-                    width={300}
-                />
+        <>
+        {/*------------------Header------------------------*/}
+        <View style={styles.header.questionHeaderContainer}>
+            <View style={[styles.header.container,{justifyContent:"start"},{height: 60},{alignItems:"flex-end"}]}>
+                <Pressable style={[styles.header.backArrowBtn]} onPress={() =>navigate("CourseIndex")}>
+                    <Image style={styles.header.backArrowImg} source={backIcon}></Image>
+                </Pressable>
+                <Text style={[styles.header.headerTitle,{paddingBottom:2}]}>Pays du monde</Text>
             </View>
+            <Progress.Bar
+                style={[globalStyles.card_progressbar,styles.header.progressBar]}
+                height={16}
+                color="#F1C40F"
+                unfilledColor="#d9d9d9"
+                borderWidth={0}
+                progress={correctCards/totalCardsCount}
+                width={300}
+            />
+        </View>
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+        >
 
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+
+            <ScrollView
+                contentContainerStyle={{ flexGrow: 1 }}
+                style={{ flex: 1 }}
+                keyboardShouldPersistTaps="handled"
+            >
                 <View style={{flex:1}}>
-                    {
-                        (!isReviewSessionFinish)?(
+                    {(!isReviewSessionFinish)?(
                         (cardFace==="front")?(
                             <View style={styles.questionView}>
                                 <Text style={globalStyles.corpus}>{deck[cardToShow].front}</Text>
@@ -160,12 +167,24 @@ export default function ReviewFrame() {
                         ):(
                             <View style={styles.finishedSession}>
                                 <Text style={[globalStyles.title,styles.finishedSession.splashText]}>Session terminée!</Text>
+                                <Text style={[globalStyles.corpus,{textAlign: 'center'}]}>Tu as étudié <Text style={{color:colors.orange}}>{totalCardsCount}</Text> cartes!</Text>
+                                <Btn_Fill title={"Retour à l'acceuil"} style={{width:'80%',marginHorizontal:'10%'}} onPress={()=>{navigate("CourseIndex")}}/>
+                                {shoot && (
+                                    <ConfettiCannon
+                                        count={100}
+                                        origin={{ x: -10, y: 0 }}
+                                        explosionSpeed={500}
+                                        fadeOut={false}
+                                        fallSpeed={5000}
+                                    />
+                                )}
                             </View>
                         )
                     }
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>
+        </>
     )
 }
 
