@@ -91,12 +91,24 @@ Si l’utilisateur veux changer ses paramètres il va se rendre sur la page déd
 
 ### Social
 - L’utilisateur veux afficher la page Social. Cela ouvre « stats » qui demande à « profil » les amis de l’utilisateur actuel. « stats » transmet les statistiques réduites de l’utilisateur actuel, celles de ses amis ainsi que celles des autres utilisateurs.
-- L’utilisateur veux afficher la page Stats. Cela ouvre « stats » qui transmet les statistiques complètes de l’utilisateur actuel
-- L’utilisateur à révisé un certain nombre de carte ou quitte le mode révision, Cela ouvre « stats » qui  met à jour ses statistiques
+- L’utilisateur veut ajouter un ami, « profil » transmet la liste de tout les utilisateurs puis qui modifie le liste d’amis.
 
 **Services** | **Entrées** | **Sorties** | **Flux**
 ---|---|---|---
-Profils  |[1] ID utilisateur   | [1]liste d’amis|[]
-Stats|[1] ID utilisateur,[2]liste ID amis | [1] stats réduites utilisateur,[2] liste stats réduites amis,[3] liste stats réduites utilisateurs hors amis|à compléter
-Stats|[1] ID utilisateur| [1] stats utilisateur|à compléter
-Stats||à compléter||à compléter||à compléter
+Main | //////// | //////// | [1] Appel à Stats pour affichage Social ; [2] Appel à Profils pour afficher la liste des utilisateurs ; [3] ajouter (ou supprimer) un ami
+Profils| ID utilisateur | liste ID amis, liste utilisateurs | [2] Appel à "profil" pour obtenir la liste d'amis d'un utilisateur et la liste des autres utilisateurs
+Profils| ID utilisateur, ID utilisateur cible, Action à affectuer|  //////// | [3] Appel à "profil" pour ajouter (ou supprimer) un ami
+Stats|[1] ID utilisateur | [1] stats réduites utilisateur,[2] liste stats réduites amis,[3] liste stats réduites utilisateurs hors amis|appel profil pour obtenir la liste d'amis d'un utilisateur et la liste des autres utilisateurs puis appel stats pour obtenir les statistiques reduites correspondantes
+
+### Statistiques
+- L’utilisateur veux afficher la page Stats. Cela ouvre « stats » qui transmet les statistiques complètes de l’utilisateur actuel 
+- L’utilisateur à révisé un certain nombre de carte ou quitte le mode révision, Cela ouvre « stats » qui met à jour ses statistiques suite à une demande d’un autre micro-service 
+
+
+**Services** | **Entrées** | **Sorties** | **Flux**
+---|---|---|---
+Main | //////// | //////// |[1] Appel à Stats pour obtenir les statistiques complètes, [2] Appel à Stats pour obtenir les statistiques reduites de plusieurs utilisateurs, [3] Mise à jour des statistiques
+Stats |ID utilisateur|statistiques complètes|[1] Appel à Stats pour obtenir les statistiques complètes
+Stats |liste ID utilisateurs|liste statistiques réduites|[2] Appel à Stats pour obtenir les statistiques réduites
+Stats |ID utilisateur, stat à modifier, valeur à modifier| ////////| [3] Mise à jour des statistiques
+
