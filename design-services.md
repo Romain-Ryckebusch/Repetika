@@ -34,10 +34,13 @@ L'utilisateur veut lancer une séance de révision à propos des cartes d'un dec
 Séance d'apprentissage | [1] ID utilisateur + Nom Deck [+ chapitres] ; [2] Liste résultats | [1] Liste cartes ; [2] //////// | [1] Appel à *Decks* pour obtenir la liste des cartes correspondant aux critères (deck et chapitres ciblés si applicable); Appel à *Planification* à partir de la liste des ID des cartes concernées pour ne garder que celles à apprendre aujourd'hui ; Envoi de cette liste de cartes à *Main* ; [2] Réception des résultats de la révision de main (couples {id: réponse}) ; Envoi de ces résultats à *Planification*
 Planification | [1] Liste ID cartes ; [2] Liste résultats | [1] Liste ID cartes ; [2] //////// | [1] Intersection entre les ID des cartes demandées et les ID des cartes à réviser aujourd'hui pour obtenir les ID des cartes demandées à réviser aujourd'hui ; Envoi de cette liste à "Séance d'apprentissage" [2] Réception des résultats et mise à jour des informations de planification (notamment la date de prochaine review) 
 Decks | [1] Liste ID cartes | [1] Liste cartes| [1] Envoi de la liste des cartes (complètes, json entier) à *Séance d'apprentissage* en fonction des ID de cartes demandés
+
+Notes : Les résultats peuvent avoir 3 valeurs : 0 pour "réussite directe" ; 1 pour "échec sans réussite" ; 2 pour "échec puis réussite". Le 1 étant notamment utilisé si l'utilisateur arrête de réviser avant la fin de la séance, à terme toutes les cartes du jour devraient finir par une réussite (donc 0 ou 2)
+
 ---
 
 ### Création cartes
-L'utilisateur veut ajouter des cartes à un deck. Il doit donc sélectionner le cours et le chapitre concerné. Il aura alors l'occasion d'entrer le contenu des champs "Front" et "Back" (le fait d'ajouter des pièces jointes et de créer des modèles customs viendra après, pour le moment on fait simple) et de créer ainsi une liste de cartes. Cette liste sera ensuite envoyée à "Decks" pour le stockage, et à "Quiz" pour conditionner leur révision à la réponse d'un quiz de départ (correspondant à la phase "learning" d'Anki). Elles ne seront pas directement ajoutées à "Planification", ce sera géré par la fonction "quiz" (voir section "Quiz de validation" dans ce document (W.I.P))
+L'utilisateur veut ajouter des cartes à un deck. Il doit donc sélectionner le cours et le chapitre concerné. Il aura alors l'occasion d'entrer le contenu des champs "Front" et "Back" (le fait d'ajouter des pièces jointes et de créer des modèles customs viendra après, pour le moment on fait simple) et de créer ainsi une liste de cartes. Cette liste sera ensuite envoyée à "Decks" pour le stockage, et à "Quiz" pour conditionner leur révision à la réponse d'un quiz de départ (correspondant à la phase "learning" d'Anki). Elles ne seront pas directement ajoutées à "Planification", ce sera géré par la fonction "quiz" (voir section [Quiz de validation](#quiz-de-validation) dans ce document)
 *A ajouter par la suite* : Création de modèles et champs customs ; Possibilité de voir les chapitres concernés en parallèle de la création de carte
 
 [1] Obtention de la liste des decks existants | [2] Envoi des cartes créées
@@ -58,6 +61,28 @@ L'utilisateur veut voir une première fois les cartes correspondant à un chapit
 Planification | [2] Liste ID cartes | [2] //////// | [2] Effectue la première planification des cartes données, ce qui les ajoute à la BDD interne
 Cours | [1] //////// | [1] Liste (Cours & Chapitres) | [1] Envoi de la liste des chapitres considérés comme terminés (lus au moins 1 fois)
 Quiz | [1] Liste (Cours & Chapitres) ; [2] Liste ID cartes | [1] Liste (Cours & Chapitres) ; [2] //////// | [1] De la liste de chapitres donnée, ne renvoie que ceux présents au moins 1 fois dans la BDD interne (ce qui implique qu'il reste au moins 1 carte non-amorcée). ; [2] Supprime de la BDD les cartes de la liste
+
+---
+
+### Lecture cours
+L'utilisateur veut pouvoir consulter un de ses cours (qu'il possède et a débloqué). *Main* demande donc à *Cours* la liste des cours auquel l'utilisateur à accès, ainsi que le nombre de chapitres débloqués et existants pour chacun de ses cours, puis affiche ces informations à l'utilisateur (cours + nombre de chapitres débloqués/nombre de chapitres total). L'utilisateur sélectionne ensuite le cours qu'il souhaite voir, "Cours" détermine le nombre de chapitres que cet utillisateur a débloqués, combine les pdfs correspondants à ces chapitres, et envoie le pdf "combiné" à l'utilisateur pour lecture. 
+*A noter* : En dessous du cours se trouvera un bouton pour réaliser le "quiz de validation" permettant de débloquer le prochain chapitre, sa fonction est détaillée dans la section [Quiz de validation](#quiz-de-validation)
+
+[1] Obtenir la liste des chapitres lisibles + leur progression (chapitres débloqués/total) | [2] Obtenir le pdf de tous les chapitres débloqués
+ 
+**Services** | **Entrées** | **Sorties** | **Flux**
+---|---|---|---
+*Main* | //////// | //////// | [1] Appel à *Cours* pour avoir la liste des chapitres finis ; Appel à "Quiz" à partir de cette liste pour savoir lesquels y sont présents ; Envoi de cette information à l'utilisateur ;
+
+
+
+
+
+
+
+
+
+
 ---
 
 ### Connexion
