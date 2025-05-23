@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import globalStyles from '../styles/global';
 import styles from '../styles/ProfileScreen.style';
 import * as Progress from 'react-native-progress';

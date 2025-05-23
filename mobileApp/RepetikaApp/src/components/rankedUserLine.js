@@ -1,17 +1,17 @@
 import React from 'react';
-import {TouchableOpacity, Text, StyleSheet, View, Image} from 'react-native';
+import {TouchableOpacity, Text, StyleSheet, View, Image, Pressable} from 'react-native';
 import colors from '../styles/colors';
 import { useGlobalFonts } from '../styles/globalFonts';
 import globalStyles from "../styles/global";
 import * as Progress from 'react-native-progress';
 
 
-const RankedUserLine = ({ rank,picture,name,streaks,progress,level,studiedCards, itsme }) => {
+const RankedUserLine = ({ rank,picture,name,streaks,progress,level,studiedCards, itsme, onPress }) => {
     const fontsLoaded = useGlobalFonts();
     if (!fontsLoaded) return null;
 
     return (
-        <View style={[styles.container, itsme?styles.myCard:null]}>
+        <Pressable style={[styles.container, itsme?styles.myCard:null]} onPress={onPress}>
             <Text style={styles.rankText}>{rank}</Text>
             <Image style={styles.profilePicture} source={picture} />
             <View style={styles.nameView}>
@@ -39,7 +39,7 @@ const RankedUserLine = ({ rank,picture,name,streaks,progress,level,studiedCards,
             <Image source={require("../assets/icons/cards.png")} style={styles.cardIcon} />
             <Text style={styles.cardText}>{studiedCards}</Text>
 
-        </View>
+        </Pressable>
     );
 };
 

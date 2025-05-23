@@ -10,6 +10,7 @@ import {PlatformPressable} from "@react-navigation/elements";
 import {useState} from "react";
 import Badge from "../components/badge";
 import RankedUserLine from "../components/rankedUserLine";
+import {navigate} from "../navigation/NavigationService";
 
 import CustomModal from "../components/customModal";
 import Btn_Fill from "../components/btn_fill"; 
@@ -24,6 +25,7 @@ export default function SocialScreen() {
     const [filterSelected,setFilterSelected] = useState("study");
     const [addFriendModalVisible, setAddFriendModalVisible] = useState(false);
 
+    const data = [1, 2, 3, 4, 5];
     const UserId = 3
     const GlobalUsers = [
         {
@@ -179,7 +181,17 @@ export default function SocialScreen() {
                     <View id={"Classement"} style={styles.classementView}>
                         {
                             sortUsersByKey(scopeToUsersMap[scopeSelected],filterSelected,true).map((user,index) => (
-                                <RankedUserLine key={user.id} progress={user.progress} level={user.level} rank={index+1} name={user.name} picture={user.profilePicture} streaks={user.streak} studiedCards={user.studiedCardsToday} itsme={user.id===UserId}/>
+                                <RankedUserLine 
+                                key={user.id} 
+                                progress={user.progress} 
+                                level={user.level} rank={index+1} 
+                                name={user.name} 
+                                picture={user.profilePicture} 
+                                streaks={user.streak} 
+                                studiedCards={user.studiedCardsToday} 
+                                itsme={user.id===UserId} 
+                                onPress={() => navigate("userProfileScreen", { userId: user.id })}
+                                />
                                 ))
                         }
                         <Btn_Fill title={t("socialScreen.addFriend")} onPress={() => setAddFriendModalVisible(true)} style={{marginTop:16}}/>
@@ -200,17 +212,10 @@ export default function SocialScreen() {
                     />
                     <ScrollView style={{marginTop:16, maxHeight: 200}} showsVerticalScrollIndicator={true} keyboardShouldPersistTaps="always">
                         <TouchableOpacity activeOpacity={1}>                      
-                            <AddFriendBadge onPress={() => {}}/>
-                            <AddFriendBadge onPress={() => {}}/>
-                            <AddFriendBadge onPress={() => {}}/>
-                            <AddFriendBadge onPress={() => {}}/>
-                            <AddFriendBadge onPress={() => {}}/>
-                            <AddFriendBadge onPress={() => {}}/>
-                            <AddFriendBadge onPress={() => {}}/>
-                            <AddFriendBadge onPress={() => {}}/>
-                            <AddFriendBadge onPress={() => {}}/>
-                            <AddFriendBadge onPress={() => {}}/>
-                        </TouchableOpacity>
+                             {data.map((item, index) => (
+                                <AddFriendBadge key={index} id={index} username="Georgessssssssssss" user_picture={require("../assets/Profile.png")} onPress={() => {}}/>
+                            ))}
+                            </TouchableOpacity>
                     </ScrollView>
 
                     <Btn_Fill title={t("close")} onPress={() => setAddFriendModalVisible(false)} style={styles.closeBtn}/>

@@ -3,23 +3,23 @@ import { Text, StyleSheet, View, Image, Pressable} from 'react-native';
 import colors from '../styles/colors';
 import { useGlobalFonts } from '../styles/globalFonts';
 
-const AddFriendBadge = ({ id, onPress, style, textStyle, selected }) => {
+const AddFriendBadge = ({ id, username, user_picture, onPress, style, textStyle, selected }) => {
     const fontsLoaded = useGlobalFonts();
     const [isAdded, setIsAdded] = useState(false);
 
     if (!fontsLoaded) return null;
 
     function addFriendEvent() {
-        setIsAdded(true); // Change l’icône
-        console.log("add friend event");
+        setIsAdded(true);
+        console.log("add friend : ID = " + id);
         if (onPress) onPress(id);
     }
 
     return (
         <View style={[styles.container, style]}>
 
-            <Image style={styles.profilePicture} source={require("../assets/Profile.png")} />
-            <Text style={styles.nameView}>BobyArkos275</Text>
+            <Image style={styles.profilePicture} source={user_picture} />
+            <Text style={styles.nameView}>{username}</Text>
             <Pressable style={{flex:1}} onPress={() => addFriendEvent()} >
                 <Image 
                     style={styles.addIcon} 

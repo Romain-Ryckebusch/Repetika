@@ -1,5 +1,6 @@
 {
   "close": "Close",
+
   "bottomNavbar": {
     "home": "Courses",
     "social": "Social",
@@ -22,6 +23,14 @@
       "editBtn":"Save"
       }
   },
+
+  "userProfileScreen": {
+    "section_trophies_title": "Trophies",
+    "section_info_title" : "General information",
+    "section_info_accountDate" : "Account created on {{date}}",
+    "section_removeFriend" : "Remove this friend"
+  },
+
   "homeScreen": {
     "splashMessage": "What are we learning today, {{prenom}}?"
   },

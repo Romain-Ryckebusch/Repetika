@@ -1,5 +1,6 @@
 {
   "close": "Fermer",
+
   "bottomNavbar": {
     "home": "Cours",
     "social": "Social",
@@ -22,6 +23,14 @@
       "editBtn":"Enregistrer"
       }
   },
+  
+  "userProfileScreen": {
+    "section_trophies_title": "Trophées",
+    "section_info_title" : "Informations générales",
+    "section_info_accountDate" : "Compté créé le {{date}}",
+    "section_removeFriend" : "Supprimer cet ami"
+  },
+
   "homeScreen": {
     "splashMessage": "Qu'est ce qu'on apprend aujourd'hui, {{prenom}} ?"
   },

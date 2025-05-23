@@ -5,6 +5,8 @@ import AppTabs from './AppTabs';
 import Header from '../components/navigation/Header';
 import SettingsScreen from '../screens/SettingsScreen'
 import GameScreens from '../navigation/gameScreens';
+import UserProfileScreen from '../screens/UserProfileScreen';
+
 const Stack = createNativeStackNavigator();
 
 const userProfilePicture = require('../assets/Profile.png'); // si besoin
@@ -40,6 +42,13 @@ export default function RootNavigator() {
                         component={AppTabs}
                         options={{ headerShown: true }} // header affiché sur AppTabs
                     />
+
+                    <Stack.Screen
+                        name="userProfileScreen"
+                        component={UserProfileScreen}
+                        options={{headerShown:true}}
+                    />
+
                     <Stack.Screen
                         name="settingsScreen"
                         component={SettingsScreen}
