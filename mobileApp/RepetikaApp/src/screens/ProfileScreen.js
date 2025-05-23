@@ -13,6 +13,12 @@ import { pickImageAsync } from "../components/pickImage";
 
 import { useTranslation } from "react-i18next";
 
+/**
+ * getNewProfilePicture - function to get a new profile picture.
+ * It uses the pickImageAsync function to open the image picker and get the URI of the selected image.
+ * Then, it creates a FormData object to send the image to the server.
+ * The image is appended to the FormData object with the key 'photo'.
+ */
 function getNewProfilePicture() {
     pickImageAsync()
         .then((uri) => {
@@ -25,7 +31,7 @@ function getNewProfilePicture() {
                 });
                 
                 console.log("Image URI:", uri);
-                /*
+                /* Here is an example of how to send the image to a server using fetch:
                 const response = await fetch('https://ton-api/upload', {
                     method: 'POST',
                     headers: {
@@ -39,6 +45,9 @@ function getNewProfilePicture() {
 }
 
 
+/**
+ * ProfileScreen - login screen with user fields, password, and options for forgotten password and registration.
+ */
 export default function ProfileScreen() {
     const { t } = useTranslation();
     const streakIcon = require('../assets/icons/streakIcon.png');
@@ -107,41 +116,47 @@ export default function ProfileScreen() {
             <View style={styles.editableInfos_Form}>
                 <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.username")}</Text>
                 <Input
-                    placeholder={"K"}
+                    placeholder={"DEV à définir en fonction des infos de l'utilisateur"}
                     onChangeText={() => {}}
                     style={styles.input}>
                 </Input>
 
                 <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.surname")}</Text>
                 <Input
-                    placeholder={"name"}
+                    placeholder={"DEV à définir en fonction des infos de l'utilisateur"}
                     onChangeText={() => {}}
                     style={styles.input}>
                 </Input>
 
                 <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.mail")}</Text>
                 <Input
-                    placeholder={"name"}
+                    placeholder={"DEV à définir en fonction des infos de l'utilisateur"}
                     onChangeText={() => {}}
                     style={styles.input}>
                 </Input>
 
                 <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.password")}</Text>
                 <Input
-                    placeholder={"name"}
+                    placeholder={t("profileScreen.section_info.password")}
                     onChangeText={() => {}}
-                    style={styles.input}>
-                </Input>
+                    style={styles.input}
+                    secureTextEntry={true}
+                />
 
                 <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.passwordConfirm")}</Text>
                 <Input
-                    placeholder={"name"}
+                    placeholder={t("profileScreen.section_info.password")}
                     onChangeText={() => {}}
-                    style={styles.input}>
-                </Input>
+                    secureTextEntry={true}
+                />
             </View>
 
-            <Btn_Fill title={t("profileScreen.section_info.editBtn")} onPress={() => console.log('cliqué')} style={styles.saveBtn}/>
+            <Btn_Fill 
+                title={t("profileScreen.section_info.editBtn")} 
+                onPress={() => {
+                    console.log('cliqué')
+                }} 
+                style={styles.saveBtn}/>
 
         </ScreenWrapper>
     )

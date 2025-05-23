@@ -1,22 +1,22 @@
-import { View, Text, TouchableOpacity, ScrollView} from "react-native";
-
+import { PlatformPressable } from "@react-navigation/elements";
+import ScreenWrapper from "../components/navigation/screenWrapper";
+import colors from "../styles/colors";
+import { useState, useEffect } from "react";
 import globalStyles from '../styles/global';
 import Decoration from "../components/decoration";
 import styles from '../styles/SocialScreen.style';
-
-import ScreenWrapper from "../components/navigation/screenWrapper";
-import {useTranslation} from "react-i18next";
-import {PlatformPressable} from "@react-navigation/elements";
-import {useState} from "react";
-import Badge from "../components/badge";
-import RankedUserLine from "../components/rankedUserLine";
-import {navigate} from "../navigation/NavigationService";
-
+import { navigate } from "../navigation/NavigationService";
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import CustomModal from "../components/customModal";
+import { useTranslation } from "react-i18next";
 import Btn_Fill from "../components/btn_fill"; 
 import Input from "../components/frm_input";
+import Badge from "../components/badge";
+import RankedUserLine from "../components/rankedUserLine";
 import AddFriendBadge from "../components/addFriendBadge";
 
+// These imports are a mess, but we wanted it to look like a cathedral.
+// It's a success, when you tilt your head.
 
 export default function SocialScreen() {
     const {t}=useTranslation();
@@ -152,6 +152,30 @@ export default function SocialScreen() {
         });
     }
 
+    const [search, setSearch] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [results, setResults] = useState([]);
+
+    useEffect(() => {
+        if (search.length <= 3) return; // Ignorer si trop court
+
+        setIsLoading(true); // Afficher loader
+
+        const timeout = setTimeout(() => {
+            // simulate fetch
+            searchForUser(search); // Appelle ta fonction ici
+            setIsLoading(false); // Arrêter loader après résultat
+        }, 1000); // 1 seconde de délai
+
+        return () => clearTimeout(timeout); // Annule le timer si l’utilisateur tape encore
+    }, [search]);
+
+    function searchForUser(value) {
+        // Effectuer la recherche ici
+        console.log("Recherche pour l'utilisateur : ", value);
+    }
+
+
     return (
         <View>
         
@@ -207,15 +231,27 @@ export default function SocialScreen() {
                     <Text style={styles.modalSearchLabel}>{t("socialScreen.addFriendLabel")}</Text>
                     <Input
                         placeholder={t("socialScreen.addFriendPlaceholder")}
-                        onChangeText={() => {}}
+                        onChangeText={(text) => {
+                            setSearch(text);
+                        }}
                         secureTextEntry={false}
                     />
                     <ScrollView style={{marginTop:16, maxHeight: 200}} showsVerticalScrollIndicator={true} keyboardShouldPersistTaps="always">
-                        <TouchableOpacity activeOpacity={1}>                      
-                             {data.map((item, index) => (
-                                <AddFriendBadge key={index} id={index} username="Georgessssssssssss" user_picture={require("../assets/Profile.png")} onPress={() => {}}/>
-                            ))}
-                            </TouchableOpacity>
+                        <TouchableOpacity activeOpacity={1}>    
+                            {isLoading ? (
+                                <ActivityIndicator size="large" color={colors.white} />
+                            ) : (
+                                data.map((item, index) => (
+                                <AddFriendBadge
+                                    key={index}
+                                    id={index}
+                                    username="cannelle.dubois99"
+                                    user_picture={require("../assets/Profile.png")}
+                                    onPress={() => {}}
+                                />
+                                ))
+                            )}
+                        </TouchableOpacity>
                     </ScrollView>
 
                     <Btn_Fill title={t("close")} onPress={() => setAddFriendModalVisible(false)} style={styles.closeBtn}/>

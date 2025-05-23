@@ -19,7 +19,9 @@ const AddFriendBadge = ({ id, username, user_picture, onPress, style, textStyle,
         <View style={[styles.container, style]}>
 
             <Image style={styles.profilePicture} source={user_picture} />
-            <Text style={styles.nameView}>{username}</Text>
+            <View style={styles.nameView}>
+            <Text style={styles.nameText}>{username}</Text>
+            </View>
             <Pressable style={{flex:1}} onPress={() => addFriendEvent()} >
                 <Image 
                     style={styles.addIcon} 
@@ -53,10 +55,16 @@ const styles = StyleSheet.create({
         marginRight:8,
     },
     nameView:{
-        fontSize: 16,
+        overflow:"scroll",
+        maxWidth: '60%',
+    },
+    
+    nameText:{
+        fontSize: 12,
         color:colors.white,
         fontFamily: 'KronaOne_Regular',
     },
+
     addIcon:{
         width:24,
         height:24,
