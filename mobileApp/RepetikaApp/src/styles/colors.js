@@ -20,6 +20,9 @@ export default {
   grey: '#a7a5a5',
   lightGrey: '#D9D9D9',
 
+  green:"#1CCA45",
+  wrongRed:"#CA1C1F",
+
   dark_background: '#000000',
 
   shelf: '#563E2F',

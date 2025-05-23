@@ -27,6 +27,7 @@ export default function RootNavigator() {
                 ),
                 headerStyle: { height: 120 },
             }}
+
             id="navigator"
         >
             {showAuth ? (
@@ -58,6 +59,7 @@ export default function RootNavigator() {
                     <Stack.Screen
                         name="gameScreens"
                         component={GameScreens}
+                        options={{headerShown:true}}
                     />
 
                 </>
