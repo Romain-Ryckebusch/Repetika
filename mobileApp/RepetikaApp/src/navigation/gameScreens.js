@@ -7,8 +7,10 @@ import { useTranslation } from 'react-i18next';
 import {useNavigation} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import CourseIndex from "../screens/gameScreens/courseIndex";
-import ReviewFrame from "../styles/game/reviewFrame";
+import ReviewFrame from "../screens/gameScreens/reviewFrame";
 import React from "react";
+import Header from "../components/navigation/Header";
+import userProfilePicture from "../assets/Profile.png";
 
 
 
@@ -24,9 +26,10 @@ const GameScreens=()=> {
     return (
         <Stack.Navigator
             id={"appTabsNavigator"}
+
         >
-            <Stack.Screen name="CourseIndex" options={{headerShown:false}} component={CourseIndex}/>
-            <Stack.Screen name="ReviewFrame" options={{headerShown:false}} component={ReviewFrame}/>
+            <Stack.Screen name="CourseIndex"  options={{headerShown:false}} component={CourseIndex}/>
+            <Stack.Screen name="ReviewFrame"  options={{headerShown:false}} component={ReviewFrame}/>
         </Stack.Navigator>
     );
 }

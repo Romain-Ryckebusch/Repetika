@@ -7,8 +7,6 @@ import { navigate, getCurrentRoute } from '../../navigation/NavigationService';
 import settingsIcon from "../../assets/icons/settings.png";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import backIcon from "../../assets/icons/back.png";
-import { gameNavigationRef } from "../../navigation/gameScreens"
-import { currentGameScreen } from '../../navigation/gameScreens';
 
 
 
@@ -67,6 +65,22 @@ const DefaultHeader = ({ progress, lvl, streakDays, profilePicture }) => {
             </View>
         );
     }
+    if(routeName==="ReviewFrame"){
+        return (
+            <></>
+        )
+    }
+    if(routeName==="CourseIndex"){
+        return (
+            <View style={[styles.container,{justifyContent:"start"}]}>
+                <Pressable style={styles.backArrowBtn} onPress={() =>navigate("MainApp")}>
+                    <Image style={styles.backArrowImg} source={backIcon}></Image>
+                </Pressable>
+                <Text style={styles.headerTitle}>Pays du monde</Text>
+
+            </View>
+        );
+    }
     else{
         return (
             <View style={[styles.container,{justifyContent:"start"}]}>
@@ -74,6 +88,7 @@ const DefaultHeader = ({ progress, lvl, streakDays, profilePicture }) => {
                     <Image style={styles.backArrowImg} source={backIcon}></Image>
                 </Pressable>
                 <Text style={styles.headerTitle}>Pays du monde</Text>
+
             </View>
         );
     }

@@ -18,7 +18,7 @@ export default StyleSheet.create({
             alignItems: 'center',
         },
         progressBar:{
-
+            alignSelf:"center",
         },
         circle: {
             width: 20,
@@ -61,6 +61,9 @@ export default StyleSheet.create({
         backArrowImg:{
             width: 24,
             height: 24
+        },
+        questionHeaderContainer:{
+            width: '100%',
         }
 
 
