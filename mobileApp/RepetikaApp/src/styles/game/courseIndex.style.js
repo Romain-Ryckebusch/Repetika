@@ -59,6 +59,45 @@ const styles = StyleSheet.create({
                 textAlign:'center',
             }
         }
+    },
+    coursePage:{
+        view:{
+            height:'100%',
+            flexDirection:'row',
+            justifyContent:'center',
+
+            sideColumn:{
+                width:'30%',
+
+            },
+            centerColumn:{
+                position:'relative',
+                width:'30%',
+                flexDirection:'column',
+                justifyContent:'space-around',
+                alignItems:'center',
+                zIndex:1,
+
+                line: {
+                    position:'relative',
+                    height: 2,           // épaisseur du trait
+                    borderBottomWidth: 2,
+                    borderBottomColor: 'black',
+                    borderStyle: 'dotted',  // ou 'dashed
+                }
+            }
+        },
+        chapterView: {
+            backgroundColor:colors.primary,
+            alignItems: 'center',
+            justifyContent:'center',
+            position:'relative',
+            zIndex:10,
+            title:{
+                color:colors.black,
+                textAlign:'center',
+            }
+        }
     }
 
 

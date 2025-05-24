@@ -9,6 +9,7 @@ import {useTranslation} from "react-i18next";
 import {PlatformPressable} from "@react-navigation/elements";
 import {useState} from "react";
 import Review from "./indexPages/review";
+import Course from "./indexPages/course";
 
 
 
@@ -40,7 +41,7 @@ export default function CourseIndex() {
                     </View>
                     {(scopeSelected==="Review")?(
                         <Review cardsNumber={10}/>
-                        ):(<Text>Cours</Text>)
+                        ):(<Course/>)
                     }
                 </ScrollView>
             </View>
