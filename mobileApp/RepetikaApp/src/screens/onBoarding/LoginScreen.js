@@ -1,15 +1,16 @@
 import { View, Text, Pressable } from "react-native";
-import globalStyles from '../styles/global';
-import styles from '../styles/LoginScreen.style';
+import globalStyles from '../../styles/global';
+import styles from '../../styles/LoginScreen.style';
 
-import Decoration from "../components/decoration";
+import Decoration from "../../components/decoration";
 
-import Input from "../components/frm_input";
-import Btn_Fill from "../components/btn_fill";
+import Input from "../../components/frm_input";
+import Btn_Fill from "../../components/btn_fill";
 
-import ScreenWrapper from "../components/navigation/screenWrapper";
+import ScreenWrapper from "../../components/navigation/screenWrapper";
 
 import { useTranslation } from "react-i18next";
+import {navigate} from "../../navigation/NavigationService";
 
 
 export default function LoginScreen() {
@@ -50,7 +51,7 @@ export default function LoginScreen() {
                 </Pressable>
 
                 <Pressable onPress={() => console.log("Register")}>
-                    <Text style={styles.ask_label}>{t('LoginScreen.register')}</Text>
+                    <Text onPress={()=>navigate("RegisterScreen")} style={styles.ask_label}>{t('LoginScreen.register')}</Text>
                 </Pressable>
 
             </View>

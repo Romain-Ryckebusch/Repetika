@@ -1,16 +1,17 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-// import RegisterScreen from '../screens/Register';
-import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/onBoarding/Register';
+import LoginScreen from '../screens/onBoarding/LoginScreen';
 
 
 const Stack = createNativeStackNavigator();
-// <Stack.Screen name="Register" component={RegisterScreen} />
 
 export default function AuthTabs() {
+    const isFirstConnexion = true;
     return (
-        <Stack.Navigator>
-
+        <Stack.Navigator id="onboardingNavigator" initialRouteName={isFirstConnexion ? "RegisterScreen" : "Login"}>
+            <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
             <Stack.Screen name="Login" component={LoginScreen} />
         </Stack.Navigator>
+
     );
 }

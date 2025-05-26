@@ -1,13 +1,13 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
-import globalStyles from '../styles/global';
-//import styles from '../styles/ProfileScreen.style';
-import styles from '../styles/Register.style';
+import globalStyles from '../../styles/global';
+
+import styles from '../../styles/Register.style';
 
 
-import ScreenWrapper from "../components/navigation/screenWrapper";
+import ScreenWrapper from "../../components/navigation/screenWrapper";
 
-import Input from "../components/frm_input";
-import Btn_Fill from "../components/btn_fill";
+import Input from "../../components/frm_input";
+import Btn_Fill from "../../components/btn_fill";
 
 /*
 export default function RegisterScreen() {
@@ -21,12 +21,13 @@ export default function RegisterScreen() {
 }
 */
 import { useTranslation } from "react-i18next";
+import { useNavigation } from '@react-navigation/native';
 
 
 
 export default function RegisterScreen() {
     const { t } = useTranslation();
-    const streakIcon = require('../assets/streakIcon.png');
+    const navigation = useNavigation();
 
     return (
         <ScreenWrapper scrollable style={styles.container}>
@@ -75,7 +76,7 @@ export default function RegisterScreen() {
             <View style={styles.login}>
             
             <Text style={styles.text}>{t("Register.section_info.text")}             
-                <Text style={styles.link} onPress={() => console.log('cliqué')} >{t("Register.section_info.logInBtn")} </Text>
+                <Text style={styles.link} onPress={() =>navigation.navigate("Login")} >{t("Register.section_info.logInBtn")} </Text>
             </Text>
 
             </View>
