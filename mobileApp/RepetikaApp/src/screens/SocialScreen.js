@@ -157,12 +157,14 @@ export default function SocialScreen() {
     const [results, setResults] = useState([]);
 
     useEffect(() => {
-        if (search.length <= 3) return; // Ignorer si trop court
-
+        if (search.length <= 3){
+            setResults([]);
+            setIsLoading(false); // Arrêter le loader
+            return; // Ignorer si trop court
+        }
         setIsLoading(true); // Afficher loader
 
         const timeout = setTimeout(() => {
-            // simulate fetch
             searchForUser(search); // Appelle ta fonction ici
             setIsLoading(false); // Arrêter loader après résultat
         }, 1000); // 1 seconde de délai

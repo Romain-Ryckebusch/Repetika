@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   },
   shelf:{
     backgroundColor: colors.shelf,
-    height: '8%',
+    height: '20',
     width: '95%',
     marginTop: -35,
     zIndex: -1,

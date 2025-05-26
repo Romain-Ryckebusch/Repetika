@@ -10,8 +10,11 @@ import TrophyItem from "../components/trophy_item";
 import ScreenWrapper from "../components/navigation/screenWrapper";
 import * as Progress from 'react-native-progress';
 
-
 import styles from "../styles/UserProfileScreen.style";
+
+function removeFriend() {
+    console.log("remove friend");
+};
 
 export default function UserProfileScreen(props) {
     const {t}=useTranslation();
@@ -126,7 +129,7 @@ export default function UserProfileScreen(props) {
             <Btn_Fill
                 title={t("userProfileScreen.section_removeFriend")}
                 onPress={() => {
-                    console.log("remove friend");
+                    removeFriend();
                 }}
                 style={styles.editPictureBtn}
             />
