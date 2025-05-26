@@ -25,6 +25,21 @@ export default function UserProfileScreen(props) {
     const UserId = 3; // TODO : get userId from context
     const userId = route.params?.userId; // gets the userId of this page from the route params
 
+
+    const accountData={
+        "userName":"aymericD59",
+        "firstName":"Aymeric",
+        "name":"Droulers",
+        "mail":"aymeric.droulers@gmail.com",
+        "profilePicture":require('../assets/Profile.png'),
+        "accountCreationDate":"19/02/2025",
+        "streaks":10,
+        "progress":0.85,
+        "level":43,
+
+    }
+
+
     useEffect(() => {
         if (!userId) {
             navigation.goBack();
@@ -71,7 +86,7 @@ export default function UserProfileScreen(props) {
                 <Text style={globalStyles.corpus}>{"TEMP_DEV /// userId : " + userId}</Text>
             </View>
     
-            <Text style={globalStyles.title}>{userName}</Text>
+            <Text style={globalStyles.title}>{accountData.userName}</Text>
 
              <Text style={globalStyles.subtitle}>{t("userProfileScreen.section_info_title")}</Text>
             <View style={styles.generalInfo_container}>
@@ -79,11 +94,11 @@ export default function UserProfileScreen(props) {
                 <Image source={require('../assets/Profile.png')} style={styles.profilePicture} />
 
                 <View style={styles.generalInfo_Right}>
-                    <Text style={styles.generalInfo_name}>Louis</Text>
-                    <Text style={styles.generalInfo_accountCreation}>{t("userProfileScreen.section_info_accountDate",{date:"19/02/2025"})}</Text>
+                    <Text style={styles.generalInfo_name}>{accountData.userName}</Text>
+                    <Text style={styles.generalInfo_accountCreation}>{t("userProfileScreen.section_info_accountDate",{date:accountData.accountCreationDate})}</Text>
                     
                     <View style={styles.streakSection}>
-                        <Text>10</Text>
+                        <Text>{accountData.streaks}</Text>
                         <Image style={styles.streakIcon} source={streakIcon}></Image>
                     </View>
 
@@ -94,10 +109,10 @@ export default function UserProfileScreen(props) {
                             color="#F1C40F"
                             unfilledColor="#d9d9d9"
                             borderWidth={0}
-                            progress={20}
+                            progress={accountData.progress}
                         />
                         <View style={styles.circle}>
-                            <Text>5</Text>
+                            <Text>{accountData.level}</Text>
                         </View>
                     </View>
                 </View>
@@ -137,3 +152,5 @@ export default function UserProfileScreen(props) {
         </ScreenWrapper>
     )
 }
+
+

@@ -77,6 +77,26 @@ export default function ProfileScreen() {
     const { t } = useTranslation();
     const streakIcon = require('../assets/icons/streakIcon.png');
 
+    const profileData={
+        "userName":"aymericD59",
+        "firstName":"Aymeric",
+        "name":"Droulers",
+        "mail":"aymeric.droulers@gmail.com",
+        "profilePicture":require('../assets/Profile.png'),
+        "accountCreationDate":"19/02/2025",
+        "streaks":10,
+        "progress":0.85,
+        "level":43,
+
+    }
+
+    const [userName,setUserName] = useState(profileData.userName);
+    const [firstName,setFirstName] = useState(profileData.firstName);
+    const [lastName, setLastName] = useState(profileData.name);
+    const [email, setEmail] = useState(profileData.mail);
+    const [password, setPassword] = useState("");
+    const [confirmPassword,setConfirmPassword] = useState("");
+
     return (
         <ScreenWrapper scrollable style={styles.container}>
     
@@ -108,14 +128,14 @@ export default function ProfileScreen() {
             <Text style={[globalStyles.subtitle, {padding:30}]}>{t("profileScreen.section_info_title")}</Text>
             <View style={styles.generalInfo_container}>
 
-                <Image source={require('../assets/Profile.png')} style={styles.profilePicture} />
+                <Image source={profileData.profilePicture} style={styles.profilePicture} />
 
                 <View style={styles.generalInfo_Right}>
-                    <Text style={styles.generalInfo_name}>Louis</Text>
-                    <Text style={styles.generalInfo_accountCreation}>{t("profileScreen.section_info_accountDate",{date:"19/02/2025"})}</Text>
+                    <Text style={styles.generalInfo_name}>{profileData.firstName}</Text>
+                    <Text style={styles.generalInfo_accountCreation}>{t("profileScreen.section_info_accountDate",{date:profileData.accountCreationDate})}</Text>
                     
                     <View style={styles.streakSection}>
-                        <Text>10</Text>
+                        <Text>{profileData.streaks}</Text>
                         <Image style={styles.streakIcon} source={streakIcon}></Image>
                     </View>
 
@@ -126,10 +146,10 @@ export default function ProfileScreen() {
                             color="#F1C40F"
                             unfilledColor="#d9d9d9"
                             borderWidth={0}
-                            progress={20}
+                            progress={profileData.progress}
                         />
                         <View style={styles.circle}>
-                            <Text>5</Text>
+                            <Text>{profileData.level}</Text>
                         </View>
                     </View>
 
@@ -145,29 +165,36 @@ export default function ProfileScreen() {
             <View style={styles.editableInfos_Form}>
                 <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.username")}</Text>
                 <Input
-                    placeholder={"DEV à définir en fonction des infos de l'utilisateur"}
-                    onChangeText={() => {}}
+                    value={userName}
+                    onChangeText={setUserName}
+                    style={styles.input}>
+                </Input>
+
+                <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.name")}</Text>
+                <Input
+                    value={firstName}
+                    onChangeText={setFirstName}
                     style={styles.input}>
                 </Input>
 
                 <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.surname")}</Text>
                 <Input
-                    placeholder={"DEV à définir en fonction des infos de l'utilisateur"}
-                    onChangeText={() => {}}
+                    value={lastName}
+                    onChangeText={setLastName}
                     style={styles.input}>
                 </Input>
 
                 <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.mail")}</Text>
                 <Input
-                    placeholder={"DEV à définir en fonction des infos de l'utilisateur"}
-                    onChangeText={() => {}}
+                    value={email}
+                    onChangeText={setEmail}
                     style={styles.input}>
                 </Input>
 
                 <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.password")}</Text>
                 <Input
                     placeholder={t("profileScreen.section_info.password")}
-                    onChangeText={() => {}}
+                    onChangeText={setPassword}
                     style={styles.input}
                     secureTextEntry={true}
                 />
@@ -175,7 +202,7 @@ export default function ProfileScreen() {
                 <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.passwordConfirm")}</Text>
                 <Input
                     placeholder={t("profileScreen.section_info.password")}
-                    onChangeText={() => {}}
+                    onChangeText={setPassword}
                     secureTextEntry={true}
                 />
             </View>
