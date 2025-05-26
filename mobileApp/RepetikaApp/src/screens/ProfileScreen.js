@@ -44,6 +44,31 @@ function getNewProfilePicture() {
         });
 }
 
+const userTrophies = [
+    { label: "Apprenant", unlocked: true, corpus: "Vous vous êtes inscrit(e) sur Repetika.", date: "19/05/2025" },
+    { label: "Jambe", unlocked: false, corpus: "Vous n'êtes pas sensé lire ça. Si vous arrivez à le lire, contactez-moi, lol.", date: "21/05/2025" },
+    { label: "Fraise", unlocked: true, corpus: "Vous vous êtes inscrit(e) sur Repetika.", date: "19/05/2025" },
+    { label: "Poulet", unlocked: false, corpus: "Vous n'êtes pas sensé lire ça. Si vous arrivez à le lire, contactez-moi, lol.", date: "21/05/2025" },
+    { label: "Requin", unlocked: true, corpus: "Vous vous êtes inscrit(e) sur Repetika.", date: "19/05/2025" },
+    { label: "Mayonnaise", unlocked: true, corpus: "On A Escalator", date: "22/05/2025" },
+    { label: "Turbo", unlocked: false, corpus: "Vous vous êtes inscrit(e) sur Repetika.", date: "19/05/2025" },
+    { label: "Russie", unlocked: false, corpus: "Vous n'êtes pas sensé lire ça. Si vous arrivez à le lire, contactez-moi, lol.", date: "21/05/2025" },
+]; // TODO : get trophies from userId
+
+
+// Découper le tableau en sous-tableaux de 4
+function chunkArray(array, size) {
+    const result = [];
+    for (let i = 0; i < array.length; i += size) {
+        result.push(array.slice(i, i + size));
+    }
+    return result;
+}
+const trophyRows = chunkArray(userTrophies, 4);
+
+function saveUserChanges() {
+    console.log('Entregistrement des modifications utilisateur');
+}
 
 /**
  * ProfileScreen - login screen with user fields, password, and options for forgotten password and registration.
@@ -59,24 +84,28 @@ export default function ProfileScreen() {
 
             <Text style={globalStyles.subtitle}>{t("profileScreen.section_trophies_title")}</Text>
             <View style={styles.trophy_container}>
-                <View style={styles.trophy_row}>
-                    <TrophyItem label="Apprenant" unlocked={true} corpus="Vous vous êtes inscrit(e) sur Repetika." date="19/05/2025"/>
-                    <TrophyItem label="Thierry" unlocked={true} corpus="Vous n'êtes pas sensé lire ça. Si vous arrivez à le lire, contactez-moi, lol." date="21/05/2025"/>
-                    <TrophyItem label="Fraise" unlocked={true} corpus="Vous vous êtes inscrit(e) sur Repetika." date="19/05/2025"/>
-                    <TrophyItem label="Poulet" unlocked={true} corpus="Vous n'êtes pas sensé lire ça. Si vous arrivez à le lire, contactez-moi, lol." date="21/05/2025"/>
-                </View>
-                <View style={styles.shelf}></View>
-                <View style={styles.trophy_row}>
-                    <TrophyItem label="Requin" unlocked={true} corpus="Vous vous êtes inscrit(e) sur Repetika." date="19/05/2025"/>
-                    <TrophyItem label="Mayonnaise" unlocked={true} corpus="On A Escalator" date="22/05/2025"/>
-                    <TrophyItem label="Turbo" unlocked={true} corpus="Vous vous êtes inscrit(e) sur Repetika." date="19/05/2025"/>
-                    <TrophyItem label="Russie" unlocked={false} corpus="Vous n'êtes pas sensé lire ça. Si vous arrivez à le lire, contactez-moi, lol." date="21/05/2025"/>
-                </View>
-                <View style={styles.shelf}></View>
+                {trophyRows.map((row, rowIndex) => (
+                    <React.Fragment key={rowIndex}>
+                        <View style={styles.trophy_row}>
+                            {row.map((trophy, index) => (
+                                <TrophyItem
+                                    key={trophy.label}
+                                    label={trophy.label}
+                                    unlocked={trophy.unlocked}
+                                    corpus={trophy.corpus}
+                                    date={trophy.date}
+                                />
+                            ))}
+                        </View>
+                        {rowIndex < trophyRows.length && (
+                            <View style={styles.shelf}></View>
+                        )}
+                    </React.Fragment>
+                ))}
             </View>
 
 
-            <Text style={globalStyles.subtitle}>{t("profileScreen.section_info_title")}</Text>
+            <Text style={[globalStyles.subtitle, {padding:30}]}>{t("profileScreen.section_info_title")}</Text>
             <View style={styles.generalInfo_container}>
 
                 <Image source={require('../assets/Profile.png')} style={styles.profilePicture} />
@@ -154,7 +183,7 @@ export default function ProfileScreen() {
             <Btn_Fill 
                 title={t("profileScreen.section_info.editBtn")} 
                 onPress={() => {
-                    console.log('cliqué')
+                    saveUserChanges();
                 }} 
                 style={styles.saveBtn}/>
 
