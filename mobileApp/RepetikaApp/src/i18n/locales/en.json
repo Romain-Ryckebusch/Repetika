@@ -87,6 +87,24 @@
       "text":"Already have an account? "
       }
   },
+  "courseIndexScreen": {
+    "coursLabel": "Courses",
+    "reviewLabel": "Reviews",
+    "reviewMainTextStart": "You have ",
+    "reviewMainTextEnd": " cards to review today !",
+    "reviewStartButtonText":"Start",
+    "reviewManageReviewCard": "Manage my cards to review",
+    "reviewSeeAnswer":"See answer",
+    "reviewValidate": "Validate",
+    "reviewCorrectAnswer": "Correct answer :",
+    "reviewYourAnswer": "Your answer :",
+    "reviewTrue": "True",
+    "reviewFalse": "False",
+    "reviewSessionFinished": "Session finished!",
+    "reviewFinishCardsStart": "You studied",
+    "reviewFinishCardsEnd": "cards !",
+    "reviewBackToHome": "Back to home"
+  },
 
   "LoginScreen": {
     "title": "Welcome to Repetika",

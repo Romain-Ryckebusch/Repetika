@@ -5,7 +5,7 @@ import styles from '../../../styles/game/courseIndex.style';
 import colors from '../../../styles/colors';
 
 import {useTranslation} from "react-i18next";
-
+import {navigate} from "../../../navigation/NavigationService";
 
 
 const course=[
@@ -66,12 +66,12 @@ export default function Course (){
             </View>
             <View>
                 {rightChapters.map(chapter => (
-                    <View key={chapter.id} style={[{marginTop:widthCircle}]}>
+                    <TouchableOpacity onPress={()=>navigate("CourseFrame")} onkey={chapter.id} style={[{marginTop:widthCircle}]} >
                         <View  style={[styles.coursePage.chapterView,{width:widthCircle,height:widthCircle,borderRadius:0.5*widthCircle},{backgroundColor:chapter.isSrarted&&!chapter.isFinished?colors.currentChapter:!chapter.isAvailable?colors.lockedChapter:colors.primary}]}>
                             {!chapter.isAvailable?<Image style={[styles.coursePage.chapterView.icon]} source={require("../../../assets/icons/lock.png")}/>:null}
                         </View>
                         <Text style={styles.coursePage.chapterView.title}>{chapter.title}</Text>
-                    </View>
+                    </TouchableOpacity>
                 ))}
             </View>
         </View>

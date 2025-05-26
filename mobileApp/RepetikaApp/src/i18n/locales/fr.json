@@ -93,7 +93,17 @@
     "reviewMainTextStart": "Tu as ",
     "reviewMainTextEnd": " cartes à révisier aujourd'hui !",
     "reviewStartButtonText":"Commencer",
-    "reviewManageReviewCard": "Gérer mes cartes à réviser"
+    "reviewManageReviewCard": "Gérer mes cartes à réviser",
+    "reviewSeeAnswer":"Voir la réponse",
+    "reviewValidate": "Valider",
+    "reviewCorrectAnswer": "Réponse correcte :",
+    "reviewYourAnswer": "Votre réponse :",
+    "reviewTrue": "Vrai",
+    "reviewFalse": "Faux",
+    "reviewSessionFinished": "Session terminée !",
+    "reviewFinishCardsStart": "Tu as étudié",
+    "reviewFinishCardsEnd": "cartes !",
+    "reviewBackToHome": "Retour à l'acceuil"
   },
 
   "LoginScreen": {

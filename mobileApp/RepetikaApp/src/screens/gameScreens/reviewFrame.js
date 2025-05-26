@@ -145,7 +145,7 @@ export default function ReviewFrame() {
                                 <Text style={globalStyles.corpus}>{deck[cardToShow].front}</Text>
                                 <View style={styles.questionView.interactives}>
                                     <Input maxLength={256} onChangeText={setAnswer} value={answer} style={styles.questionView.interactives.input}/>
-                                    <Btn_Fill title={(answer==="")?"Voir la réponse":"Valider"} onPress={()=>{setCardFace("back")}}/>
+                                    <Btn_Fill title={(answer==="")?t("courseIndexScreen.reviewSeeAnswer"):t("courseIndexScreen.reviewValidate")} onPress={()=>{setCardFace("back")}}/>
                                 </View>
                             </View>
                         ):(
@@ -153,22 +153,22 @@ export default function ReviewFrame() {
                                 <Text style={globalStyles.corpus}>{deck[cardToShow].front}</Text>
 
                                 <View style={styles.answerViewToaster}>
-                                    <Text style={styles.answerViewToaster.correctAnswerText}>Réponse correcte: {deck[cardToShow].back}</Text>
+                                    <Text style={styles.answerViewToaster.correctAnswerText}>{t("courseIndexScreen.reviewCorrectAnswer")} {deck[cardToShow].back}</Text>
                                     {answer!==""?(
-                                    <Text style={styles.answerViewToaster.userAnswerText}>Votre réponse: {answer}</Text>
+                                    <Text style={styles.answerViewToaster.userAnswerText}>{t("courseIndexScreen.reviewYourAnswer")} {answer}</Text>
                                         ):null}
                                     <View style={styles.answerViewToaster.interactives}>
-                                        <Btn_Fill title={"Faux"} style={[styles.answerViewToaster.interactives.buttons,styles.answerViewToaster.interactives.wrongButton]} onPress={()=>{falseAnswer()}}/>
-                                        <Btn_Fill title={"Vrai"} style={[styles.answerViewToaster.interactives.buttons,styles.answerViewToaster.interactives.correctButton]} onPress={()=>{goodAnswer()}}/>
+                                        <Btn_Fill title={t("courseIndexScreen.reviewFalse")} style={[styles.answerViewToaster.interactives.buttons,styles.answerViewToaster.interactives.wrongButton]} onPress={()=>{falseAnswer()}}/>
+                                        <Btn_Fill title={t("courseIndexScreen.reviewTrue")} style={[styles.answerViewToaster.interactives.buttons,styles.answerViewToaster.interactives.correctButton]} onPress={()=>{goodAnswer()}}/>
                                     </View>
                                 </View>
                             </>
                         )
                         ):(
                             <View style={styles.finishedSession}>
-                                <Text style={[globalStyles.title,styles.finishedSession.splashText]}>Session terminée!</Text>
-                                <Text style={[globalStyles.corpus,{textAlign: 'center'}]}>Tu as étudié <Text style={{color:colors.orange}}>{totalCardsCount}</Text> cartes!</Text>
-                                <Btn_Fill title={"Retour à l'acceuil"} style={{width:'80%',marginHorizontal:'10%'}} onPress={()=>{navigate("CourseIndex")}}/>
+                                <Text style={[globalStyles.title,styles.finishedSession.splashText]}>{t("courseIndexScreen.reviewSessionFinished")}</Text>
+                                <Text style={[globalStyles.corpus,{textAlign: 'center'}]}>{t("courseIndexScreen.reviewFinishCardsStart")} <Text style={{color:colors.orange}}>{totalCardsCount}</Text> {t("courseIndexScreen.reviewFinishCardsEnd")}</Text>
+                                <Btn_Fill title={t("courseIndexScreen.reviewBackToHome")} style={{width:'80%',marginHorizontal:'10%'}} onPress={()=>{navigate("CourseIndex")}}/>
                                 {shoot && (
                                     <ConfettiCannon
                                         count={100}
