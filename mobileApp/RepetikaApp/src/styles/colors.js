@@ -27,4 +27,7 @@ export default {
 
   shelf: '#563E2F',
 
+  currentChapter: '#E6A6FF',
+  lockedChapter: '#745D7D',
+
 };

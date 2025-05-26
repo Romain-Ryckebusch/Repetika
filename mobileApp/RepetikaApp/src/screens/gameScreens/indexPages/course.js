@@ -1,8 +1,8 @@
-import {View, Text, TouchableOpacity, ScrollView,StyleSheet,Dimensions, FlatList} from "react-native";
+import {View, Text, TouchableOpacity, ScrollView, StyleSheet, Dimensions, FlatList, Image} from "react-native";
 
 import globalStyles from '../../../styles/global';
 import styles from '../../../styles/game/courseIndex.style';
-
+import colors from '../../../styles/colors';
 
 import {useTranslation} from "react-i18next";
 
@@ -45,13 +45,18 @@ export default function Course (){
     const rightChapters = course.filter((_, index) => index % 2 === 1);
 
     const screenWidth = Dimensions.get('window').width;
-    const widthCircle = screenWidth *1*0.3; // 80% d'un tiers de la largeur écran
+    const widthCircle = screenWidth*0.3; // 80% d'un tiers de la largeur écran
 
     return (
         <View style={styles.coursePage.view}>
             <View style={[styles.coursePage.view.sideColumn,{alignItems:"flex-end"}]}>
                 {leftChapters.map(chapter => (
-                    <View key={chapter.id} style={[styles.coursePage.chapterView,{width:widthCircle,height:widthCircle,borderRadius:0.5*widthCircle,marginBottom:widthCircle}]}><Text style={styles.coursePage.chapterView.title}>{chapter.title}</Text></View>
+                    <View key={chapter.id} style={[{marginBottom:widthCircle}]}>
+                        <View  style={[styles.coursePage.chapterView,{width:widthCircle,height:widthCircle,borderRadius:0.5*widthCircle},{backgroundColor:chapter.isSrarted&&!chapter.isFinished?colors.currentChapter:!chapter.isAvailable?colors.lockedChapter:colors.primary}]}>
+                            {!chapter.isAvailable?<Image style={[styles.coursePage.chapterView.icon]} source={require("../../../assets/icons/lock.png")}/>:null}
+                        </View>
+                        <Text style={styles.coursePage.chapterView.title}>{chapter.title}</Text>
+                    </View>
                 ))}
             </View>
             <View id={"centerColumn"} style={[styles.coursePage.view.centerColumn,{height:3*widthCircle,marginTop:0.5*widthCircle}]}>
@@ -61,7 +66,12 @@ export default function Course (){
             </View>
             <View>
                 {rightChapters.map(chapter => (
-                    <View key={chapter.id} style={[styles.coursePage.chapterView,{width:widthCircle,height:widthCircle,borderRadius:0.5*widthCircle,marginTop:widthCircle}]}><Text style={styles.coursePage.chapterView.title}>{chapter.title}</Text></View>
+                    <View key={chapter.id} style={[{marginTop:widthCircle}]}>
+                        <View  style={[styles.coursePage.chapterView,{width:widthCircle,height:widthCircle,borderRadius:0.5*widthCircle},{backgroundColor:chapter.isSrarted&&!chapter.isFinished?colors.currentChapter:!chapter.isAvailable?colors.lockedChapter:colors.primary}]}>
+                            {!chapter.isAvailable?<Image style={[styles.coursePage.chapterView.icon]} source={require("../../../assets/icons/lock.png")}/>:null}
+                        </View>
+                        <Text style={styles.coursePage.chapterView.title}>{chapter.title}</Text>
+                    </View>
                 ))}
             </View>
         </View>

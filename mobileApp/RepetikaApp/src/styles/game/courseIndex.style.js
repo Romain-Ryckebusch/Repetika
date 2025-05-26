@@ -96,6 +96,10 @@ const styles = StyleSheet.create({
             title:{
                 color:colors.black,
                 textAlign:'center',
+            },
+            icon:{
+                width:80,
+                height:80
             }
         }
     }
