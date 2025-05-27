@@ -1,6 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.http import HttpResponse
 from rest_framework import status
+import requests
 
 from PyPDF2 import PdfMerger
 
@@ -77,6 +79,8 @@ class GetPDF(APIView):
             chapter_name = chapter[course_name]
             pdf_paths.append(f"/path/to/{course_name}/{chapter_name}.pdf")
 
+            #pdf_paths.append(f"./local_tests/{course_name}/{chapter_name}.pdf")
+
         merger = PdfMerger()
         
         # Get the pdfs from the paths;
@@ -85,8 +89,22 @@ class GetPDF(APIView):
             merger.append(pdf_path)
 
         # Save the merged pdf to a temporary file
-        merged_pdf_path = "/path/to/merged_course.pdf"
+        # merged_pdf_path = "./local_tests/merged_course.pdf"  # <-- working local test 🥳
+        merged_pdf_path = "path/to/merged_course.pdf"
         merger.write(merged_pdf_path)
         merger.close()
+
+        # @todo download the file and send it directly (instead of the path)
+        remote_response = requests.get(merged_pdf_path, stream=True)
+
+        # Check if the download was successful
+        if remote_response.status_code != 200:
+            return Response({"error": "Unable to get PDF file."}, status=400)
         
-        return Response(merged_pdf_path, status=status.HTTP_200_OK)
+        # Read PDF content
+        pdf_content = remote_response.content
+        
+        # Prepare the HTTP response with the PDF content
+        response = HttpResponse(pdf_content, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="document.pdf"'
+        return response
