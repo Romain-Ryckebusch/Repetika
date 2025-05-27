@@ -6,10 +6,10 @@ import globalStyles from '../global';
 const styles = StyleSheet.create({
     header: {
         container: {
-            height: '10%', // ← ici tu agrandis la hauteur
+            height: '10%',
             paddingHorizontal: 16,
-            paddingTop: 20, // un peu d’espace en haut
-            justifyContent: 'space-between', // ou 'space-between' selon ce que tu veux
+            marginTop:16,
+            justifyContent: 'space-between',
             flexDirection: 'row',
             alignItems: 'center',
             backgroundColor: 'transparent',

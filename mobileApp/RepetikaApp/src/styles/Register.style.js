@@ -8,14 +8,20 @@ import globalStyles from './global';
 
 const styles = StyleSheet.create({
     container: {
-      padding:5,
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: '5%',
+  },
+  subtitle:{
+    ...globalStyles.subtitle,
+    fontSize: 15,
   },
 
   generalInfo_name: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    fontSize: 20,
-    fontFamily: 'OpenSans_Regular',
+    ...globalStyles.corpus,
+    fontSize: 14,
+    padding:0,
   },
 
 
@@ -23,22 +29,26 @@ const styles = StyleSheet.create({
 
 
     editableInfos_Form:{
-      
-      alignItems: 'center',     
-      fontSize: 20,
-      width: '90%',
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
       alignSelf: 'center',
       marginTop: 20,
   },
 
   saveBtn:{
-      width: '50%',
+      width: '100%',
       margin:30,
       alignSelf: 'center',
 
   },
   text: {
-    fontSize: 16,
+    ...globalStyles.corpus,
+    fontSize: 14,
+    textAlign: 'center',
+    color: colors.grey,
+    padding:3,
+
   },
   link: {
     textDecorationLine: 'underline',

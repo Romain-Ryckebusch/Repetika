@@ -3,6 +3,34 @@ import colors from '../colors';
 import globalStyles from '../global';
 
 const styles = StyleSheet.create({
+    header: {
+        container: {
+            height: '10%', // ← ici tu agrandis la hauteur
+            paddingHorizontal: 16,
+            marginTop:16,
+            justifyContent: 'space-between', // ou 'space-between' selon ce que tu veux
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: 'transparent',
+        },
+        headerTitle: {
+            fontSize: 16,
+            fontFamily: 'KronaOne_Regular'
+        },
+        backArrowBtn: {
+            marginRight: 8
+        },
+        backArrowImg: {
+            width: 24,
+            height: 24
+        },
+        questionHeaderContainer: {
+            width: '100%',
+        },
+        progressBar:{
+            alignSelf:"center",
+        },
+    },
     container: {
         width: '90%',
         marginLeft:'5%',
@@ -68,7 +96,7 @@ const styles = StyleSheet.create({
 
             sideColumn:{
                 width:'30%',
-
+                zIndex:2
             },
             centerColumn:{
                 position:'relative',
@@ -81,9 +109,9 @@ const styles = StyleSheet.create({
                 line: {
                     position:'relative',
                     height: 2,           // épaisseur du trait
-                    borderBottomWidth: 2,
-                    borderBottomColor: 'black',
-                    borderStyle: 'dotted',  // ou 'dashed
+                    borderBottomWidth: 6,
+                    borderBottomColor: colors.grey,
+                    borderStyle: 'dashed',  // ou 'dashed
                 }
             }
         },
@@ -94,6 +122,9 @@ const styles = StyleSheet.create({
             position:'relative',
             zIndex:10,
             title:{
+                marginTop:8,
+                fontSize:16,
+                fontFamily:'OpenSans_Bold',
                 color:colors.black,
                 textAlign:'center',
             },

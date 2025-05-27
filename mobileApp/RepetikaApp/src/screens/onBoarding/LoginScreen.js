@@ -11,10 +11,11 @@ import ScreenWrapper from "../../components/navigation/screenWrapper";
 
 import { useTranslation } from "react-i18next";
 import {navigate} from "../../navigation/NavigationService";
-
+import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen() {
     const {t}=useTranslation();
+    const navigation = useNavigation();
     return (
         <ScreenWrapper scrollable>
 
@@ -40,19 +41,15 @@ export default function LoginScreen() {
                         <Btn_Fill
                         style={{ marginTop: 20 }}
                         title={t('LoginScreen.loginBtn')}
-                        onPress={() => {console.log("Login")}}
+                        onPress={() =>navigation.navigate('MainApp', {
+                            screen: 'Home'
+                        })}
                         />
                     </View>
                 </View>
-                
-                
-                <Pressable onPress={() => console.log("Forgot password")}>
-                    <Text style={styles.ask_label}>{t('LoginScreen.forgotPassword')}</Text>
-                </Pressable>
 
-                <Pressable onPress={() => console.log("Register")}>
-                    <Text onPress={()=>navigate("RegisterScreen")} style={styles.ask_label}>{t('LoginScreen.register')}</Text>
-                </Pressable>
+                <Text style={styles.ask_label}>{t('LoginScreen.forgotPassword')}</Text>
+                <Text onPress={()=>navigate("RegisterScreen")} style={styles.ask_label}>{t('LoginScreen.register')}</Text>
 
             </View>
         </ScreenWrapper>

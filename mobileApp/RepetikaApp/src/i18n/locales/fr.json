@@ -84,7 +84,7 @@
       "passwordConfirm": "Confirmer le mot de passe",
       "signUpBtn":"S'inscrire",
       "logInBtn":"Me connecter",
-      "text":"Vous avez déjà un compte ? Se connecter"
+      "text":"Vous avez déjà un compte ? "
     }
   },
   "courseIndexScreen": {

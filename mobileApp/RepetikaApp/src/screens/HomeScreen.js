@@ -13,7 +13,7 @@ import {navigate} from "../navigation/NavigationService";
 const lessons = [
   { id:'1', title: 'Cours 1', corpus: 'Apprenez les bases de la physique à l\'échelle atomique.', progress: '9', crd_number: '10', onPress: () => console.log("Clic sur la leçon !") },
   { id:'2', title: 'Cours 2', corpus: 'Apprenez les bases de la chimie à l\'échelle atomique.', progress: '20', crd_number: '5', onPress: () => console.log("Clic sur la leçon !") },
-  { id:'3', title: 'Cours 2', corpus: 'Apprenez les bases de la chimie à l\'échelle atomique.', progress: '20', crd_number: '5', onPress: () => console.log("Clic sur la leçon !") },
+  { id:'3', title: 'Cours 2', corpus: "Apprenez les bases de l'informatique à l\'échelle atomique.", progress: '20', crd_number: '5', onPress: () => console.log("Clic sur la leçon !") },
 ];
 
 export default function HomeScreen() {

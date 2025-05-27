@@ -46,27 +46,27 @@ export default function Course (){
 
     const screenWidth = Dimensions.get('window').width;
     const widthCircle = screenWidth*0.3; // 80% d'un tiers de la largeur écran
-
+    const heightCourse= widthCircle+16+8;
     return (
         <View style={styles.coursePage.view}>
             <View style={[styles.coursePage.view.sideColumn,{alignItems:"flex-end"}]}>
                 {leftChapters.map(chapter => (
-                    <View key={chapter.id} style={[{marginBottom:widthCircle}]}>
+                    <TouchableOpacity onPress={()=>navigate("CourseFrame")} onkey={chapter.id} style={[{marginBottom:heightCourse}]} >
                         <View  style={[styles.coursePage.chapterView,{width:widthCircle,height:widthCircle,borderRadius:0.5*widthCircle},{backgroundColor:chapter.isSrarted&&!chapter.isFinished?colors.currentChapter:!chapter.isAvailable?colors.lockedChapter:colors.primary}]}>
                             {!chapter.isAvailable?<Image style={[styles.coursePage.chapterView.icon]} source={require("../../../assets/icons/lock.png")}/>:null}
                         </View>
                         <Text style={styles.coursePage.chapterView.title}>{chapter.title}</Text>
-                    </View>
+                    </TouchableOpacity>
                 ))}
             </View>
-            <View id={"centerColumn"} style={[styles.coursePage.view.centerColumn,{height:3*widthCircle,marginTop:0.5*widthCircle}]}>
-                <View style={[styles.coursePage.view.centerColumn.line,{transform: [{ rotate: '45deg' }],width:Math.sqrt(2)*widthCircle}]} />
-                <View style={[styles.coursePage.view.centerColumn.line,{transform: [{ rotate: '-45deg' }],width:Math.sqrt(2)*widthCircle}]} />
-                <View style={[styles.coursePage.view.centerColumn.line,{transform: [{ rotate: '45deg' }],width:Math.sqrt(2)*widthCircle}]} />
+            <View id={"centerColumn"} style={[styles.coursePage.view.centerColumn,{height:3*heightCourse,marginTop:0.5*heightCourse}]}>
+                <View style={[styles.coursePage.view.centerColumn.line,{transform: [{ rotate: '45deg' }],width:Math.sqrt(2)*heightCourse}]} />
+                <View style={[styles.coursePage.view.centerColumn.line,{transform: [{ rotate: '-45deg' }],width:Math.sqrt(2)*heightCourse}]} />
+                <View style={[styles.coursePage.view.centerColumn.line,{transform: [{ rotate: '45deg' }],width:Math.sqrt(2)*heightCourse}]} />
             </View>
-            <View>
+            <View style={[styles.coursePage.view.sideColumn,{alignItems:"flex-end"}]}>
                 {rightChapters.map(chapter => (
-                    <TouchableOpacity onPress={()=>navigate("CourseFrame")} onkey={chapter.id} style={[{marginTop:widthCircle}]} >
+                    <TouchableOpacity onPress={()=>navigate("CourseFrame")} onkey={chapter.id} style={[{marginTop:heightCourse}]} >
                         <View  style={[styles.coursePage.chapterView,{width:widthCircle,height:widthCircle,borderRadius:0.5*widthCircle},{backgroundColor:chapter.isSrarted&&!chapter.isFinished?colors.currentChapter:!chapter.isAvailable?colors.lockedChapter:colors.primary}]}>
                             {!chapter.isAvailable?<Image style={[styles.coursePage.chapterView.icon]} source={require("../../../assets/icons/lock.png")}/>:null}
                         </View>

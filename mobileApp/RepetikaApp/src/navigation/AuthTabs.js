@@ -9,8 +9,8 @@ export default function AuthTabs() {
     const isFirstConnexion = true;
     return (
         <Stack.Navigator id="onboardingNavigator" initialRouteName={isFirstConnexion ? "RegisterScreen" : "Login"}>
-            <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
 
     );

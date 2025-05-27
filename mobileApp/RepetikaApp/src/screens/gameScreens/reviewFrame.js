@@ -4,16 +4,14 @@ import globalStyles from '../../styles/global';
 import colors from '../../styles/colors';
 import styles from '../../styles/game/reviewFrame.style';
 
-import ScreenWrapper from "../../components/navigation/screenWrapper";
 import {useTranslation} from "react-i18next";
-import {getLabel, PlatformPressable} from "@react-navigation/elements";
 import React, {useEffect, useState} from "react";
 import Btn_Fill from "../../components/btn_fill";
 import Input from "../../components/frm_input";
-import {navigate} from "../../navigation/NavigationService";
 import backIcon from "../../assets/icons/back.png";
 import * as Progress from 'react-native-progress';
 import ConfettiCannon from 'react-native-confetti-cannon';
+import {navigate} from "../../navigation/NavigationService";
 
 const deck=[
     {
@@ -39,7 +37,7 @@ const deck=[
 export default function ReviewFrame() {
     const {t}=useTranslation();
 
-    const totalCardsCount=deck.length;
+    const totalCardsCount=deck.length
     const [cardFace,setCardFace]=useState("front");
     const [answer,setAnswer]=useState("");
     const [isAnswerCorrect,setIsAnswerCorrect] = useState(true);

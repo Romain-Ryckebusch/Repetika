@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView} from "react-native";
+import {View, Text, TouchableOpacity, ScrollView, Pressable, Image} from "react-native";
 
 import globalStyles from '../../styles/global';
 import colors from '../../styles/colors';
@@ -7,14 +7,18 @@ import styles from '../../styles/game/courseIndex.style';
 import ScreenWrapper from "../../components/navigation/screenWrapper";
 import {useTranslation} from "react-i18next";
 import {PlatformPressable} from "@react-navigation/elements";
-import {useState} from "react";
+import React, {useState} from "react";
 import Review from "./indexPages/review";
 import Course from "./indexPages/course";
+import backIcon from "../../assets/icons/back.png";
+import Progress from "react-native-progress";
+import {useNavigation} from "@react-navigation/native";
 
 
 
 export default function CourseIndex() {
     const {t}=useTranslation();
+    const navigation = useNavigation();
 
     const [scopeSelected, setScopeSelected] = useState("Review");
 
@@ -27,6 +31,18 @@ export default function CourseIndex() {
 
 
     return (
+        <>
+            <View style={styles.header.questionHeaderContainer}>
+                <View style={[styles.header.container,{justifyContent:"start"},{height: 60},{alignItems:"flex-end"}]}>
+                    <Pressable style={[styles.header.backArrowBtn]} onPress={() =>navigation.navigate('MainApp', {
+                        screen: 'Home'
+                    })}>
+                        <Image style={styles.header.backArrowImg} source={backIcon}></Image>
+                    </Pressable>
+                    <Text style={[styles.header.headerTitle,{paddingBottom:2}]}>Pays du monde</Text>
+                </View>
+            </View>
+
         <ScreenWrapper scrollable>
             <View style={{flex:1}}>
 
@@ -46,6 +62,7 @@ export default function CourseIndex() {
                 </ScrollView>
             </View>
         </ScreenWrapper>
+        </>
     )
 }
 
