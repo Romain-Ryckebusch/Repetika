@@ -12,13 +12,16 @@ import Review from "./indexPages/review";
 import Course from "./indexPages/course";
 import backIcon from "../../assets/icons/back.png";
 import Progress from "react-native-progress";
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 
 
 
 export default function CourseIndex() {
     const {t}=useTranslation();
     const navigation = useNavigation();
+    const route = useRoute();
+    const lessonId= route.params?.lessonId;
+
 
     const [scopeSelected, setScopeSelected] = useState("Review");
 
@@ -43,25 +46,24 @@ export default function CourseIndex() {
                 </View>
             </View>
 
-        <ScreenWrapper scrollable>
-            <View style={{flex:1}}>
-
-                <ScrollView contentContainerStyle={[styles.container,{height:'100%'}]} showsVerticalScrollIndicator={true} keyboardShouldPersistTaps="always">
-                    <View id={"BoxSectionChoices"} style={styles.BoxSectionChoices}>
-                        <PlatformPressable style={[styles.boxSectionChoice,scopeSelected==="Cours"?styles.boxScopeSelected:null]} onPress={() => {switchScopeSelected("Cours")}}>
-                            <Text style={[styles.boxSectionChoice.text,scopeSelected==="Cours"?styles.boxScopeSelected.text:null]}>{t("courseIndexScreen.coursLabel")}</Text>
-                        </PlatformPressable>
-                        <PlatformPressable style={[styles.boxSectionChoice,scopeSelected==="Review"?styles.boxScopeSelected:null]} onPress={() => {switchScopeSelected("Review")}}>
-                            <Text style={[styles.boxSectionChoice.text,scopeSelected==="Review"?styles.boxScopeSelected.text:null]}>{t("courseIndexScreen.reviewLabel")}</Text>
-                        </PlatformPressable>
-                    </View>
-                    {(scopeSelected==="Review")?(
-                        <Review cardsNumber={10}/>
-                        ):(<Course/>)
-                    }
-                </ScrollView>
-            </View>
-        </ScreenWrapper>
+            <ScreenWrapper scrollable>
+                <View style={{flex:1}}>
+                    <ScrollView contentContainerStyle={[styles.container,{height:'100%'}]} showsVerticalScrollIndicator={true} keyboardShouldPersistTaps="always">
+                        <View id={"BoxSectionChoices"} style={styles.BoxSectionChoices}>
+                            <PlatformPressable style={[styles.boxSectionChoice,scopeSelected==="Cours"?styles.boxScopeSelected:null]} onPress={() => {switchScopeSelected("Cours")}}>
+                                <Text style={[styles.boxSectionChoice.text,scopeSelected==="Cours"?styles.boxScopeSelected.text:null]}>{t("courseIndexScreen.coursLabel")}</Text>
+                            </PlatformPressable>
+                            <PlatformPressable style={[styles.boxSectionChoice,scopeSelected==="Review"?styles.boxScopeSelected:null]} onPress={() => {switchScopeSelected("Review")}}>
+                                <Text style={[styles.boxSectionChoice.text,scopeSelected==="Review"?styles.boxScopeSelected.text:null]}>{t("courseIndexScreen.reviewLabel")}</Text>
+                            </PlatformPressable>
+                        </View>
+                        {(scopeSelected==="Review")?(
+                            <Review cardsNumber={10}/>
+                            ):(<Course/>)
+                        }
+                    </ScrollView>
+                </View>
+            </ScreenWrapper>
         </>
     )
 }

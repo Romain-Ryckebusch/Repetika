@@ -34,7 +34,12 @@ export default function HomeScreen() {
                                 corpus={lesson.corpus}
                                 progress={lesson.progress}
                                 crd_number={lesson.crd_number}
-                                onPress={()=>navigate("gameScreens")}
+                                onPress={()=>navigate("gameScreens",{
+                                    screen:"CourseIndex",
+                                    params: {
+                                        lessonId: lesson.id,
+                                    }
+                                })}
                             />
                         ))}
 
