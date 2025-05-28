@@ -8,8 +8,30 @@ import { useTranslation } from "react-i18next";
 import { useNavigation } from '@react-navigation/native';
 import Decoration from "../../components/decoration";
 import styles from "../../styles/Register.style";
+import {PlatformPressable} from "@react-navigation/elements";
 
+const Item=({text})=>{
+    return(
+        <PlatformPressable>
+            <Text>{text}</Text>
+        </PlatformPressable>
+    )
+}
 
+const DATA = [
+    {
+        "id": "1",
+        "title":"Géographie"
+    },
+    {
+        "id": "2",
+        "title":"Histoire"
+    },
+    {
+        "id": "3",
+        "title":"Science"
+    }
+]
 
 export default function UserPreferences() {
     const { t } = useTranslation();
