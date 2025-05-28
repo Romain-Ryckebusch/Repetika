@@ -14,7 +14,7 @@ from PyPDF2 import PdfMerger
 from pypdf import PdfReader, PdfWriter
 
 from .models import UploadedFile
-from .serializers import UploadedFileSerializer
+#from .serializers import UploadedFileSerializer
 
 
 
