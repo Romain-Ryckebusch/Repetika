@@ -4,5 +4,7 @@ urlpatterns = [
     path("", include("MainServer.app.urls")),
     path("", include("TimeService.app.urls")),
     path("", include("Cours.app.urls")),
+    path("", include("SeanceApprentissage.app.urls")),
+
 ]
 

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'TimeService',
     'MainServer',
     'Cours',
+    'SeanceApprentissage',
 ]
 
 MIDDLEWARE = [
