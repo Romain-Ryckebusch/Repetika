@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import GetChapter, GetPDF
+from .views import GetChapter, GetPDF,UploadAPIView
 
 urlpatterns = [
     path('Cours/getChapter/', GetChapter.as_view()),
