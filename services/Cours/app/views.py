@@ -91,6 +91,7 @@ class GetPDF(APIView):
             chapter_name = chapter[course_name]
             pdf_paths.append(f"/path/to/{course_name}/{chapter_name}.pdf")
 
+            # For local tests, add "local_tests" folder at manage.py level;
             #pdf_paths.append(f"./local_tests/{course_name}/{chapter_name}.pdf")
 
         merger = PdfMerger()
@@ -120,8 +121,6 @@ class GetPDF(APIView):
         response = HttpResponse(pdf_content, content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="document.pdf"'
         return response
-
-
 
 
 class UploadAPIView(APIView):
