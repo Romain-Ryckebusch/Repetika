@@ -73,7 +73,7 @@ export default function RegisterScreen() {
                         style={styles.input}>
                     </Input>
                 </View>
-                <Btn_Fill title={t("Register.section_info.signUpBtn")} onPress={() => console.log('cliqué')} style={styles.saveBtn}/>
+                <Btn_Fill title={t("Register.section_info.signUpBtn")} onPress={() =>navigation.navigate("UserPreferences")} style={styles.saveBtn}/>
 
                 <View style={styles.login}>
 
