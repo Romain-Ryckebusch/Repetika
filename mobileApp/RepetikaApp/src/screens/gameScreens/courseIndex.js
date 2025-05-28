@@ -58,7 +58,7 @@ export default function CourseIndex() {
                             </PlatformPressable>
                         </View>
                         {(scopeSelected==="Review")?(
-                            <Review cardsNumber={10}/>
+                            <Review/>
                             ):(<Course/>)
                         }
                     </ScrollView>

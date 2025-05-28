@@ -12,30 +12,19 @@ import backIcon from "../../assets/icons/back.png";
 import * as Progress from 'react-native-progress';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import {navigate} from "../../navigation/NavigationService";
+import {useRoute} from "@react-navigation/native";
 
-const deck=[
-    {
-        "id":1,
-        "front":"Quel président aime les pommes",
-        "back":"Jaques Chirac",
-        "correct":false,
-    },{
-        "id":2,
-        "front":"Quelle est la capitale de la Slovénie",
-        "back":"Ljubljana",
-        "correct":false,
-    },{
-        "id":3,
-        "front":"Qui joue Mr Duchemin dans l'aile ou la cuisse?",
-        "back":"Louis de Funes",
-        "correct":false,
-    }
-]
 
 
 
 export default function ReviewFrame() {
     const {t}=useTranslation();
+    const route = useRoute();
+    const courseId = route.params?.courseId;
+    const deck = route.params?.deck;
+    if(courseId===undefined || deck===undefined) {
+        navigate("MainApp");
+    }
 
     const totalCardsCount=deck.length
     const [cardFace,setCardFace]=useState("front");

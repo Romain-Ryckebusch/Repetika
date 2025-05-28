@@ -1,11 +1,12 @@
-import {View, Text, TouchableOpacity, ScrollView, StyleSheet, Dimensions, FlatList, Image} from "react-native";
+import {View, Text, Dimensions,Image} from "react-native";
 
-import globalStyles from '../../../styles/global';
+
 import styles from '../../../styles/game/courseIndex.style';
 import colors from '../../../styles/colors';
 
-import {useTranslation} from "react-i18next";
+
 import {navigate} from "../../../navigation/NavigationService";
+import {PlatformPressable} from "@react-navigation/elements";
 
 
 const course=[
@@ -51,12 +52,12 @@ export default function Course (){
         <View style={styles.coursePage.view}>
             <View style={[styles.coursePage.view.sideColumn,{alignItems:"flex-end"}]}>
                 {leftChapters.map(chapter => (
-                    <TouchableOpacity onPress={()=>navigate("CourseFrame")} onkey={chapter.id} style={[{marginBottom:heightCourse}]} >
+                    <PlatformPressable onPress={()=>navigate("CourseFrame")} key={chapter.id} style={[{marginBottom:heightCourse}]} >
                         <View  style={[styles.coursePage.chapterView,{width:widthCircle,height:widthCircle,borderRadius:0.5*widthCircle},{backgroundColor:chapter.isSrarted&&!chapter.isFinished?colors.currentChapter:!chapter.isAvailable?colors.lockedChapter:colors.primary}]}>
                             {!chapter.isAvailable?<Image style={[styles.coursePage.chapterView.icon]} source={require("../../../assets/icons/lock.png")}/>:null}
                         </View>
                         <Text style={styles.coursePage.chapterView.title}>{chapter.title}</Text>
-                    </TouchableOpacity>
+                    </PlatformPressable>
                 ))}
             </View>
             <View id={"centerColumn"} style={[styles.coursePage.view.centerColumn,{height:3*heightCourse,marginTop:0.5*heightCourse}]}>
@@ -66,12 +67,12 @@ export default function Course (){
             </View>
             <View style={[styles.coursePage.view.sideColumn,{alignItems:"flex-end"}]}>
                 {rightChapters.map(chapter => (
-                    <TouchableOpacity onPress={()=>navigate("CourseFrame")} onkey={chapter.id} style={[{marginTop:heightCourse}]} >
+                    <PlatformPressable onPress={()=>navigate("CourseFrame")} key={chapter.id} style={[{marginTop:heightCourse}]} >
                         <View  style={[styles.coursePage.chapterView,{width:widthCircle,height:widthCircle,borderRadius:0.5*widthCircle},{backgroundColor:chapter.isSrarted&&!chapter.isFinished?colors.currentChapter:!chapter.isAvailable?colors.lockedChapter:colors.primary}]}>
                             {!chapter.isAvailable?<Image style={[styles.coursePage.chapterView.icon]} source={require("../../../assets/icons/lock.png")}/>:null}
                         </View>
                         <Text style={styles.coursePage.chapterView.title}>{chapter.title}</Text>
-                    </TouchableOpacity>
+                    </PlatformPressable>
                 ))}
             </View>
         </View>
