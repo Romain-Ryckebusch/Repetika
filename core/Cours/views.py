@@ -10,13 +10,15 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from PyPDF2 import PdfMerger
-from pypdf import PdfReader, PdfWriter
+from .mongodb_utils import find_documents_fields, count_documents
 
-from .models import UploadedFile
+from PyPDF2 import PdfMerger
+from PyPDF2 import PdfReader, PdfWriter
+
+#from .models import UploadedFile
 #from .serializers import UploadedFileSerializer
 
-
+from bson import ObjectId
 
 class GetChapter(APIView):
     """
@@ -34,24 +36,33 @@ class GetChapter(APIView):
             )
         
         # Call the Quiz API endpoint
-        quiz_data = {"Mathématiques": 2, "Informatique": 5} # Numbers of locked chapters for each course
+        quiz_data = {"Mathematiques": 0, "Informatique": 1} # Numbers of locked chapters for each course
         # get this from the Quiz service later
         
-        # Subtract the total number of chapters by this value to obtain the number of chapters unlocked;
-        total_chapters = {
-            "Mathématiques": 5,
-            "Informatique": 6
-        } # Get those numbers from the database later
+        user_lessons = find_documents_fields(
+            "Cours",
+            query={"id_auteur": ObjectId(user_id)},
+            fields=["_id", "nom_cours"] # We request the name and id of every course owned by the user
+        )
+        total_chapters = {}
+        for lesson in user_lessons:
+            id_lesson = lesson["_id"]
+            course_name = lesson["nom_cours"]
+            chapter_count = count_documents(
+                "Chapitres",
+                query={"id_cours": ObjectId(id_lesson)} # Count the number of chapters for this course
+            )
+            total_chapters[course_name] = chapter_count # Add the course name and its total number of chapters to the dictionary        
 
         outlist = []
-        for course_name, locked_chapters in quiz_data.items():
+        for course_name, locked_chapters in quiz_data.items(): # If a chapter is in quiz_data, it is locked
             total = total_chapters.get(course_name, 0)
-            unlocked_chapters = total - locked_chapters
+            unlocked_chapters = total - locked_chapters # For each course, we determine the number of unlocked chapters
             outlist.append({
                 "course_name": course_name,
                 "unlocked_chapters": unlocked_chapters,
                 "total_chapters": total
-            })
+            }) # We add all necessary information to the output list
 
         return Response(
             outlist,
@@ -89,7 +100,7 @@ class GetPDF(APIView):
         for chapter in unlocked_chapters:
             course_name = list(chapter.keys())[0]
             chapter_name = chapter[course_name]
-            pdf_paths.append(f"/path/to/{course_name}/{chapter_name}.pdf")
+            pdf_paths.append(f"files/{course_name}/{chapter_name}.pdf")
 
             #pdf_paths.append(f"./local_tests/{course_name}/{chapter_name}.pdf")
 

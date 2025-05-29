@@ -40,10 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'TimeService',
     'MainServer',
     'Cours',
-    'SeanceApprentissage',
+    #'SeanceApprentissage',
 ]
 
 MIDDLEWARE = [

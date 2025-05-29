@@ -43,3 +43,6 @@ __pycache__/
 
 # Django migrations
 *.sqlite3
+
+# MongoDB
+core/Cours/DB/*

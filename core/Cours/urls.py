@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import GetChapter, GetPDF
+from .views import GetChapter, GetPDF,UploadAPIView
 
 urlpatterns = [
-    path('getchapter/', GetChapter.as_view()),
-    path('getpdf/', GetPDF.as_view()), # Q: what is a regex to select two hash signs, a space, and any number of letters? A: r'^##\s*[a-zA-Z]*$'
+    path('getChapter', GetChapter.as_view()),
+    path('getPDF', GetPDF.as_view()),
+    path('ajout-cours', UploadAPIView.as_view(), name='ajout-cours'),
 ]

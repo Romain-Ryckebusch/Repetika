@@ -1,71 +1,97 @@
-## Authentification
+## <u>Authentification</u>
 Comptes utilisateurs, sessions, mots de passe, préférences, paramètres, informations utilisateur.
 
-| *id_user* | email  | password_hash | date_creation | last_login | pseudo | avatar_url | préférences_json |
+| <u>id_user</u> | email  | password_hash | date_creation | last_login | pseudo | avatar_url | préférences_json |
 |:---------:|:------:|:-------------:|:-------------:|:----------:|:------:|:----------:|:----------------:|
-| string    | string | string        | Date          | Date       | string | string     | JSON             |
+| ObjectId    | string | string        | Date          | Date       | string | string     | JSON             |
 
 
-## Decks  
+## <u>Decks  </u>
 Decks de cartes, cartes, tags, pièces jointes. Contient 2 tables :
 
 ### Decks
 
-| id_deck | id_user | nom_deck | tags  | date_creation |
+| <u>id_deck</u> | *id_user* | nom_deck | tags  | date_creation |
 |:-------:|:-------:|:--------:|:-----:|:-------------:|
-| string  | string  | string   | array | Date          |
+| ObjectId  | ObjectId  | string   | array (string)| Date          |
 
 ```id_user``` ici l'ID du créateur du Deck.
 ### Cartes
 
-| id_carte | id_deck | front  | back  | pj_front       | pj_back        | tags  |
-|:--------:|:-------:|:------:|:-----:|:--------------:|:--------------:|:-----:|
-| string   | string  | string | string| array          | array          | array |
+| <u>id_carte</u> | *id_deck* | *id_chapitre* | front  | back  | pj | tags  |
+|:--------:|:-------:|:------:|:------:|:----:|:--------------:|:-----:|
+| ObjectId   | ObjectId  | id_chapitre |string | string | JSON | array (string) |
 
-```pj``` : pièce jointe.
+```pj``` : pièces jointes, peuvnet être utilisées par le front et le back
+`id_chapitre` : chapitre auxquelles sont rattachées les cartes (elles sont nécessairement liées à un chapitre pour que le système de progression fonctionne)
 
-## Planification  
+## <u>Planification  </u>
 Historique des révisions, dates de prochaines révisions (algo FSRS).
 
-| id_carte | id_user | date_prochaine | historique_json |
-|:--------:|:-------:|:--------------:|:---------------:|
-| string   | string  | Date           | JSON            |
+### Planification
+
+| *id_carte* | *id_user* | date_prochaine |
+|:--------:|:-------:|:--------------:|
+| string   | string  | Date           |
+
+### Historique
+| *id_carte* | date_resultat | resultat|
+|---|---|---|
+| ObjectId | Date | int |
+
+```resultat``` : vaut 0 si bon du premier coup, 1 si faux d'abord et pas encore bon au moment de sauvegarder les résultats, et 2 si bon après une ou plusieurs erreurs
 
 
-## Séance d'apprentissage  
+## <u>Séance d'apprentissage  </u>
 Sessions en cours, résultats des réponses.
 
-| id_session | id_user | date  | cartes_json | résultats_json |
+| <u>id_session</u> | *id_user* | date  | cartes_json | resultats_json |
 |:----------:|:-------:|:-----:|:-----------:|:--------------:|
-| string     | string  | Date  | JSON        | JSON           |
+| ObjectId     | ObjectId  | Date  | JSON        | JSON           |
+
+```resultats_json``` : `{id_carte : resultat}` où `resultat` est tel que défini dans [Historique](#historique)
 
 
-## Cours  
+## <u>Cours  </u>
 Cours, chapitres, progression de lecture, fichiers PDF. Contient 2 tables :
 
 ### Cours
 
-| id_cours | id_auteur | nom_cours | url    | public | date_creation |
-|:--------:|:---------:|:---------:|:------:|:------:|:-------------:|
-| string   | string    | string    | string | bool   | Date          |
+| *id_cours* | *id_auteur* | *id_deck* | nom_cours | chemin_dossier    | public | date_creation |
+|:--------:|:---------:|:---------:|:------:|:------:|:-------------:|---|
+| ObjectId   | ObjectId    | ObjectId |  string    | string | bool   | Date          |
+
+### Likes
+
+| *id_user* | *id_cours* | vote_positif |
+|---|---|---|
+| ObjectId | ObjectId | bool |
+
+`id_user` est l'id de la personne ayant noté, `id_cours` celle du cours noté
+
+### Commentaires
+
+| *id_user* | *id_cours* | contenu |
+|---|---|---|
+| ObjectId | ObjectId | string |
 
 ### Chapitres
 
-| id_chapitre | id_cours | nom_chapitre | ordre | pdf_url |
+| id_chapitre | id_cours | nom_chapitre | position | chemin_pdf |
 |:-----------:|:--------:|:------------:|:-----:|:-------:|
 | string      | string   | string       | int   | string  |
 
-```ordre``` allant de 1 à [nombre de chapitres].
+```position``` allant de 1 à [nombre de chapitres].
 
-## Quiz  
-Quiz en attente, validation de chapitres, progression.
+## <u>Quiz  </u>
+Quiz en attente, symbolise les chapitres dont les cartes n'ont pas encore été vues une première fois
 
-| id_quiz | id_user | id_chapitre | id_carte | status |
-|:-------:|:-------:|:-----------:|:--------:|:------:|
-| string  | string  | string      | string   | string |
+| <u>id_quiz</u> | *id_user* | *id_chapitre* |
+|:-------:|:-------:|:-----------:|
+| ObjectId  | string  | string  |
 
 
-## Stats  
+## <u>Stats  </u>
 Statistiques utilisateur.
 
 | id_user | revisions_json  | nb_cartes_json | stabilite_json | moy_jour | moy_semaine | moy_mois | moy_an |
@@ -74,7 +100,7 @@ Statistiques utilisateur.
 
 # Autres
 Ne sont pour le moment pas prévus ou à priori pas utilisés.
-## Notifications 
+## <u>Notifications </u>
 Messages push, alertes.
 
 | id_notif | id_user | message | date_envoi | lu   |
