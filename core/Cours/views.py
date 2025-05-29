@@ -1,8 +1,22 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
+import json
+import requests
+
+from django.http import HttpResponse, JsonResponse
+from django.utils import timezone
+
 from rest_framework import status
+from rest_framework.decorators import api_view, parser_classes
+from rest_framework.parsers import JSONParser, MultiPartParser
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from PyPDF2 import PdfMerger
+from pypdf import PdfReader, PdfWriter
+
+from .models import UploadedFile
+#from .serializers import UploadedFileSerializer
+
+
 
 class GetChapter(APIView):
     """
@@ -77,6 +91,8 @@ class GetPDF(APIView):
             chapter_name = chapter[course_name]
             pdf_paths.append(f"/path/to/{course_name}/{chapter_name}.pdf")
 
+            #pdf_paths.append(f"./local_tests/{course_name}/{chapter_name}.pdf")
+
         merger = PdfMerger()
         
         # Get the pdfs from the paths;
@@ -85,8 +101,96 @@ class GetPDF(APIView):
             merger.append(pdf_path)
 
         # Save the merged pdf to a temporary file
-        merged_pdf_path = "/path/to/merged_course.pdf"
+        # merged_pdf_path = "./local_tests/merged_course.pdf"  # <-- working local test 🥳
+        merged_pdf_path = "path/to/merged_course.pdf"
         merger.write(merged_pdf_path)
         merger.close()
+
+        # @todo download the file and send it directly (instead of the path)
+        remote_response = requests.get(merged_pdf_path, stream=True)
+
+        # Check if the download was successful
+        if remote_response.status_code != 200:
+            return Response({"error": "Unable to get PDF file."}, status=400)
         
-        return Response(merged_pdf_path, status=status.HTTP_200_OK)
+        # Read PDF content
+        pdf_content = remote_response.content
+        
+        # Prepare the HTTP response with the PDF content
+        response = HttpResponse(pdf_content, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="document.pdf"'
+        return response
+
+
+
+
+class UploadAPIView(APIView):
+    """
+    POST /api/ajout-cours/
+    takes: pdf,
+           metadata={
+                    "course_name":"name",
+                    "chapters": [
+                        ["name_chapter1", length1],
+                        ["name_chapter1", length2], ...
+                        ]
+                    }
+
+    return: nothing
+    """
+    parser_classes = [MultiPartParser]
+    def get(self, request):
+        return Response({'message': 'Use POST to upload a file.'})
+
+    def post(self, request, *args, **kwargs):
+        pdf_file = request.FILES.get('pdf')
+        metadata = request.data.get('metadata')
+        list_pdf=[]
+
+        if not pdf_file or not metadata:
+            return Response({"error": "Missing PDF or metadata"}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+        try:           
+            metadata_json = json.loads(metadata)
+            print(metadata_json)
+            
+            if 'chapters' not in metadata_json or not metadata_json['chapters']:
+                list_pdf=[pdf_file]
+
+
+            else:
+                list_chapter=metadata_json['chapters']
+                reader = PdfReader(pdf_file)
+                total_pages = len(reader.pages)
+                current=0
+                
+                for (title,length) in list_chapter:
+                    writer = PdfWriter()
+                    end_page = current + length - 1
+                    
+                    if end_page >= total_pages:
+                        end_page = total_pages - 1
+                    start_page=current
+                    
+                    for page_num in range(start_page, end_page + 1):
+                        writer.add_page(reader.pages[page_num])
+                        current+=1
+                    with open(title+".pdf", "wb") as f_out:
+                        writer.write(f_out)
+                    list_pdf.append(title+".pdf")
+
+
+
+        except json.JSONDecodeError:
+            return Response({"error": "Invalid JSON in metadata"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+        #permet d'envoyer à la bdd et d'informer que l'envoi c'est bien passé
+        #uploaded_file = UploadedFile.objects.create(file=pdf_file, metadata=metadata_json)
+        #serializer = UploadedFileSerializer(uploaded_file)
+        #return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response({"message": "Success"}, status=status.HTTP_200_OK)
+
+
