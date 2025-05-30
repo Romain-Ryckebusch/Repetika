@@ -1,0 +1,14 @@
+{# app1/templates/app1/remote_time.html #}
+
+<!DOCTYPE html>
+<html>
+<head><title>Remote Time</title></head>
+<body>
+  <h1>Remote Server Time</h1>
+  {% if error %}
+    <p style="color:red;">Error fetching time: {{ error }}</p>
+  {% else %}
+    <p>The current time on TimeService is: <strong>{{ remote_datetime }}</strong></p>
+  {% endif %}
+</body>
+</html>
