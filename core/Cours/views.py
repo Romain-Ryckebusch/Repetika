@@ -1,5 +1,6 @@
 import json
 import requests
+import os
 
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
@@ -10,7 +11,7 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .mongodb_utils import find_documents_fields, count_documents
+from .mongodb_utils import find_documents_fields, count_documents, update_document, delete_document
 
 from PyPDF2 import PdfMerger
 from PyPDF2 import PdfReader, PdfWriter
@@ -133,8 +134,6 @@ class GetPDF(APIView):
         return response
 
 
-
-
 class UploadAPIView(APIView):
     """
     POST /api/ajout-cours/
@@ -205,3 +204,95 @@ class UploadAPIView(APIView):
         return Response({"message": "Success"}, status=status.HTTP_200_OK)
 
 
+class DeleteCourse(APIView):
+    """
+    GET /api/cours/DeleteCourse
+    Takes: lesson_name
+    Returns: lesson_type, chapter names listed
+    """
+    def get(self, request):
+
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response({"error": "user_id parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        course_name = request.GET.get('course_name')
+        if not course_name:
+            return Response({"error": "course_name parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Obtain the nature of the course (public or private) from the DB; 
+        course = find_documents_fields(
+            "Cours",
+            query={"nom_cours": course_name},
+            fields=["_id", "id_auteur", "public"]
+        )
+
+        if not course:
+            return Response({"error": "Course not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        course = course[0]
+        course_id = course["_id"]
+        is_public = course['public']
+        is_owner = str(user_id) == str(course['id_auteur'])
+
+        # Obtain the list of chapter names [public]. 
+        chapters = find_documents_fields(
+            "Chapitres",
+            query={"id_cours": ObjectId(course_id)},
+            fields=["nom_chapitre", "_id"]
+        )
+
+        #Return all information on the nature of the course and the list of course chapters.
+        if not chapters:
+            return Response({"error": "No chapters found for this course."}, status=status.HTTP_404_NOT_FOUND)
+
+        # if the authenticated user is the owner, replace the Course owner with ‘none’. 
+        if(is_owner):
+            modified = update_document(
+                "Cours",
+                {"_id": ObjectId(course_id)},  # Adapte selon le type de course_id
+                {"id_auteur": None}            # ou "none"
+            )
+        else:
+            # If the authenticated user is not the owner
+            # deletion of its name from the ‘Subscriber’ table; 
+            delete_document(
+                "Souscriveur",
+                {"id_cours": ObjectId(course_id), "id_user": ObjectId(user_id)}
+            )
+        
+        if(not is_public):
+            # Deletion of all the pdfs for the course chapters; 
+            for chapter in chapters:
+                chapter_id = chapter["_id"]
+                chapter_name = chapter["nom_chapitre"]
+                pdf_path = f"files/{course_name}/{chapter_name}.pdf"
+                try:
+                    os.remove(pdf_path)
+                    delete_document(
+                        "Chapitres",
+                        {"_id": ObjectId(chapter_id)}
+                    )
+                except FileNotFoundError:
+                    pass
+            # Deletion of all the entries for this course from the DB;
+            delete_document(
+                "Cours",
+                {"_id": ObjectId(course_id)}
+            )
+
+            # TODO : appel API à l'endpoint de suppression des cartes liées au cours
+            # Exemple d'appel fictif :
+            # requests.delete(f"http://api-decks/delete-cards-by-course/{course_id}")
+            # (À implémenter selon ton architecture)
+
+
+        # Return information on the nature of the course and the list of course chapters
+        return Response(
+            {
+                "course_name": course_name,
+                "is_public": is_public,
+                "chapters": [chapter["nom_chapitre"] for chapter in chapters]
+            },
+            status=status.HTTP_200_OK
+        )
