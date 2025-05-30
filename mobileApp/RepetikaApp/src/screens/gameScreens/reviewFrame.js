@@ -155,7 +155,7 @@ export default function ReviewFrame() {
                             <View style={styles.finishedSession}>
                                 <Text style={[globalStyles.title,styles.finishedSession.splashText]}>{t("courseIndexScreen.reviewSessionFinished")}</Text>
                                 <Text style={[globalStyles.corpus,{textAlign: 'center'}]}>{t("courseIndexScreen.reviewFinishCardsStart")} <Text style={{color:colors.orange}}>{totalCardsCount}</Text> {t("courseIndexScreen.reviewFinishCardsEnd")}</Text>
-                                <Btn_Fill title={t("courseIndexScreen.reviewBackToHome")} style={{width:'80%',marginHorizontal:'10%'}} onPress={()=>{navigate("CourseIndex")}}/>
+                                <Btn_Fill title={t("courseIndexScreen.reviewBackToHome")} style={{width:'80%',marginHorizontal:'10%'}} onPress={()=>{navigate("endSessionChecks")}}/>
                                 {shoot && (
                                     <ConfettiCannon
                                         count={100}
