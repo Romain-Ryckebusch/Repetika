@@ -1,0 +1,132 @@
+{
+  "close": "Fermer",
+
+  "bottomNavbar": {
+    "home": "Cours",
+    "social": "Social",
+    "statistics": "Stats",
+    "profile": "Profil"
+  },
+  "profileScreen":{
+    "title": "Mon profil",
+    "section_trophies_title": "Trophées",
+    "section_info_title" : "Informations générales",
+    "section_info_accountDate" : "Compté créé le {{date}}",
+    "section_info_editBtn" : "Modifier la photo",
+    "section_info":{
+      "username": "Nom d'utilisateur",
+      "name": "Prénom",
+      "surname": "Nom",
+      "mail": "Mail",
+      "password": "Nouveau mot de passe",
+      "passwordConfirm": "Confirmer le nouveau mot de passe",
+      "editBtn":"Enregistrer"
+      }
+  },
+  
+  "userProfileScreen": {
+    "section_trophies_title": "Trophées",
+    "section_info_title" : "Informations générales",
+    "section_info_accountDate" : "Compté créé le {{date}}",
+    "section_removeFriend" : "Supprimer cet ami"
+  },
+
+  "homeScreen": {
+    "splashMessage": "Qu'est ce qu'on apprend aujourd'hui, {{prenom}} ?"
+  },
+  "socialScreen": {
+    "title": "Social",
+    "subTitle": "Classement",
+    "globalLabel": "Global",
+    "friendsLabel": "Amis",
+    "studiedCardsLabel": "Cartes étudiées",
+    "xpLabel": "XP",
+    "streakLabel": "Flammes",
+    "activesCardsLabel": "Cartes Actives",
+    "addFriend": "Ajouter un ami",
+    "addFriendLabel": "Rechercher par nom d'utilisateur",
+    "addFriendPlaceholder": "Entrer un nom d'utilisateur"
+  },
+
+  "crd_lesson":{
+    "dueLabel" : "Cartes à revoir aujourd'hui :"
+  },
+
+  "SettingsScreen":{
+    "title": "Paramètres",
+    "section1":{
+      "title": "Général",
+      "param1": "Recevoir des notifications",
+      "param2": "Télécharger les leçons",
+      "param3": "Télécharger les images",
+      "param4": "Télécharger les sons",
+      "param5": "Télécharger les vidéos",
+      "param6": "Télécharger les leçons en arrière plan",
+      "param7": "Télécharger les leçons en Wi-Fi et données mobiles"
+    },
+    "section2":{
+      "title": "Langue et textes",
+      "param1": "Langue de l'application",
+      "param2": "Afficher les textes avec une police adaptée aux dyslexiques",
+      "param3": "Soutenir le développement en envoyant des statistiques anonymes"
+    }
+  },
+
+  "Register":{
+    "title": "Bienvenue sur Repetika",
+    "subtitle":"Inscris-toi pour commencer à apprendre",
+    "section_info":{
+      "username": "Identifiant",
+      "name": "Prénom",
+      "surname": "Nom",
+      "mail": "Mail",
+      "password": "Mot de passe",
+      "passwordConfirm": "Confirmer le mot de passe",
+      "signUpBtn":"S'inscrire",
+      "logInBtn":"Me connecter",
+      "text":"Vous avez déjà un compte ? "
+    }
+  },
+  "courseIndexScreen": {
+    "coursLabel": "Cours",
+    "reviewLabel": "Revisions",
+    "reviewMainTextStart": "Tu as ",
+    "reviewMainTextEnd": " cartes à révisier aujourd'hui !",
+    "reviewStartButtonText":"Commencer",
+    "reviewManageReviewCard": "Gérer mes cartes à réviser",
+    "reviewSeeAnswer":"Voir la réponse",
+    "reviewValidate": "Valider",
+    "reviewCorrectAnswer": "Réponse correcte :",
+    "reviewYourAnswer": "Votre réponse :",
+    "reviewTrue": "Vrai",
+    "reviewFalse": "Faux",
+    "reviewSessionFinished": "Session terminée !",
+    "reviewFinishCardsStart": "Tu as étudié",
+    "reviewFinishCardsEnd": "cartes !",
+    "reviewBackToHome": "Retour à l'acceuil"
+  },
+
+  "LoginScreen": {
+    "title": "Bienvenue sur Repetika",
+    "subtitle": "Connecte-toi pour commencer à apprendre",
+    "username_mail": "Identifiant",
+    "username": "Nom d'utilisateur ou adresse e-mail",
+    "password": "Mot de passe",
+    "loginBtn": "Se connecter",
+    "forgotPassword": "Mot de passe oublié ?",
+    "register": "Pas encore de compte ? S'inscrire",
+    "passError": "Mot de passe ou nom d'utilisateur incorrect.",
+    "error": "Une erreur est survenue, veuillez réessayer."
+  },
+
+  "StatisticsScreen":{
+    "title":"Révisions",
+    "section_rev":"Statistiques",
+    "section_numbercards":"Nombre de cartes",
+    "section_stab":"Stabilité de la carte",
+    "cards_day":"{{cards_day}} cartes/jour",
+    "cards_week":"{{cards_week}} cartes/semaine",
+    "cards_month":"{{cards_month}} cartes/mois",
+    "cards_year":"{{cards_year}} cartes/an"
+  }
+}

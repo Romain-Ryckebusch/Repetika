@@ -1,0 +1,132 @@
+{
+  "close": "Close",
+
+  "bottomNavbar": {
+    "home": "Courses",
+    "social": "Social",
+    "statistics": "Stats",
+    "profile": "Profile"
+  },
+  "profileScreen": {
+    "title": "Profile",
+    "section_trophies_title": "Trophies",
+    "section_info_title" : "General information",
+    "section_info_accountDate" : "Account created on {{date}}",
+    "section_info_editBtn" : "Edit photo",
+    "section_info":{
+      "username": "Username",
+      "name": "Name",
+      "surname": "Surname",
+      "mail": "Mail",
+      "password": "New password",
+      "passwordConfirm": "Confirm new password",
+      "editBtn":"Save"
+      }
+  },
+
+  "userProfileScreen": {
+    "section_trophies_title": "Trophies",
+    "section_info_title" : "General information",
+    "section_info_accountDate" : "Account created on {{date}}",
+    "section_removeFriend" : "Remove this friend"
+  },
+
+  "homeScreen": {
+    "splashMessage": "What are we learning today, {{prenom}}?"
+  },
+  "socialScreen": {
+    "title": "Social",
+    "subTitle": "LeaderBoard",
+    "globalLabel": "Global",
+    "friendsLabel": "Friends",
+      "studiedCardsLabel": "Cards studied",
+    "xpLabel": "XP",
+    "streakLabel": "Streak",
+    "activesCardsLabel": "Active cards",
+    "addFriend": "Add friend",
+    "addFriendLabel": "Search by username",
+    "addFriendPlaceholder": "Enter the username of your friend"
+  },
+
+  "crd_lesson":{
+    "dueLabel" : "Cards to review today:"
+  },
+
+  "SettingsScreen":{
+    "title": "Settings",
+    "section1":{
+      "title": "General",
+      "param1": "Get notifications",
+      "param2": "Download lessons",
+      "param3": "Download les images",
+      "param4": "Download les sons",
+      "param5": "Download vidéos",
+      "param6": "Download leçons en arrière plan",
+      "param7": "Download leçons en Wi-Fi et données mobiles"
+    },
+    "section2":{
+      "title": "Language and texts",
+      "param1": "Application language",
+      "param2": "Display texts in a dyslexic font",
+      "param3": "Support development by sending anonymous statistics"
+    }
+  },
+  
+  "Register":{
+    "title": "Welcome to Repetika",
+    "subtitle":"Sign up to start learning",
+    "section_info":{
+      "username": "Username",
+      "name": "Name",
+      "surname": "Surname",
+      "mail": "Mail",
+      "password": "New password",
+      "passwordConfirm": "Confirm new password",
+      "signUpBtn":"S'inscrire",
+      "logInBtn":"Log in",
+      "text":"Already have an account? "
+      }
+  },
+  "courseIndexScreen": {
+    "coursLabel": "Courses",
+    "reviewLabel": "Reviews",
+    "reviewMainTextStart": "You have ",
+    "reviewMainTextEnd": " cards to review today !",
+    "reviewStartButtonText":"Start",
+    "reviewManageReviewCard": "Manage my cards to review",
+    "reviewSeeAnswer":"See answer",
+    "reviewValidate": "Validate",
+    "reviewCorrectAnswer": "Correct answer :",
+    "reviewYourAnswer": "Your answer :",
+    "reviewTrue": "True",
+    "reviewFalse": "False",
+    "reviewSessionFinished": "Session finished!",
+    "reviewFinishCardsStart": "You studied",
+    "reviewFinishCardsEnd": "cards !",
+    "reviewBackToHome": "Back to home"
+  },
+
+  "LoginScreen": {
+    "title": "Welcome to Repetika",
+    "subtitle": "Login to start learning",
+    "username_mail": "Username",
+    "username": "Username or e-mail address",
+    "password": "Password",
+    "loginBtn": "Login",
+    "forgotPassword": "Forgot your password?",
+    "register": "No account yet? Register now",
+    "passError": "Incorrect password.",
+    "error": "An error occurred, please try again."
+  },
+
+  "StatisticsScreen":{
+    "title":"Revisions",
+    "section_rev":"Statistics",
+    "section_numbercards":"Number of cards",
+    "section_stab":"Card stability",
+    "cards_day":"{{cards_day}} cards/day",
+    "cards_week":"{{cards_week}} cards/week",
+    "cards_month":"{{cards_month}} cards/month",
+    "cards_year":"{{cards_year}} cards/year"
+  }
+}
