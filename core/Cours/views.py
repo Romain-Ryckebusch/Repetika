@@ -11,7 +11,7 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .mongodb_utils import find_documents_fields, count_documents, update_document, delete_document
+from .mongodb_utils import find_documents_fields, count_documents, insert_document, update_document, delete_document
 
 from PyPDF2 import PdfMerger
 from PyPDF2 import PdfReader, PdfWriter
@@ -296,3 +296,58 @@ class DeleteCourse(APIView):
             },
             status=status.HTTP_200_OK
         )
+
+class ShareCourse(APIView):
+    """
+    GET /api/cours/ShareCourse
+    Takes: lesson_name
+    Returns: lesson_type, chapter names listed
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response({"error": "user_id parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        course_name = request.GET.get('course_name')
+        if not course_name:
+            return Response({"error": "course_name parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if the course exists and is private
+        course = find_documents_fields(
+            "Cours",
+            query={"nom_cours": course_name, "id_auteur": ObjectId(user_id), "public": False},
+            fields=["_id"]
+        )
+        if not course:
+            return Response({"error": "Course not found, is already public or you're not the owner."}, status=status.HTTP_404_NOT_FOUND)
+        
+        course = course[0]
+        course_id = course["_id"]
+        
+        # Update the course to make it public
+        update = update_document(
+            "Cours",
+            {"_id": ObjectId(course_id)},
+            {"public": True}  # Set the course to public
+        )
+
+        if update == 0:
+            return Response({"error": "Failed to update course."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        # Add all the metadata (including a foreign key to the corresponding ‘Course’) to the ‘Metadata public course’ table.
+        insert_document(
+            "MetadataCoursPublic",
+            {
+                "id_cours": ObjectId(course_id),
+                "id_auteur": ObjectId(user_id),
+                "date_publication": timezone.now(), 
+                "tags":[],  # Tags can be added later
+                "description": "This is a public course shared by the user.",  # Placeholder description
+
+                # idk what to add here at the moment
+                # To be honest, I'm not even sure it will be used.
+            }
+        )
+
+        # Return success message
+        return Response(status=status.HTTP_200_OK) 
