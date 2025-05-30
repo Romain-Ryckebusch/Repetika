@@ -12,7 +12,7 @@ const Stack = createNativeStackNavigator();
 const userProfilePicture = require('../assets/Profile.png'); // si besoin
 
 export default function RootNavigator() {
-    const showAuth = true   ;
+    const showAuth = false   ;
     return (
         <Stack.Navigator
             initialRouteName={showAuth ? "Auth" : "MainApp"}
