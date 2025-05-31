@@ -1,5 +1,6 @@
 {
   "close": "Fermer",
+  "locale": "fr-FR",
 
   "bottomNavbar": {
     "home": "Cours",
@@ -128,5 +129,12 @@
     "cards_week":"{{cards_week}} cartes/semaine",
     "cards_month":"{{cards_month}} cartes/mois",
     "cards_year":"{{cards_year}} cartes/an"
+  },
+
+  "EndSessionCheck": {
+    "streakTitleStart": "Cela fait",
+    "streakTitleEnd": "jours que tu t'entraînes !",
+    "Next": "Suivant",
+    "Share": "Partager"
   }
 }

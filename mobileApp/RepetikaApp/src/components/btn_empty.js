@@ -30,12 +30,11 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     borderStyle: 'solid',
     borderWidth: 4,
-    width: '80%',
+    width: '100%',
   },
   text: {
-    color: colors.white,
+    color: colors.black,
     fontSize: 16,
-    fontWeight: 'bold',
     fontFamily: 'OpenSans_Regular',
   },
   disabled: {
