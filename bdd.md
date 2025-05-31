@@ -79,7 +79,7 @@ Cours, chapitres, progression de lecture, fichiers PDF. Contient 2 tables :
 
 | id_chapitre | id_cours | nom_chapitre | position | chemin_pdf |
 |:-----------:|:--------:|:------------:|:-----:|:-------:|
-| string      | string   | string       | int   | string  |
+| ObjectId      | ObjectId   | ObjectId       | int   | string  |
 
 ```position``` allant de 1 à [nombre de chapitres].
 
@@ -88,7 +88,7 @@ Quiz en attente, symbolise les chapitres dont les cartes n'ont pas encore été 
 
 | <u>id_quiz</u> | *id_user* | *id_chapitre* |
 |:-------:|:-------:|:-----------:|
-| ObjectId  | string  | string  |
+| ObjectId  | ObjectId  | ObjectId  |
 
 
 ## <u>Stats  </u>
@@ -96,7 +96,7 @@ Statistiques utilisateur.
 
 | id_user | revisions_json  | nb_cartes_json | stabilite_json | moy_jour | moy_semaine | moy_mois | moy_an |
 |:-------:|:---------------:|:--------------:|:--------------:|:--------:|:-----------:|:--------:|:------:|
-| string  | JSON            | JSON           | JSON           | int      | int         | int      | int    |
+| ObjectId  | JSON            | JSON           | JSON           | int      | int         | int      | int    |
 
 # Autres
 Ne sont pour le moment pas prévus ou à priori pas utilisés.

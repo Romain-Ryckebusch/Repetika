@@ -25,3 +25,6 @@ celery>=5.3
 # Shared utility libraries
 requests>=2.31
 
+# MongoDB python driver
+pymongo>=4.5
+

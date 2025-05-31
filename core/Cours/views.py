@@ -1,6 +1,7 @@
 import json
 import requests
 import os
+from core.settings import *
 
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
@@ -11,7 +12,7 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .mongodb_utils import find_documents_fields, count_documents, insert_document, update_document, delete_document
+from core.shared_modules.mongodb_utils import *
 
 from PyPDF2 import PdfMerger
 from PyPDF2 import PdfReader, PdfWriter
@@ -36,11 +37,40 @@ class GetChapter(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Call the Quiz API endpoint
-        quiz_data = {"Mathematiques": 0, "Informatique": 1} # Numbers of locked chapters for each course
-        # get this from the Quiz service later
+
+        #  Get the list of locked chapters id
+        response = requests.get(QUIZ_BASE_URL + '/getLockedChapters', params={'user_id': user_id})
+
+        # Check if the request was successful (HTTP status 200)
+        if response.status_code == 200:
+            # Parse the JSON response
+            data = response.json()
+        else:
+            print("Failed to retrieve data. Status code:", response.status_code)
+            print("Response:", response.text)
+
+        data = [ObjectId(chapter_id) for chapter_id in data]  # Convert string IDs to ObjectId
+
+        quiz_data_id = count_documents_grouped(
+            "DB_Cours",
+            "Chapitres",
+            query={"_id": {"$in": data}},  # Use the list of locked chapter IDs
+            group_by_field="id_cours"  # Group by course ID to count chapters per course
+        ) # Get the number of locked chapters for each course id
+
+        quiz_data = {}
+        for course_id, locked_chapters_count in quiz_data_id.items():
+            course_name = find_documents_fields(
+                "DB_Cours",
+                "Cours",
+                query={"_id": ObjectId(course_id)},
+                fields=["nom_cours"]
+            )[0]["nom_cours"]  # Get the course name from the course ID
+            quiz_data[course_name] = locked_chapters_count  # Store the count of locked chapters for each course
         
+
         user_lessons = find_documents_fields(
+            "DB_Cours",
             "Cours",
             query={"id_auteur": ObjectId(user_id)},
             fields=["_id", "nom_cours"] # We request the name and id of every course owned by the user
@@ -49,20 +79,21 @@ class GetChapter(APIView):
         for lesson in user_lessons:
             id_lesson = lesson["_id"]
             course_name = lesson["nom_cours"]
-            chapter_count = count_documents(
+            chapter_count = count_documents(œ
+                "DB_Cours",
                 "Chapitres",
                 query={"id_cours": ObjectId(id_lesson)} # Count the number of chapters for this course
             )
             total_chapters[course_name] = chapter_count # Add the course name and its total number of chapters to the dictionary        
-
+            
         outlist = []
-        for course_name, locked_chapters in quiz_data.items(): # If a chapter is in quiz_data, it is locked
-            total = total_chapters.get(course_name, 0)
-            unlocked_chapters = total - locked_chapters # For each course, we determine the number of unlocked chapters
+        for course_name, total_chapters in total_chapters.items(): # If a chapter is in quiz_data, it is locked
+            locked_chapters = quiz_data.get(course_name, 0)
+            unlocked_chapters = total_chapters - locked_chapters # For each course, we determine the number of unlocked chapters
             outlist.append({
                 "course_name": course_name,
                 "unlocked_chapters": unlocked_chapters,
-                "total_chapters": total
+                "total_chapters": total_chapters
             }) # We add all necessary information to the output list
 
         return Response(
