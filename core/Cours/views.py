@@ -79,7 +79,7 @@ class GetChapter(APIView):
         for lesson in user_lessons:
             id_lesson = lesson["_id"]
             course_name = lesson["nom_cours"]
-            chapter_count = count_documents(œ
+            chapter_count = count_documents(
                 "DB_Cours",
                 "Chapitres",
                 query={"id_cours": ObjectId(id_lesson)} # Count the number of chapters for this course
