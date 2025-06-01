@@ -1,5 +1,7 @@
 import json
 import requests
+import os
+from core.settings import *
 
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
@@ -10,7 +12,7 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .mongodb_utils import find_documents_fields, count_documents
+from core.shared_modules.mongodb_utils import *
 
 from PyPDF2 import PdfMerger
 from PyPDF2 import PdfReader, PdfWriter
@@ -35,11 +37,40 @@ class GetChapter(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Call the Quiz API endpoint
-        quiz_data = {"Mathematiques": 0, "Informatique": 1} # Numbers of locked chapters for each course
-        # get this from the Quiz service later
+
+        #  Get the list of locked chapters id
+        response = requests.get(QUIZ_BASE_URL + '/getLockedChapters', params={'user_id': user_id})
+
+        # Check if the request was successful (HTTP status 200)
+        if response.status_code == 200:
+            # Parse the JSON response
+            data = response.json()
+        else:
+            print("Failed to retrieve data. Status code:", response.status_code)
+            print("Response:", response.text)
+
+        data = [ObjectId(chapter_id) for chapter_id in data]  # Convert string IDs to ObjectId
+
+        quiz_data_id = count_documents_grouped(
+            "DB_Cours",
+            "Chapitres",
+            query={"_id": {"$in": data}},  # Use the list of locked chapter IDs
+            group_by_field="id_cours"  # Group by course ID to count chapters per course
+        ) # Get the number of locked chapters for each course id
+
+        quiz_data = {}
+        for course_id, locked_chapters_count in quiz_data_id.items():
+            course_name = find_documents_fields(
+                "DB_Cours",
+                "Cours",
+                query={"_id": ObjectId(course_id)},
+                fields=["nom_cours"]
+            )[0]["nom_cours"]  # Get the course name from the course ID
+            quiz_data[course_name] = locked_chapters_count  # Store the count of locked chapters for each course
         
+
         user_lessons = find_documents_fields(
+            "DB_Cours",
             "Cours",
             query={"id_auteur": ObjectId(user_id)},
             fields=["_id", "nom_cours"] # We request the name and id of every course owned by the user
@@ -48,20 +79,21 @@ class GetChapter(APIView):
         for lesson in user_lessons:
             id_lesson = lesson["_id"]
             course_name = lesson["nom_cours"]
-            chapter_count = count_documents(
+            chapter_count = count_documents(œ
+                "DB_Cours",
                 "Chapitres",
                 query={"id_cours": ObjectId(id_lesson)} # Count the number of chapters for this course
             )
             total_chapters[course_name] = chapter_count # Add the course name and its total number of chapters to the dictionary        
-
+            
         outlist = []
-        for course_name, locked_chapters in quiz_data.items(): # If a chapter is in quiz_data, it is locked
-            total = total_chapters.get(course_name, 0)
-            unlocked_chapters = total - locked_chapters # For each course, we determine the number of unlocked chapters
+        for course_name, total_chapters in total_chapters.items(): # If a chapter is in quiz_data, it is locked
+            locked_chapters = quiz_data.get(course_name, 0)
+            unlocked_chapters = total_chapters - locked_chapters # For each course, we determine the number of unlocked chapters
             outlist.append({
                 "course_name": course_name,
                 "unlocked_chapters": unlocked_chapters,
-                "total_chapters": total
+                "total_chapters": total_chapters
             }) # We add all necessary information to the output list
 
         return Response(
@@ -131,8 +163,6 @@ class GetPDF(APIView):
         response = HttpResponse(pdf_content, content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="document.pdf"'
         return response
-
-
 
 
 class UploadAPIView(APIView):
@@ -205,3 +235,150 @@ class UploadAPIView(APIView):
         return Response({"message": "Success"}, status=status.HTTP_200_OK)
 
 
+class DeleteCourse(APIView):
+    """
+    GET /api/cours/DeleteCourse
+    Takes: lesson_name
+    Returns: lesson_type, chapter names listed
+    """
+    def get(self, request):
+
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response({"error": "user_id parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        course_name = request.GET.get('course_name')
+        if not course_name:
+            return Response({"error": "course_name parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Obtain the nature of the course (public or private) from the DB; 
+        course = find_documents_fields(
+            "Cours",
+            query={"nom_cours": course_name},
+            fields=["_id", "id_auteur", "public"]
+        )
+
+        if not course:
+            return Response({"error": "Course not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        course = course[0]
+        course_id = course["_id"]
+        is_public = course['public']
+        is_owner = str(user_id) == str(course['id_auteur'])
+
+        # Obtain the list of chapter names [public]. 
+        chapters = find_documents_fields(
+            "Chapitres",
+            query={"id_cours": ObjectId(course_id)},
+            fields=["nom_chapitre", "_id"]
+        )
+
+        #Return all information on the nature of the course and the list of course chapters.
+        if not chapters:
+            return Response({"error": "No chapters found for this course."}, status=status.HTTP_404_NOT_FOUND)
+
+        # if the authenticated user is the owner, replace the Course owner with ‘none’. 
+        if(is_owner):
+            modified = update_document(
+                "Cours",
+                {"_id": ObjectId(course_id)},  # Adapte selon le type de course_id
+                {"id_auteur": None}            # ou "none"
+            )
+        else:
+            # If the authenticated user is not the owner
+            # deletion of its name from the ‘Subscriber’ table; 
+            delete_document(
+                "Souscriveur",
+                {"id_cours": ObjectId(course_id), "id_user": ObjectId(user_id)}
+            )
+        
+        if(not is_public):
+            # Deletion of all the pdfs for the course chapters; 
+            for chapter in chapters:
+                chapter_id = chapter["_id"]
+                chapter_name = chapter["nom_chapitre"]
+                pdf_path = f"files/{course_name}/{chapter_name}.pdf"
+                try:
+                    os.remove(pdf_path)
+                    delete_document(
+                        "Chapitres",
+                        {"_id": ObjectId(chapter_id)}
+                    )
+                except FileNotFoundError:
+                    pass
+            # Deletion of all the entries for this course from the DB;
+            delete_document(
+                "Cours",
+                {"_id": ObjectId(course_id)}
+            )
+
+            # TODO : appel API à l'endpoint de suppression des cartes liées au cours
+            # Exemple d'appel fictif :
+            # requests.delete(f"http://api-decks/delete-cards-by-course/{course_id}")
+            # (À implémenter selon ton architecture)
+
+
+        # Return information on the nature of the course and the list of course chapters
+        return Response(
+            {
+                "course_name": course_name,
+                "is_public": is_public,
+                "chapters": [chapter["nom_chapitre"] for chapter in chapters]
+            },
+            status=status.HTTP_200_OK
+        )
+
+class ShareCourse(APIView):
+    """
+    GET /api/cours/ShareCourse
+    Takes: lesson_name
+    Returns: lesson_type, chapter names listed
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response({"error": "user_id parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        course_name = request.GET.get('course_name')
+        if not course_name:
+            return Response({"error": "course_name parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if the course exists and is private
+        course = find_documents_fields(
+            "Cours",
+            query={"nom_cours": course_name, "id_auteur": ObjectId(user_id), "public": False},
+            fields=["_id"]
+        )
+        if not course:
+            return Response({"error": "Course not found, is already public or you're not the owner."}, status=status.HTTP_404_NOT_FOUND)
+        
+        course = course[0]
+        course_id = course["_id"]
+        
+        # Update the course to make it public
+        update = update_document(
+            "Cours",
+            {"_id": ObjectId(course_id)},
+            {"public": True}  # Set the course to public
+        )
+
+        if update == 0:
+            return Response({"error": "Failed to update course."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        # Add all the metadata (including a foreign key to the corresponding ‘Course’) to the ‘Metadata public course’ table.
+        insert_document(
+            "MetadataCoursPublic",
+            {
+                "id_cours": ObjectId(course_id),
+                "id_auteur": ObjectId(user_id),
+                "date_publication": timezone.now(), 
+                "tags":[],  # Tags can be added later
+                "description": "This is a public course shared by the user.",  # Placeholder description
+
+                # idk what to add here at the moment
+                # To be honest, I'm not even sure it will be used.
+            }
+        )
+
+        # Return success message
+        return Response(status=status.HTTP_200_OK) 
