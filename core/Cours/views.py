@@ -17,9 +17,6 @@ from core.shared_modules.mongodb_utils import *
 from PyPDF2 import PdfMerger
 from PyPDF2 import PdfReader, PdfWriter
 
-#from .models import UploadedFile
-#from .serializers import UploadedFileSerializer
-
 from bson import ObjectId
 
 class GetChapter(APIView):
@@ -331,8 +328,8 @@ class DeleteCourse(APIView):
 class ShareCourse(APIView):
     """
     GET /api/cours/ShareCourse
-    Takes: lesson_name
-    Returns: lesson_type, chapter names listed
+    Takes: course name, metadata (?)
+    Returns: nothing
     """
     def get(self, request):
         user_id = request.GET.get('user_id')
@@ -372,13 +369,111 @@ class ShareCourse(APIView):
                 "id_cours": ObjectId(course_id),
                 "id_auteur": ObjectId(user_id),
                 "date_publication": timezone.now(), 
+
+                # this information must then be extracted from the body of the request
                 "tags":[],  # Tags can be added later
                 "description": "This is a public course shared by the user.",  # Placeholder description
-
-                # idk what to add here at the moment
-                # To be honest, I'm not even sure it will be used.
+                "members": 0, # to update
+                "likes_count": 0, # to update
+                "comments_count": 0, # to update
             }
         )
 
-        # Return success message
         return Response(status=status.HTTP_200_OK) 
+
+
+class ShowAllSharedCourses(APIView):
+    """
+    GET /api/cours/ShowAllSharedCourses
+    Takes: nothing
+    Returns: List of public shared courses
+    """
+
+    def get(self, request):
+        
+        # Courses looks up the names of all public courses (and their authors) in its main DB; 
+        public_courses = find_documents_fields(
+            "DB_Cours",
+            "Cours",
+            query={"public": True},  # Only public courses
+            fields=["_id", "nom_cours", "id_auteur"]
+        )
+        # It then goes to 'Metadata' to determine the metadata for each course; 
+        metadata_courses = find_documents_fields(
+            "DB_Cours",
+            "MetadataCoursPublic",
+            query={},
+            fields=["id_cours", "id_auteur", "date_publication", "tags", "description", "members", "likes_count", "comments_count"]
+            # NB : "tags", "description", "members", "likes_count", "comments_count" DON'T EXIST yet in the DB.
+        )
+        # To obtain the number of likes and comments for each course; 
+        community_info = find_documents_fields(
+            "DB_Cours",
+            "InfosCommunautaires", # Doesn't exist yet
+            query={},
+            fields=["id_cours", "likes_count", "comments_count"]
+        )
+        # To 'Souscriveur' to determine the number of subscribers for each course; 
+        subscribers = find_documents_fields(
+            "DB_Cours",
+            "Souscriveur",
+            query={},
+            fields=["id_cours", "id_user"]
+        )
+        # Sends back all informations to Main
+        courses_info = []
+        for course in public_courses:
+            course_id = course["_id"]
+            course_name = course["nom_cours"]
+            author_id = course["id_auteur"]
+
+            # Find metadata for the course
+            metadata = next((m for m in metadata_courses if m["id_cours"] == course_id), None)
+            metadata = metadata if metadata is not None else {}
+
+            # Find community info for the course
+            community = next((c for c in community_info if c["id_cours"] == course_id), None)
+            community = community if community is not None else {}
+
+            # Find subscribers for the course
+            course_subscribers = [s for s in subscribers if s["id_cours"] == course_id]
+            subscribers_count = len(course_subscribers)
+
+            # Get the author's name
+            author = find_documents_fields(
+                "DB_Users",
+                "Users", #TODO
+                query={"_id": ObjectId(author_id)},
+                fields=["username"]
+            )
+            if author:
+                author_name = author[0]["username"]
+            else:
+                author_name = None # TEMP
+            #else:
+            #    return Response(
+            #        {"error": "The author of the course does not exist. What's going on?"},
+            #        status=status.HTTP_404_NOT_FOUND
+            #    )
+
+            # Prepare the course information
+            course_info = {
+                "course_id": str(course_id),
+                "course_name": course_name,
+                "author_id": str(author_id),
+                "author_name": author_name if author_name else "#TODO",
+                "date_publication": metadata.get("date_publication", None).isoformat() if metadata.get("date_publication") else None,
+                "tags": metadata.get("tags", None),
+                "description": metadata.get("description", None),
+                "members": metadata.get("members", 0),
+                "likes_count": community.get("likes_count", 0) if community else 0,
+                "comments_count": community.get("comments_count", 0) if community else 0,
+                "subscribers_count": subscribers_count if subscribers_count else 0
+            }
+            courses_info.append(course_info)
+        
+        return Response(
+            courses_info,
+            status=status.HTTP_200_OK
+        )
+

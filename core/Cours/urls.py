@@ -6,5 +6,7 @@ urlpatterns = [
     path('getPDF', GetPDF.as_view()),
     path('ajout-cours', UploadAPIView.as_view(), name='ajout-cours'),
     path('deleteCourse', DeleteCourse.as_view()),
-    path('shareCourse', ShareCourse.as_view()),  # Assuming this is the same view as DeleteCourse
+    path('shareCourse', ShareCourse.as_view()),
+    path('showAllSharedCourses', ShowAllSharedCourses.as_view()),
+
 ]
