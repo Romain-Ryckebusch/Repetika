@@ -201,7 +201,7 @@ const EndSessionChecks = () => {
             navigate("CourseIndex");
         }
     }, [showStreakView, TrophyToShow]);
-    
+
 
     if (showStreakView) {
         let streakNumber = 0

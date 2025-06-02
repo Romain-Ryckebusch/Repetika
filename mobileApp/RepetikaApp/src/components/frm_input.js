@@ -5,7 +5,7 @@ import colors from '../styles/colors';
 import { useGlobalFonts } from '../styles/globalFonts';
 import globalStyles from '../styles/global';
 
-const Input = ({ placeholder, value, onChangeText, secureTextEntry, style, maxLength }) => {
+const Input = ({ placeholder, value, onChangeText, secureTextEntry, style, maxLength,multiline = false }) => {
   const fontsLoaded = useGlobalFonts();
   if (!fontsLoaded) return null;
 
@@ -19,6 +19,7 @@ const Input = ({ placeholder, value, onChangeText, secureTextEntry, style, maxLe
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
         style={globalStyles.input}
+        multiline={multiline}
       />
     </View>
   );

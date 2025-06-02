@@ -8,6 +8,7 @@ import GameScreens from '../navigation/gameScreens';
 import UserProfileScreen from '../screens/UserProfileScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ActivityIndicator, View} from "react-native";
+import CreateCourseScreens from "./createCourseScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -87,6 +88,12 @@ export default function RootNavigator() {
                     <Stack.Screen
                         name="gameScreens"
                         component={GameScreens}
+                        options={{headerShown:false}}
+                    />
+
+                    <Stack.Screen
+                        name="createCourseScreens"
+                        component={CreateCourseScreens}
                         options={{headerShown:false}}
                     />
 

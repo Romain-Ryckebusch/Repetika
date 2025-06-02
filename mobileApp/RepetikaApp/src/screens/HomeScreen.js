@@ -67,7 +67,7 @@ export default function HomeScreen() {
                             />
                         ))}
 
-                        <TouchableOpacity style={styles.addCard} onPress={() => console.log("Clic sur le bouton !")}>
+                        <TouchableOpacity style={styles.addCard} onPress={() => navigate("createCourseScreens")}>
                             <Text style={{fontSize: 32, color:colors.grey}}>+</Text>
                         </TouchableOpacity>
                     </View>

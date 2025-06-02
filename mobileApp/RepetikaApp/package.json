@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",
+    "@react-native-async-storage/async-storage": "2.1.2",
     "@react-native-picker/picker": "^2.11.0",
     "@react-navigation/bottom-tabs": "^7.3.13",
     "@react-navigation/elements": "^2.4.2",
@@ -29,6 +30,7 @@
     "react-native-chart-kit": "^6.12.0",
     "react-native-confetti-cannon": "^1.5.2",
     "react-native-image-picker": "^8.2.1",
+    "react-native-markdown-display": "^7.0.2",
     "react-native-pdf": "^6.7.7",
     "react-native-progress": "^5.0.1",
     "react-native-safe-area-context": "5.4.0",
@@ -36,8 +38,7 @@
     "react-native-shadow-2": "^7.1.1",
     "react-native-svg": "^15.12.0",
     "react-native-web": "^0.20.0",
-    "react-native-webview": "13.13.5",
-    "@react-native-async-storage/async-storage": "2.1.2"
+    "react-native-webview": "13.13.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

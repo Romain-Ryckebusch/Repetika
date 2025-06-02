@@ -13,7 +13,7 @@ import * as Progress from 'react-native-progress';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import {navigate} from "../../navigation/NavigationService";
 import {useRoute} from "@react-navigation/native";
-
+import Markdown from 'react-native-markdown-display';
 
 
 
@@ -129,7 +129,7 @@ export default function ReviewFrame() {
                     {(!isReviewSessionFinish)?(
                         (cardFace==="front")?(
                             <View style={styles.questionView}>
-                                <Text style={globalStyles.corpus}>{deck[cardToShow].front}</Text>
+                                <Markdown>{deck[cardToShow].front}</Markdown>
                                 <View style={styles.questionView.interactives}>
                                     <Input maxLength={256} onChangeText={setAnswer} value={answer} style={styles.questionView.interactives.input}/>
                                     <Btn_Fill title={(answer==="")?t("courseIndexScreen.reviewSeeAnswer"):t("courseIndexScreen.reviewValidate")} onPress={()=>{setCardFace("back")}}/>
@@ -137,8 +137,9 @@ export default function ReviewFrame() {
                             </View>
                         ):(
                             <>
-                                <Text style={globalStyles.corpus}>{deck[cardToShow].front}</Text>
-
+                                <View  style={{width:"80%",height:"60%", marginLeft:'10%'}}>
+                                <Markdown>{deck[cardToShow].front}</Markdown>
+                                </View>
                                 <View style={styles.answerViewToaster}>
                                     <Text style={styles.answerViewToaster.correctAnswerText}>{t("courseIndexScreen.reviewCorrectAnswer")} {deck[cardToShow].back}</Text>
                                     {answer!==""?(
