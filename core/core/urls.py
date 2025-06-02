@@ -6,6 +6,6 @@ urlpatterns = [
     path("api/quiz/", include("Quiz.urls")),
     path("api/decks/", include("Decks.urls")),
     path("api/planning/", include("Planning.urls")),
-    #path("", include("SeanceApprentissage.urls")),
+    path("", include("SeanceApprentissage.urls")),
 ]
 
