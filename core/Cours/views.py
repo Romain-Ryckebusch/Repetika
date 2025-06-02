@@ -384,7 +384,7 @@ class ShareCourse(APIView):
 
 class ShowAllSharedCourses(APIView):
     """
-    GET /api/cours/ShowAllSharedCourses
+    GET /api/cours/showAllSharedCourses
     Takes: nothing
     Returns: List of public shared courses
     """
@@ -477,3 +477,67 @@ class ShowAllSharedCourses(APIView):
             status=status.HTTP_200_OK
         )
 
+class AddToSubscribers(APIView):
+    """
+    GET /api/cours/addToSubscribers
+    Course adds the user's name to the 'Subscriber' table, associating their name with the course ID.
+    Fellow devs, don't forget to check the example provided.
+
+    Takes: id_user, course_name, author_id
+    Returns: nothing
+    """
+
+    def get(self, request):
+        id_user = request.GET.get('id_user')
+        if not id_user:
+            return Response({"error": "id_user parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        course_name = request.GET.get('course_name')
+        if not course_name:
+            return Response({"error": "course_name parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        author_id = request.GET.get('author_id')
+        if not author_id:
+            return Response({"error": "author_id parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+        # Check if the course exists and is public
+        course = find_documents_fields(
+            "DB_Cours",
+            "Cours",
+            query={"nom_cours": course_name, "public": True},
+            fields=["_id"]
+        )
+        if not course:
+            return Response({"error": "Course not found or is not public."}, status=status.HTTP_404_NOT_FOUND)
+        
+
+        course = course[0]
+        course_id = course["_id"]
+
+        # Check if the user is already subscribed to the course
+        existing_subscription = find_documents_fields(
+            "DB_Cours",
+            "Souscriveur",
+            query={"id_cours": ObjectId(course_id), "id_user": ObjectId(id_user)},
+            fields=["_id"]
+        )
+        if existing_subscription:
+            return Response({"error": "User is already subscribed to this course."}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+        # Add the user to the subscribers list
+        insert_document(
+            "DB_Cours",
+            "Souscriveur",
+            {
+                "id_cours": ObjectId(course_id),
+                "id_user": ObjectId(id_user)
+            }
+        )
+
+        # TODO : Update the number of members in the course metadata?
+        
+        return Response(
+            status=status.HTTP_200_OK
+        )
