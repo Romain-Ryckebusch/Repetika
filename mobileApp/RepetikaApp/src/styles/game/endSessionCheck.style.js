@@ -38,6 +38,33 @@ const styles = StyleSheet.create({
                 marginTop:'5%',
             }
         }
+    },
+    trophy:{
+        textView:{
+            width:'90%',
+        },
+        trophyName:{
+            textAlign:"center",
+            fontSize:48,
+            color:colors.orange,
+            fontFamily: 'KronaOne_Regular',
+        },
+        imageView:{
+            width:'90%',
+            flexDirection:'column',
+            alignItems:"center",
+        },
+        image:{
+            width:200,
+            height:200,
+        },
+        description:{
+            fontSize:32,
+            textAlign:"center",
+        },
+        buttonsView:{
+            width: '80%',
+        }
     }
 })
 

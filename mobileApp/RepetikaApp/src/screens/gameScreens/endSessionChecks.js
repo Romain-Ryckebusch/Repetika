@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, {useRef, useEffect, useState} from "react";
 import {View, Text, Image, Animated, Pressable} from "react-native";
 import styles from "../../styles/game/endSessionCheck.style";
 import globalStyles from "../../styles/global";
@@ -11,7 +11,7 @@ import {useTranslation} from "react-i18next";
 const streak = require("../../assets/icons/streakIcon.png");
 const streakDisabled = require("../../assets/icons/streakIconDisabeld.png");
 
-const StreakView = ({ streak, date }) => {
+const StreakView = ({ streak, date ,onPress}) => {
     const {t}=useTranslation();
 
 
@@ -46,7 +46,7 @@ const StreakView = ({ streak, date }) => {
             </View>
 
             <View style={styles.streak.btn}>
-                <Btn_Fill title={t("EndSessionCheck.Next")} onPress={()=>navigate("endSessionChecks")} />
+                <Btn_Fill title={t("EndSessionCheck.Next")} onPress={onPress} />
                 <Btn_Empty title={t("EndSessionCheck.Share")} style={styles.streak.btn.share}/>
             </View>
         </View>
@@ -117,6 +117,29 @@ const Streak = ({ data }) => {
     }
 };
 
+
+const TrophyView = ({title, description, onPress}) => {
+    const {t}=useTranslation();
+    return (
+        <View style={styles.container}>
+            <View style={styles.trophy.textView}>
+                <Text style={globalStyles.title}>Félicitations!{"\n"}{"\n"}Tu as obtenu le trophée:{"\n"}</Text>
+                <Text style={styles.trophy.trophyName}>{title}</Text>
+            </View>
+            <View style={styles.trophy.imageView}>
+                <Image style={styles.trophy.image} source={require('../../assets/trophy_gold.png')}/>
+                <Text style={styles.trophy.description}>{description}</Text>
+            </View>
+            <View style={styles.trophy.buttonsView}>
+                <Btn_Fill title={t("EndSessionCheck.Next")} onPress={onPress} />
+                <Btn_Empty title={t("EndSessionCheck.Share")} style={styles.streak.btn.share}/>
+            </View>
+        </View>
+    )
+};
+
+
+
 function isSameDate(date1, date2) {
     return (
         date1.getFullYear() === date2.getFullYear() &&
@@ -146,15 +169,41 @@ function firstLetterOfDay(date, locale = 'fr-FR') {
     return nomJour.charAt(0).toUpperCase();
 }
 
+
+
+
+
+
 const EndSessionChecks = () => {
     const initialPlayerData = {
-        streak: 5,
-        lastSessionDate: new Date("2025-05-30"),
+        streak: 6,
+        lastSessionDate: new Date("2025-06-01"),
     };
 
-    if(isSameDate(initialPlayerData.lastSessionDate,new Date())) {
-        navigate("CourseIndex")
-    }else{
+    const [showStreakView, setShowStreakView] = useState(!isSameDate(initialPlayerData.lastSessionDate,new Date()));
+    const [TrophyToShow, setTrophyToShow] = useState([
+        {title:"Tryharder",description:"Travailler 500 cartes"},
+        {title:"Assidu",description: "Etuider 7 jours de suite"}
+    ]);
+
+    const streakNextAction =()=>{
+        setShowStreakView(false);
+        navigate("endSessionChecks");
+    }
+
+    const trophyNextAction = ()=>{
+        setTrophyToShow(prev => prev.slice(1));
+        navigate("endSessionChecks")
+    }
+
+    useEffect(() => {
+        if (!showStreakView && TrophyToShow.length === 0) {
+            navigate("CourseIndex");
+        }
+    }, [showStreakView, TrophyToShow]);
+    
+
+    if (showStreakView) {
         let streakNumber = 0
         if(isYesterday(initialPlayerData.lastSessionDate)) {
             streakNumber = initialPlayerData.streak;
@@ -163,8 +212,13 @@ const EndSessionChecks = () => {
             <StreakView
                 streak={streakNumber}
                 date={initialPlayerData.lastSessionDate}
+                onPress={()=>streakNextAction()}
             />
         );
+    }else if(TrophyToShow.length !== 0) {
+        return(
+            <TrophyView title={TrophyToShow[0].title} description={TrophyToShow[0].description} onPress={()=>{trophyNextAction()}} />
+        )
     }
 };
 
