@@ -14,13 +14,14 @@ def insert_document(database_name, collection_name, document):
     result = collection.insert_one(document)
     return result.inserted_id
 
-def find_documents_fields(database_name, collection_name, query={}, fields=None):
+def find_documents_fields(database_name, collection_name, query={}, fields=None, sort=None):
     db = get_db(database_name)
     collection = db[collection_name]
     projection = {field: 1 for field in fields} if fields else {}
     if not "_id" in projection : 
         projection["_id"] = 0  # Exclude the _id field if not specified
     results = collection.find(query, projection)
+    if sort : results.sort(sort)
     results = [serialize_document(doc) for doc in results]
     return results
 
@@ -33,7 +34,7 @@ def find_documents_all(database_name, collection_name, query={}):
 
 def update_document(database_name, collection_name, query, update_values):
     db = get_db(database_name)
-    collection = db[collection_name]
+    collection = db[collection_name]    
     result = collection.update_one(query, {'$set': update_values})
     return result.modified_count
 

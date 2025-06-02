@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import GetChapter, GetPDF,UploadAPIView, DeleteCourse, ShareCourse
+from .views import *
 
 urlpatterns = [
     path('getChapter', GetChapter.as_view()),

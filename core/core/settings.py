@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'MainServer',
     'Cours',
     'Quiz',
+    'Decks',
+    'Planning',
     #'SeanceApprentissage',
 ]
 
@@ -132,4 +134,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 COURS_BASE_URL = 'http://localhost:8000/api/cours' # URLs of the services, currently all are localhost but they will be set to their actual values once in production
 QUIZ_BASE_URL = 'http://localhost:8000/api/quiz'
+PLANNING_BASE_URL = 'http://localhost:8000/api/planning'
+DECKS_BASE_URL = 'http://localhost:8000/api/decks'
 
