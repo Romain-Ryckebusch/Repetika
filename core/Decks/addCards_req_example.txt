@@ -1,0 +1,6 @@
+{
+  "cartes": [
+    {"id_deck":"683b838d48bed3e43b775ca2", "id_chapitre":"68386b4cac5083de66afd67a","front":"test1","back":"test1"},
+    {"id_deck":"683b838d48bed3e43b775ca2", "id_chapitre":"68386b4cac5083de66afd67a","front":"test2","back":"test2"}
+  ]
+}
