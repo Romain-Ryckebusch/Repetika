@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'MainServer',
     'Cours',
+    'Quiz',
+    'Decks',
+    'Planning',
     #'SeanceApprentissage',
 ]
 
@@ -129,4 +132,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-SERVICETEST1_BASE_URL = 'http://localhost:8000' # URL of the test date-giver service, incidentally the same as every service for now since we currently haven't split them up
+COURS_BASE_URL = 'http://localhost:8000/api/cours' # URLs of the services, currently all are localhost but they will be set to their actual values once in production
+QUIZ_BASE_URL = 'http://localhost:8000/api/quiz'
+PLANNING_BASE_URL = 'http://localhost:8000/api/planning'
+DECKS_BASE_URL = 'http://localhost:8000/api/decks'
+
