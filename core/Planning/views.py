@@ -1,6 +1,7 @@
 import json
 import requests
 import os
+from core.settings import *
 
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
@@ -36,15 +37,16 @@ class FirstPlanChapter(APIView):
                 {"error": "user_id, id_chapitre and id_deck parameters are required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-        # Get all cards from the chapter
-        cards = find_documents_fields( # TODO : Replace with an API call to Decks since thiis service doesn't have access to Decks DB
-            "DB_Decks",
-            "Cards",
-            query={"id_chapitre": ObjectId(id_chapitre), "id_deck": ObjectId(id_deck)},
-            fields=["_id"]
-        )
-
+        # Find all cards in the chapter for the given deck
+        response = requests.get(f"{DECKS_BASE_URL}/getCardsChapter", params={"id_chapitre": id_chapitre, "id_deck": id_deck, "user_id": user_id})
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to retrieve cards from the chapter."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        cards = response.json()
+        cards_id = [str(card["_id"]) for card in cards]  # Extract IDs from the cards obtained
+        
         if not cards:
             return Response(
                 {"error": "No cards found for the specified chapter."},
@@ -60,10 +62,10 @@ class FirstPlanChapter(APIView):
         scheduled_card, review_log = scheduler.review_card(scheduled_card, Rating.Good)
 
 
-        for card in cards:
+        for card_id in cards_id:
             document = {
                 "id_user": ObjectId(user_id),
-                "id_card": ObjectId(card["_id"]),
+                "id_card": ObjectId(card_id),
                 "date_planned": scheduled_card.due,
                 "difficulty": scheduled_card.difficulty,
                 "stability": scheduled_card.stability,
