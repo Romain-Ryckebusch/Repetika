@@ -99,3 +99,31 @@ class CompleteQuiz(APIView):
             {"number_entries_deleted": number_entries_deleted},
             status=status.HTTP_200_OK
         )
+    
+
+class GetQuiz(APIView):
+    """GET /api/Quiz/getQuiz
+    Takes user_id, id_chapitre, id_deck
+    Returns list of cards (quiz data)
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        id_chapitre = request.GET.get('id_chapitre')
+        id_deck = request.GET.get('id_deck')
+
+        if not user_id or not id_chapitre or not id_deck:
+            return Response(
+                {"error": "user_id, id_chapitre and id_deck parameters are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        response = requests.get(DECKS_BASE_URL + "/getCardsChapter", params={
+            "user_id": user_id,
+            "id_chapitre": id_chapitre,
+            "id_deck": id_deck
+        })
+
+        return Response(
+            response.json(),
+            status=status.HTTP_200_OK
+        )

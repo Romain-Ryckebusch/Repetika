@@ -38,7 +38,7 @@ class FirstPlanChapter(APIView):
             )
 
         # Get all cards from the chapter
-        cards = find_documents_fields(
+        cards = find_documents_fields( # TODO : Replace with an API call to Decks since thiis service doesn't have access to Decks DB
             "DB_Decks",
             "Cards",
             query={"id_chapitre": ObjectId(id_chapitre), "id_deck": ObjectId(id_deck)},
@@ -157,7 +157,6 @@ class ScheduleNextReviews(APIView):
         scheduler = Scheduler(
             learning_steps=(),
             relearning_steps=(),  # Learning and relearning phases are directly managed by the app
-            enable_fuzzing=False,
         )
         
         # Get last review from history
