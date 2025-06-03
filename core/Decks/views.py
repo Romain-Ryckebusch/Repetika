@@ -136,7 +136,7 @@ class DeleteCards(APIView):
     """
     GET /api/Decks/deleteCards
     Takes: user_id, list(card_id)
-    Returns: nothing
+    Returns: validation message
     """
     def get(self, request):
         id_user = request.GET.get('user_id')
@@ -181,5 +181,55 @@ class DeleteCards(APIView):
 
         return Response(
             {"message": "Cards deleted successfully."},
+            status=status.HTTP_200_OK
+        )
+    
+class DeleteDeck(APIView):
+    """
+    GET /api/Decks/deleteDeck
+    Takes: user_id, id_deck
+    Returns: validation message
+    """
+    def get(self, request):
+        id_user = request.GET.get('user_id')
+        id_deck = request.GET.get('id_deck')
+
+        if not id_user or not id_deck:
+            return Response(
+                {"error": "user_id and id_deck parameters are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        card_ids = find_documents_fields(
+            "DB_Decks",
+            "Cards",
+            query={"id_deck": ObjectId(id_deck)},
+            fields=["_id"]
+        )
+
+        # Delete the deck from the database
+        delete_document(
+            "DB_Decks",
+            "Decks",
+            query={"_id": ObjectId(id_deck), "id_user": ObjectId(id_user)}
+        )
+
+        # Remove all cards individually through deleteCards
+        response = requests.get(
+            f"{DECKS_BASE_URL}/deleteCards",
+            params={
+                'user_id': id_user,
+                'card_ids': json.dumps([str(card['_id']) for card in card_ids])
+            }
+        )
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to delete cards associated with the deck.", 
+                 "details": response},
+                status=response.status_code
+            )
+
+        return Response(
+            {"message": "Deck deleted successfully."},
             status=status.HTTP_200_OK
         )
