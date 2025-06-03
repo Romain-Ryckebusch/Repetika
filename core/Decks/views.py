@@ -2,6 +2,7 @@ import json
 import requests
 import os
 from core.settings import *
+from bson import ObjectId
 
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
@@ -81,9 +82,6 @@ class GetCardsFromID(APIView):
             cards,
             status=status.HTTP_200_OK
         )
-    
-from bson import ObjectId
-
 
 class GetDeckNames(APIView):
     """
@@ -95,6 +93,11 @@ class GetDeckNames(APIView):
         id_user = request.GET.get('id_user')
         if not id_user:
             return Response({"error": "id_user is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            ObjectId(id_user)
+        except Exception as e:
+            return Response({"error": "id_user is not a valid ObjectId"}, status=status.HTTP_400_BAD_REQUEST)
         
         return Response(
             find_documents_fields( 
@@ -113,16 +116,9 @@ class addCards(APIView):
     Returns: nothing
     """
     def post(self, request):
-        cartes = request.data.get('cartes', [])  # On attend une liste de cartes dans le body
-        if not cartes:
-            return Response({"error": "Aucune carte à enregistrer"}, status=status.HTTP_400_BAD_REQUEST) 
+        cartes = request.data.get('cartes', [])  
+        # Cards have been validated in Main call, so we assume they are valid
 
-        # Check if all parameters are provided
-        required_fields = ['id_deck', 'id_chapitre', 'front', 'back']
-        for carte in cartes:
-            if not all(field in carte for field in required_fields):
-                return Response({"error": f"Carte {carte} is missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
-            
         for carte in cartes:
             carte['id_deck'] = ObjectId(carte['id_deck'])
             carte['id_chapitre'] = ObjectId(carte['id_chapitre'])
