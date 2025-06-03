@@ -53,6 +53,23 @@ const styles = StyleSheet.create({
         height:'20%',
         justifyContent:'space-evenly',
         backgroundColor:"#f2f2f2",
+    },
+    chapterList:{
+        marginTop:16,
+        gap:16
+    },
+    addChapter:{
+        width: '100%',
+        backgroundColor: 'transparent',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderStyle: 'dotted',
+        borderWidth: 3,
+        borderColor: colors.grey,
+        height: 60,
     }
 
 

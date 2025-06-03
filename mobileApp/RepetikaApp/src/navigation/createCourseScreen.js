@@ -10,6 +10,7 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import React from "react";
 
 import CreateCourseScreen from "../screens/createScreen/createCourse";
+import CreateChapter from "../screens/createScreen/createChapter";
 
 
 
@@ -27,7 +28,7 @@ const CreateCourseScreens=()=> {
             id={"createCourseNavigator"}
         >
             <Stack.Screen name="CreateCourseScreen"  options={{headerShown:false}} component={CreateCourseScreen}/>
-
+            <Stack.Screen name={"CreateChapterScreen"} options={{headerShown:false}} component={CreateChapter}/>
         </Stack.Navigator>
     );
 }
