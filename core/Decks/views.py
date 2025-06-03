@@ -87,7 +87,7 @@ from bson import ObjectId
 
 class GetDeckNames(APIView):
     """
-    GET /api/CreerCartes/GetDeckNames
+    GET /api/Decks/GetDeckNames
     Takes: user_id
     Returns: List(deck_name)
     """
@@ -108,7 +108,7 @@ class GetDeckNames(APIView):
 
 class addCards(APIView):
     """
-    GET /api/CreerCartes/addCards
+    GET /api/Decks/addCards
     Takes: List(card)
     Returns: nothing
     """
@@ -135,3 +135,55 @@ class addCards(APIView):
             )
         
         return Response(status=status.HTTP_200_OK)
+    
+class DeleteCards(APIView):
+    """
+    GET /api/Decks/deleteCards
+    Takes: user_id, list(card_id)
+    Returns: nothing
+    """
+    def get(self, request):
+        id_user = request.GET.get('user_id')
+        card_ids_json = request.GET.get('card_ids')
+
+        if not card_ids_json or not id_user:
+            return Response(
+                {"error": "user_id and card_ids parameters are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            print(f"Received parameters: user_id={id_user}, card_ids={card_ids_json}")
+            card_ids = json.loads(card_ids_json)
+        except json.JSONDecodeError:
+            return Response(
+                {"error": "Invalid JSON format for card_ids."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Delete each card from the database
+        for card_id in card_ids:
+            delete_document(
+                "DB_Decks",
+                "Cards",
+                query={"_id": ObjectId(card_id)}
+            )
+
+        # Remove cards from planning through API
+        response = requests.get(
+            f"{PLANNING_BASE_URL}/unScheduleCards",
+            params={
+                'user_id': id_user,
+                'card_ids': json.dumps(card_ids)
+            }
+        )
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to unschedule cards.", 
+                 "details": response},
+                status=response.status_code
+            ) 
+
+        return Response(
+            {"message": "Cards deleted successfully."},
+            status=status.HTTP_200_OK
+        )

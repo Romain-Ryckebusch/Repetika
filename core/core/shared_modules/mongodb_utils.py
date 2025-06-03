@@ -59,7 +59,7 @@ def count_documents_grouped(database_name, collection_name, query, group_by_fiel
 def delete_document(database_name, collection_name, query):
     db = get_db(database_name)
     collection = db[collection_name]
-    result = collection.delete_one(query)
+    result = collection.delete_many(query)
     return result.deleted_count
 
 

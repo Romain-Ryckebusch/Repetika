@@ -188,3 +188,51 @@ class ScheduleNextReviews(APIView):
         ) # Create a card with all the current data     
         card, review_log = scheduler.review_card(card, rating) # Ask the scheduler to update the card, changing all its components           
         return card
+    
+
+class UnScheduleCards(APIView):
+    """
+    GET /api/Planning/unScheduleCards
+    Takes user_id, list of card IDs
+    Un-schedules the cards by removing their entries from the planning (planning and history tables in the database)
+    Returns success message
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        card_ids_json = request.GET.get('card_ids')
+
+        if not user_id or not card_ids_json:
+            return Response(
+                {"error": "user_id and card_ids parameters are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            card_ids = json.loads(card_ids_json)
+        except json.JSONDecodeError:
+            return Response(
+                {"error": "Invalid JSON format for card_ids."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        print(f"Received parameters: user_id={user_id}, card_ids={card_ids}")
+
+        # Remove each card from the planning
+        for card_id in card_ids:
+            delete_document(
+                "DB_Planning",
+                "Planning",
+                query={"id_user": ObjectId(user_id), "id_card": ObjectId(card_id)}
+            )
+
+        # Remove each card history
+        for card_id in card_ids:
+            delete_document(
+                "DB_Planning",
+                "History",
+                query={"id_user": ObjectId(user_id), "id_card": ObjectId(card_id)}
+            )
+
+        return Response(
+            {"message": "Cards un-scheduled successfully."},
+            status=status.HTTP_200_OK
+        )
