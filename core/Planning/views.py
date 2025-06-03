@@ -1,6 +1,7 @@
 import json
 import requests
 import os
+from datetime import datetime
 
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
@@ -187,3 +188,31 @@ class ScheduleNextReviews(APIView):
         ) # Create a card with all the current data     
         card, review_log = scheduler.review_card(card, rating) # Ask the scheduler to update the card, changing all its components           
         return card
+    
+
+class CardsToday(APIView):
+    """
+    GET /api/Planning/cardsToday
+    Takes user_id
+    Returns all cards planned for today or before
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        today = make_aware(datetime.now())
+        cartes_a_reviser = find_documents_fields(
+            "DB_Planning",
+            "Planning",
+            query={
+                "id_user": ObjectId(user_id),
+                "date_planned": {"$lte": today}
+            },
+            fields=["id_card", "date_planned", "difficulty", "stability"]
+        )
+
+        return Response(cartes_a_reviser, status=status.HTTP_200_OK)
