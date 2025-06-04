@@ -75,6 +75,7 @@ class updateSéanceRévision(APIView):
     """
     def post(self, request):
         """
+        POST /update-session            (eventellement ajouter /api si on modif urls dans core)
         Takes: Takes: ID utilisateur + Liste résultats
         metadata={
                     "user_id":"name",

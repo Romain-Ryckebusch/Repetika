@@ -95,6 +95,7 @@ class SendPlanification(APIView):
     """
     def post(self, request):
         """
+        POST /api/learning_session/send-planification/
         Takes: ID utilisateur + Liste résultats
         metadata={
                     "user_id":"name",
