@@ -2,6 +2,7 @@ import json
 import requests
 import os
 from datetime import datetime
+from core.settings import *
 
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
@@ -37,15 +38,16 @@ class FirstPlanChapter(APIView):
                 {"error": "user_id, id_chapitre and id_deck parameters are required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-        # Get all cards from the chapter
-        cards = find_documents_fields(
-            "DB_Decks",
-            "Cards",
-            query={"id_chapitre": ObjectId(id_chapitre), "id_deck": ObjectId(id_deck)},
-            fields=["_id"]
-        )
-
+        # Find all cards in the chapter for the given deck
+        response = requests.get(f"{DECKS_BASE_URL}/getCardsChapter", params={"id_chapitre": id_chapitre, "id_deck": id_deck, "user_id": user_id})
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to retrieve cards from the chapter."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        cards = response.json()
+        cards_id = [str(card["_id"]) for card in cards]  # Extract IDs from the cards obtained
+        
         if not cards:
             return Response(
                 {"error": "No cards found for the specified chapter."},
@@ -61,10 +63,10 @@ class FirstPlanChapter(APIView):
         scheduled_card, review_log = scheduler.review_card(scheduled_card, Rating.Good)
 
 
-        for card in cards:
+        for card_id in cards_id:
             document = {
                 "id_user": ObjectId(user_id),
-                "id_card": ObjectId(card["_id"]),
+                "id_card": ObjectId(card_id),
                 "date_planned": scheduled_card.due,
                 "difficulty": scheduled_card.difficulty,
                 "stability": scheduled_card.stability,
@@ -158,7 +160,6 @@ class ScheduleNextReviews(APIView):
         scheduler = Scheduler(
             learning_steps=(),
             relearning_steps=(),  # Learning and relearning phases are directly managed by the app
-            enable_fuzzing=False,
         )
         
         # Get last review from history
@@ -216,3 +217,49 @@ class CardsToday(APIView):
         )
 
         return Response(cartes_a_reviser, status=status.HTTP_200_OK)
+class UnScheduleCards(APIView):
+    """
+    GET /api/Planning/unScheduleCards
+    Takes user_id, list of card IDs
+    Un-schedules the cards by removing their entries from the planning (planning and history tables in the database)
+    Returns success message
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        card_ids_json = request.GET.get('card_ids')
+
+        if not user_id or not card_ids_json:
+            return Response(
+                {"error": "user_id and card_ids parameters are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            card_ids = json.loads(card_ids_json)
+        except json.JSONDecodeError:
+            return Response(
+                {"error": "Invalid JSON format for card_ids."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        print(f"Received parameters: user_id={user_id}, card_ids={card_ids}")
+
+        # Remove each card from the planning
+        for card_id in card_ids:
+            delete_document(
+                "DB_Planning",
+                "Planning",
+                query={"id_user": ObjectId(user_id), "id_card": ObjectId(card_id)}
+            )
+
+        # Remove each card history
+        for card_id in card_ids:
+            delete_document(
+                "DB_Planning",
+                "History",
+                query={"id_user": ObjectId(user_id), "id_card": ObjectId(card_id)}
+            )
+
+        return Response(
+            {"message": "Cards un-scheduled successfully."},
+            status=status.HTTP_200_OK
+        )
