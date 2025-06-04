@@ -25,8 +25,8 @@ export default function Review() {
             "correct":false,
         },{
             "id":2,
-            "front":"Quelle est la capitale de la Slovénie",
-            "back":"Ljubljana",
+            "front":" # Qui est ce? \n ![test](https://i.etsystatic.com/8028751/r/il/8926c5/1976232850/il_fullxfull.1976232850_12te.jpg)",
+            "back":"Notre Seigneur et Sauveur Jésus Christ",
             "correct":false,
         },{
             "id":3,

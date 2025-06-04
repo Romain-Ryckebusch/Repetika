@@ -1,1 +1,0 @@
-http://127.0.0.1:8000/api/cours/addToSubscribers?id_user=68386a41ac5083de66afd677&course_name=Physique&author_id=68386a41ac5083de66afd675
