@@ -38,46 +38,36 @@ class DébutSéanceRévision(APIView):
     """
     def get(self, request):
         """
-        Takes: ID utilisateur (user_id) + le deck (name_deck)
-
+        GET /start-session (eventellement ajouter /api si on modif urls dans core)
+        Takes: ID utilisateur (user_id) + le deck (deck_id)
         return: Liste cartes
         
         """
 
         user_id = request.GET.get('user_id')
-        name_deck = request.GET.get('name_deck')
+        deck_id = request.GET.get('deck_id')
 
-        if not user_id or not name_deck:
+        if not user_id or not deck_id:
             return Response(
-                {"error": "user_id and name_deck parameters are required."},
+                {"error": "user_id and deck_id parameters are required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-        try:
-            results = json.loads(name_deck)
-        except json.JSONDecodeError:
-            return Response(
-                {"error": "Invalid JSON format for results."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        print(f"Received parameters: user_id={user_id}, results={results}")
-
-
 
         response = requests.get(
             #"http://planification:8000/api/sauvegarder-revision/",  #à modifier avec docker
-            "http://localhost:8000/api/SéanceApprentisssage/get-cartes/",
-            params={"user_id": user_id, "name_deck": results})
+            "http://localhost:8000/api/learning_session/get-cartes/",
+            params={"user_id": user_id, "deck_id": deck_id})
         
-        if response.status_code == 200:
-            return response
-            #print("Success SendPlanification")
-        else:
+        if response.status_code != 200:
             return Response(
-                {"error": "Failed to SendPlanification"},
+                {"error": "Failed to get-cartes"},
                 status=status.HTTP_400_BAD_REQUEST
             )
+        cards= response.json()
+        return Response(
+            cards,
+            status=status.HTTP_200_OK
+        )
 
 class updateSéanceRévision(APIView):
     """
