@@ -51,7 +51,7 @@ class DébutSéanceRévision(APIView):
 
         response = requests.get(
             #"http://planification:8000/api/sauvegarder-revision/",  #à modifier avec docker
-            "http://localhost:8000/api/learning_session/get-cartes/",
+            "http://localhost:8000/api/learning-session/get-cartes/",
             params={"user_id": user_id, "deck_id": deck_id})
         
         if response.status_code != 200:
