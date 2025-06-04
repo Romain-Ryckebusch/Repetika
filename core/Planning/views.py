@@ -206,6 +206,8 @@ class CardsToday(APIView):
             )
 
         today = make_aware(datetime.now())
+
+        
         cartes_a_reviser = find_documents_fields(
             "DB_Planning",
             "Planning",
@@ -213,9 +215,9 @@ class CardsToday(APIView):
                 "id_user": ObjectId(user_id),
                 "date_planned": {"$lte": today}
             },
-            fields=["id_card", "date_planned", "difficulty", "stability"]
+            fields=["id_card", "date_planned"]
         )
-
+        
         return Response(cartes_a_reviser, status=status.HTTP_200_OK)
 class UnScheduleCards(APIView):
     """
