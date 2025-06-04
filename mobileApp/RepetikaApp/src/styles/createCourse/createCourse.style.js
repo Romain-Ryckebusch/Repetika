@@ -3,6 +3,10 @@ import colors from '../colors';
 import globalStyles from '../global';
 
 const styles = StyleSheet.create({
+    backArrow:{
+      width:40,
+      height:40,
+    },
     chapterBox:{
         borderWidth:1,
         borderColor:colors.primary,

@@ -3,6 +3,10 @@ import colors from '../colors';
 import globalStyles from '../global';
 
 const styles = StyleSheet.create({
+    backArrow:{
+        width:40,
+        height:40,
+    },
     container: {
         paddingTop:'10%',
         flex:1,
