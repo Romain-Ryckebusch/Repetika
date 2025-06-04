@@ -54,11 +54,10 @@ class GetCartes(APIView):
 
         #on appelle deck pour obtenir la liste des cartes à partir de la liste des id des cartes
         if cardsID_json==[]:
-            """
             return Response(
-                {"error": "aucune carte à réviser"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )"""
+                cardsID_json,
+                status=status.HTTP_200_OK
+        )
             #pour tester: commenter le return et décomenter la ligne suivante:
             cardsID_json = [ObjectId("683b84c948bed3e43b775ca5")]
             #cardsID_json = ["683b84c948bed3e43b775ca5"]
