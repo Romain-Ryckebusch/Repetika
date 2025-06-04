@@ -144,6 +144,7 @@ class GetDeckNames(APIView):
             status=response.status_code
         )
     
+# design-services.md : Création cartes
 
 class CreateCards(APIView):
     """
@@ -170,3 +171,35 @@ class CreateCards(APIView):
             response,
             status=response.status_code
         )
+
+# design-services.md : Quiz de validation
+
+class CompleteQuiz(APIView):
+    """
+    POST /CompleteQuiz
+    Takes: user_id, id_chapitre, id_deck
+    Returns: nothing
+    """
+    def post(self, request):
+        user_id = request.data.get('user_id')
+        id_chapitre = request.data.get('id_chapitre')
+        id_deck = request.data.get('id_deck')
+
+        if not user_id or not id_chapitre or not id_deck:
+            return Response(
+                {"error": "user_id, id_chapitre and id_deck parameters are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        response = requests.post(DECKS_BASE_URL + "/completeQuiz", json={
+            "user_id": user_id,
+            "id_chapitre": id_chapitre,
+            "id_deck": id_deck
+        })
+
+        return Response(
+            response.json(),
+            status=response.status_code
+        )
+    
+#
