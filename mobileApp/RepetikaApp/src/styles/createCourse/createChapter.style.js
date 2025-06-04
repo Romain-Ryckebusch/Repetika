@@ -39,8 +39,12 @@ const styles = StyleSheet.create({
         },
     },
     chapterList:{
-        marginTop:16,
+        marginTop:32,
         gap:16
+    },
+    formView:{
+        marginTop:16,
+        marginBottom:16
     },
     card:{
         borderWidth:1,
@@ -49,9 +53,16 @@ const styles = StyleSheet.create({
         borderRadius:16,
         padding:8,
         paddingVertical:16,
+        flexDirection:'row',
+        alignItems:"center",
         text:{
             fontFamily:'OpenSans_Regular',
             fontSize:16,
+            width:'80%',
+        },
+        icon:{
+            width:30,
+            height:30,
         }
     }
 
