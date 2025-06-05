@@ -235,24 +235,20 @@ class UploadAPIView(APIView):
 class DeleteCourse(APIView):
     """
     GET /api/cours/DeleteCourse
-    Takes: lesson_name
+    Takes: id_course (and not course_name, as written in the docstring. meh)
     Returns: lesson_type, chapter names listed
     """
     def get(self, request):
 
-        user_id = request.GET.get('user_id')
-        if not user_id:
-            return Response({"error": "user_id parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
-        
-        course_name = request.GET.get('course_name')
-        if not course_name:
-            return Response({"error": "course_name parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        id_user = request.GET.get('id_user')
+        id_course = request.GET.get('id_course')
 
         # Obtain the nature of the course (public or private) from the DB; 
         course = find_documents_fields(
+            "DB_Cours",
             "Cours",
-            query={"nom_cours": course_name},
-            fields=["_id", "id_auteur", "public"]
+             query={"_id": ObjectId(id_course)},
+            fields=["_id", "id_auteur", "nom_cours", "public"]
         )
 
         if not course:
@@ -261,10 +257,12 @@ class DeleteCourse(APIView):
         course = course[0]
         course_id = course["_id"]
         is_public = course['public']
-        is_owner = str(user_id) == str(course['id_auteur'])
+        is_owner = str(id_user) == str(course['id_auteur'])
+        course_name = course.get("nom_cours", "Unknown Course")
 
         # Obtain the list of chapter names [public]. 
         chapters = find_documents_fields(
+            "DB_Cours",
             "Chapitres",
             query={"id_cours": ObjectId(course_id)},
             fields=["nom_chapitre", "_id"]
@@ -277,6 +275,7 @@ class DeleteCourse(APIView):
         # if the authenticated user is the owner, replace the Course owner with ‘none’. 
         if(is_owner):
             modified = update_document(
+                "DB_Cours",
                 "Cours",
                 {"_id": ObjectId(course_id)},  # Adapte selon le type de course_id
                 {"id_auteur": None}            # ou "none"
@@ -285,8 +284,9 @@ class DeleteCourse(APIView):
             # If the authenticated user is not the owner
             # deletion of its name from the ‘Subscriber’ table; 
             delete_document(
+                "DB_Cours",
                 "Souscriveur",
-                {"id_cours": ObjectId(course_id), "id_user": ObjectId(user_id)}
+                query={"id_cours": ObjectId(course_id), "id_user": ObjectId(id_user)}
             )
         
         if(not is_public):
@@ -298,6 +298,7 @@ class DeleteCourse(APIView):
                 try:
                     os.remove(pdf_path)
                     delete_document(
+                        "DB_Cours",
                         "Chapitres",
                         {"_id": ObjectId(chapter_id)}
                     )
@@ -305,6 +306,7 @@ class DeleteCourse(APIView):
                     pass
             # Deletion of all the entries for this course from the DB;
             delete_document(
+                "DB_Cours",
                 "Cours",
                 {"_id": ObjectId(course_id)}
             )
