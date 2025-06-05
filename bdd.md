@@ -65,9 +65,14 @@ Cours, chapitres, progression de lecture, fichiers PDF. Contient 2 tables :
 
 ### Cours
 
-| *id_cours* | *id_auteur* | *id_deck* | nom_cours | chemin_dossier    | public | date_creation |
+| <u>id_cours</u> | *id_auteur* | *id_deck* | nom_cours | chemin_dossier    | public | date_creation |
 |:--------:|:---------:|:---------:|:------:|:------:|:-------------:|---|
 | ObjectId   | ObjectId    | ObjectId |  string    | string | bool   | Date          |
+
+### Infos publiques
+| *id_cours* | Description | tags           |
+|------------|-------------|----------------|
+| ObjectId   | String      | array (String) |
 
 ### Likes
 
