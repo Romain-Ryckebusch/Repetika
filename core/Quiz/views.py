@@ -127,3 +127,36 @@ class GetQuiz(APIView):
             response.json(),
             status=status.HTTP_200_OK
         )
+    
+class RemoveQuiz(APIView):
+    """
+    GET /api/Quiz/removeQuiz
+    Takes user_id, id_chapitre, id_deck
+    Returns success message
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        id_chapitre = request.GET.get('id_chapitre')
+        id_deck = request.GET.get('id_deck')
+
+        if not user_id or not id_chapitre or not id_deck:
+            return Response(
+                {"error": "user_id, id_chapitre and id_deck parameters are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        query = {
+            "id_user": ObjectId(user_id),
+            "id_chapitre": ObjectId(id_chapitre),
+            "id_deck": ObjectId(id_deck)
+        }
+        number_entries_deleted = delete_document(
+            "DB_Quiz",
+            "Quiz",
+            query
+        )
+
+        return Response(
+            {"number_entries_deleted": number_entries_deleted},
+            status=status.HTTP_200_OK
+        )

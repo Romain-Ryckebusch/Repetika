@@ -328,7 +328,7 @@ class DeleteCourse(APIView):
 class ShareCourse(APIView):
     """
     GET /api/cours/ShareCourse
-    Takes: course name, metadata (?)
+    Takes: user_id, course name, metadata (JSON)
     Returns: nothing
     """
     def get(self, request):
