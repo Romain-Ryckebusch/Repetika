@@ -9,6 +9,8 @@ from rest_framework import status
 
 from bson import ObjectId
 
+from core.shared_modules.mongodb_utils import *
+
 
 
 class GetCartes(APIView):
@@ -108,20 +110,52 @@ class SendPlanification(APIView):
         """
         metadata=request.data.get('metadata')
         if not metadata:
-            return Response({"error": "Missing user_id or results"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Missing metadata"}, status=status.HTTP_400_BAD_REQUEST)
         
         metadata_json = json.loads(metadata)
         user_id=metadata_json['user_id']
         results=metadata_json['results']
+        
+
+
+        cards_to_schedule={}
+        for id_card, result in results.items():
+            #result vaut 0 si bon du premier coup, 1 si faux d'abord et pas encore bon au moment de sauvegarder les résultats, et 2 si bon après une ou plusieurs erreurs
+            if result==1:#on enregistre dans "IncompleteReviews" pour une prochaine session
+                document = {
+                "id_user": ObjectId(user_id),
+                "id_card": ObjectId(id_card),
+                }
+                insert_document("DB_Session", "IncompleteReviews", document)
+
+
+            if result==0:#on verifie si la carte est déjà dans "IncompleteReviews" 
+                carte = find_documents_fields(
+                    "DB_Planning",
+                    "Planning",
+                    query={
+                        "id_user": ObjectId(user_id),
+                    },
+                    fields=["id_card"]
+                )
+                if carte:
+                    cards_to_schedule["id_card"]=2
+                else:
+                    cards_to_schedule["id_card"]=0
+            if result==2:
+                cards_to_schedule["id_card"]=2
+
 
         response = requests.get(
             #"http://planification:8000/api/Planning/scheduleNextReviews/",
-            "http://localhost:8000/api/planning/scheduleNextReviews/",
+            "http://localhost:8000/api/planning/scheduleNextReviews",
             params={
                 "user_id": user_id,
                 "results": json.dumps(results)
             }
-)
+        )
+        
+
         
         if response.status_code == 200:
             return Response({"message": "Ok"}, status=status.HTTP_200_OK)
