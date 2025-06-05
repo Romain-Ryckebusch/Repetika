@@ -204,10 +204,7 @@ class CardsToday(APIView):
                 {"error": "user_id parameter is required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-        today = make_aware(datetime.now())
-
-        
+        today = make_aware(datetime.now())   
         cartes_a_reviser = find_documents_fields(
             "DB_Planning",
             "Planning",
