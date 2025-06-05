@@ -9,5 +9,6 @@ urlpatterns = [
     path('shareCourse', ShareCourse.as_view()),
     path('showAllSharedCourses', ShowAllSharedCourses.as_view()),
     path('addToSubscribers', AddToSubscribers.as_view()),
+    path('deleteChapter', DeleteChapter.as_view()),
 
 ]

@@ -232,10 +232,94 @@ class UploadAPIView(APIView):
         return Response({"message": "Success"}, status=status.HTTP_200_OK)
 
 
+class DeleteChapter(APIView):
+    """
+    GET /api/cours/DeleteChapter
+    Takes: user_id, id_chapter
+    Returns: nothing
+    """
+    def get(self, request):
+
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response({"error": "user_id parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        id_chapter = request.GET.get('id_chapter')
+        if not id_chapter:
+            return Response({"error": "id_chapter parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if the chapter exists
+        chapter = find_documents_fields(
+            "DB_Cours",
+            "Chapitres",
+            query={"_id": ObjectId(id_chapter)},
+            fields=["_id", "id_cours"]
+        )
+        if not chapter:
+            return Response({"error": "Chapter not found"}, status=status.HTTP_404_NOT_FOUND)
+        chapter = chapter[0]
+
+        # Get the course ID associated with the chapter
+        id_course = find_documents_fields(
+            "DB_Cours",
+            "Chapitres",
+            query={"_id": ObjectId(id_chapter)},
+            fields=["id_cours"]
+        )[0]["id_cours"]
+        print("id_course : ", id_course)
+        
+        # Delete the chapter
+        delete_count = delete_document(
+            "DB_Cours",
+            "Chapitres",
+            query={"_id": ObjectId(id_chapter)}
+        )
+        if delete_count == 0:
+            return Response({"error": "Failed to delete chapter."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        # Delete the cards associated with the chapter
+        response = requests.get(
+            DECKS_BASE_URL + "/deleteCardsChapter",
+            params={
+                "user_id": user_id,
+                "id_chapitre": id_chapter
+            }
+        )
+        if response.status_code != 200:
+            return Response({"error": "Failed to delete cards associated with the chapter. details: " + response.text}, status=response.status_code)
+        
+        # Get the deck ID from the course
+        id_deck = find_documents_fields(
+            "DB_Cours",
+            "Cours",
+            query={"_id": ObjectId(id_course)},
+            fields=["id_deck"]
+        )
+        if not id_deck:
+            return Response({"error": "Deck not found for the chapter."}, status=status.HTTP_404_NOT_FOUND)
+        id_deck = id_deck[0]["id_deck"]
+
+        # Delete the quiz associated with the chapter (if not done yet)
+        print("id_deck : ", id_deck, "id_chapter : ", id_chapter, "user_id : ", user_id) # TODO : correct this part, quiz deletion doesn't seem to work as expected
+        response = requests.get(
+            QUIZ_BASE_URL + "/removeQuiz",
+            params={
+                "user_id": user_id,
+                "id_chapitre": id_chapter,
+                "id_deck": id_deck
+            }
+        )
+        
+        if response.status_code != 200:
+            return Response({"error": "Failed to delete quiz associated with the chapter. details: " + response.text}, status=response.status_code)
+
+        return Response(status=status.HTTP_200_OK)
+
+
 class DeleteCourse(APIView):
     """
     GET /api/cours/DeleteCourse
-    Takes: lesson_name
+    Takes: user_id, id_lesson
     Returns: lesson_type, chapter names listed
     """
     def get(self, request):
@@ -244,91 +328,101 @@ class DeleteCourse(APIView):
         if not user_id:
             return Response({"error": "user_id parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
         
-        course_name = request.GET.get('course_name')
-        if not course_name:
-            return Response({"error": "course_name parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Obtain the nature of the course (public or private) from the DB; 
+        id_lesson = request.GET.get('id_lesson')
+        if not id_lesson:
+            return Response({"error": "id_lesson parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        # Check if the course exists and is owned by the user
         course = find_documents_fields(
+            "DB_Cours",
             "Cours",
-            query={"nom_cours": course_name},
-            fields=["_id", "id_auteur", "public"]
+            query={"_id": ObjectId(id_lesson), "id_auteur": ObjectId(user_id)},
+            fields=["_id", "nom_cours"]
         )
-
         if not course:
-            return Response({"error": "Course not found."}, status=status.HTTP_404_NOT_FOUND)
-
+            return Response({"error": "Course not found or you are not the owner."}, status=status.HTTP_404_NOT_FOUND)
         course = course[0]
-        course_id = course["_id"]
-        is_public = course['public']
-        is_owner = str(user_id) == str(course['id_auteur'])
-
-        # Obtain the list of chapter names [public]. 
-        chapters = find_documents_fields(
-            "Chapitres",
-            query={"id_cours": ObjectId(course_id)},
-            fields=["nom_chapitre", "_id"]
+        # Delete the course
+        delete_count = delete_document(
+            "DB_Cours",
+            "Cours",
+            query={"_id": ObjectId(id_lesson), "id_auteur": ObjectId(user_id)}
         )
-
-        #Return all information on the nature of the course and the list of course chapters.
-        if not chapters:
-            return Response({"error": "No chapters found for this course."}, status=status.HTTP_404_NOT_FOUND)
-
-        # if the authenticated user is the owner, replace the Course owner with ‘none’. 
-        if(is_owner):
-            modified = update_document(
-                "Cours",
-                {"_id": ObjectId(course_id)},  # Adapte selon le type de course_id
-                {"id_auteur": None}            # ou "none"
-            )
-        else:
-            # If the authenticated user is not the owner
-            # deletion of its name from the ‘Subscriber’ table; 
-            delete_document(
-                "Souscriveur",
-                {"id_cours": ObjectId(course_id), "id_user": ObjectId(user_id)}
-            )
+        if delete_count == 0:
+            return Response({"error": "Failed to delete course."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-        if(not is_public):
-            # Deletion of all the pdfs for the course chapters; 
-            for chapter in chapters:
-                chapter_id = chapter["_id"]
-                chapter_name = chapter["nom_chapitre"]
-                pdf_path = f"files/{course_name}/{chapter_name}.pdf"
-                try:
-                    os.remove(pdf_path)
-                    delete_document(
-                        "Chapitres",
-                        {"_id": ObjectId(chapter_id)}
-                    )
-                except FileNotFoundError:
-                    pass
-            # Deletion of all the entries for this course from the DB;
-            delete_document(
-                "Cours",
-                {"_id": ObjectId(course_id)}
+
+
+        # TODO : check that chapter deletion and deck deletion work as expected
+
+        # Delete the chapters associated with the course using DeleteChapter
+        chapters = find_documents_fields(
+            "DB_Cours",
+            "Chapitres",
+            query={"id_cours": ObjectId(id_lesson)},
+            fields=["_id"]
+        )
+        if not chapters:
+            return Response({"error": "No chapters found for the course."}, status=status.HTTP_404_NOT_FOUND)
+        for chapter in chapters:
+            id_chapter = chapter["_id"]
+            response = requests.get(
+                DECKS_BASE_URL + "/deleteChapter",
+                params={
+                    "user_id": user_id,
+                    "id_chapter": str(id_chapter)  # Convert ObjectId to string for the request
+                }
+            )
+            if response.status_code != 200:
+                return Response(
+                    {"error": "Failed to delete chapter associated with the course. details: " + response.text},
+                    status=response.status_code
+                )
+
+        # Delete the course's deck
+        response = requests.get(
+            DECKS_BASE_URL + "/deleteDeck",
+            params={
+                "user_id": user_id,
+                "id_deck": str(course.get("id_deck"))  # Convert ObjectId to string for the request
+            }
+        )
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to delete deck associated with the course. details: " + response.text},
+                status=response.status_code
             )
 
-            # TODO : appel API à l'endpoint de suppression des cartes liées au cours
-            # Exemple d'appel fictif :
-            # requests.delete(f"http://api-decks/delete-cards-by-course/{course_id}")
-            # (À implémenter selon ton architecture)
 
-
-        # Return information on the nature of the course and the list of course chapters
-        return Response(
-            {
-                "course_name": course_name,
-                "is_public": is_public,
-                "chapters": [chapter["nom_chapitre"] for chapter in chapters]
-            },
-            status=status.HTTP_200_OK
+        # Delete the metadata associated with the course
+        delete_document(
+            "DB_Cours",
+            "MetadataCoursPublic",
+            query={"id_cours": ObjectId(id_lesson)}
         )
+        # Delete the subscribers associated with the course
+        delete_document(
+            "DB_Cours",
+            "Subscribers",
+            query={"id_cours": ObjectId(id_lesson)}
+        )
+        # Delete the likes and comments associated with the course
+        delete_document(
+            "DB_Cours",
+            "Likes",
+            query={"id_cours": ObjectId(id_lesson)}
+        )
+        delete_document(
+            "DB_Cours",
+            "Comments",
+            query={"id_cours": ObjectId(id_lesson)}
+        )
+
+        
 
 class ShareCourse(APIView):
     """
     GET /api/cours/ShareCourse
-    Takes: user_id, course name, metadata (JSON)
+    Takes: user_id, id_course, metadata (JSON)
     Returns: nothing
     """
     def get(self, request):
@@ -336,46 +430,59 @@ class ShareCourse(APIView):
         if not user_id:
             return Response({"error": "user_id parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
         
-        course_name = request.GET.get('course_name')
-        if not course_name:
-            return Response({"error": "course_name parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        id_course = request.GET.get('id_course')
+        if not id_course:
+            return Response({"error": "id_course parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        metadata = request.GET.get('metadata')
+        if not metadata:
+            return Response({"error": "metadata parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Check if the course exists and is private
+        # Check if the course exists and is owned by the user
         course = find_documents_fields(
+            "DB_Cours",
             "Cours",
-            query={"nom_cours": course_name, "id_auteur": ObjectId(user_id), "public": False},
-            fields=["_id"]
+            query={"_id": ObjectId(id_course), "id_auteur": ObjectId(user_id)},
+            fields=["_id", "nom_cours", "public"]
         )
         if not course:
-            return Response({"error": "Course not found, is already public or you're not the owner."}, status=status.HTTP_404_NOT_FOUND)
-        
+            return Response({"error": "Course not found or you are not the owner."}, status=status.HTTP_404_NOT_FOUND)
         course = course[0]
-        course_id = course["_id"]
+        # Check if the course is already public
+        if course.get("public", False):
+            return Response({"error": "Course is already public."}, status=status.HTTP_400_BAD_REQUEST)
+        
         
         # Update the course to make it public
         update = update_document(
+            "DB_Cours",
             "Cours",
-            {"_id": ObjectId(course_id)},
-            {"public": True}  # Set the course to public
+            {"_id": ObjectId(id_course)},
+            {"public": True},  # Set the course to public
         )
 
         if update == 0:
             return Response({"error": "Failed to update course."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         # Add all the metadata (including a foreign key to the corresponding ‘Course’) to the ‘Metadata public course’ table.
+        metadata_json = json.loads(metadata)
+        if not isinstance(metadata_json, dict):
+            return Response({"error": "Invalid metadata format. Expected a JSON object."}, status=status.HTTP_400_BAD_REQUEST)
+        
         insert_document(
+            "DB_Cours",
             "MetadataCoursPublic",
             {
-                "id_cours": ObjectId(course_id),
+                "id_cours": ObjectId(id_course),
                 "id_auteur": ObjectId(user_id),
                 "date_publication": timezone.now(), 
 
                 # this information must then be extracted from the body of the request
-                "tags":[],  # Tags can be added later
-                "description": "This is a public course shared by the user.",  # Placeholder description
-                "members": 0, # to update
-                "likes_count": 0, # to update
-                "comments_count": 0, # to update
+                "tags": metadata_json.get("tags", []),  # retrieves tags from metadata, default to empty list
+                "description": metadata_json.get("description", ""),  # retrieves description from metadata, default to empty string
+                "members": 0, # Starting value, will be updated as people subscribe to the course
+                "likes_count": 0, # idem
+                "comments_count": 0, # idem
             }
         )
 

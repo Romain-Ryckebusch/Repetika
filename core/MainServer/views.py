@@ -202,4 +202,38 @@ class CompleteQuiz(APIView):
             status=response.status_code
         )
     
-#
+# design-services.md : Suppression cours
+
+class DeleteCourse(APIView):
+    """
+    GET /DeleteCourse
+    Takes: user_id, id_chapitre, id_deck
+    Returns: success message
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        id_chapitre = request.GET.get('id_chapitre')
+        id_deck = request.GET.get('id_deck')
+
+        if not user_id or not id_chapitre or not id_deck:
+            return Response(
+                {"error": "user_id, id_chapitre and id_deck parameters are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        response = requests.get(DECKS_BASE_URL + "/deleteCourse", params={
+            "user_id": user_id,
+            "id_chapitre": id_chapitre,
+            "id_deck": id_deck
+        })
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to delete course.", "details": response.json()},
+                status=response.status_code
+            )
+        return Response(
+            {"message": "Course deleted successfully."},
+            status=status.HTTP_200_OK
+        )
+    
+    

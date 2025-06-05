@@ -8,4 +8,5 @@ urlpatterns = [
     path('addCards', addCards.as_view()),
     path('deleteCards', DeleteCards.as_view()),
     path('deleteDeck', DeleteDeck.as_view()),
+    path('deleteCardsChapter', DeleteCardsChapter.as_view()),
 ]

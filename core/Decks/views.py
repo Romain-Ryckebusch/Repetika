@@ -184,6 +184,50 @@ class DeleteCards(APIView):
             status=status.HTTP_200_OK
         )
     
+class DeleteCardsChapter(APIView):
+    """
+    GET /api/Decks/deleteCardsChapter
+    Takes: user_id, id_chapitre
+    Returns: validation message
+    """
+    def get(self, request):
+        id_user = request.GET.get('user_id')
+        id_chapitre = request.GET.get('id_chapitre')
+
+        if not id_user or not id_chapitre:
+            return Response(
+                {"error": "user_id and id_chapitre parameters are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Find all card IDs in the chapter
+        card_ids = find_documents_fields(
+            "DB_Decks",
+            "Cards",
+            query={"id_chapitre": ObjectId(id_chapitre)},
+            fields=["_id"]
+        )
+
+        # Delete all cards in the chapter through deleteCards
+        response = requests.get(
+            f"{DECKS_BASE_URL}/deleteCards",
+            params={
+                'user_id': id_user,
+                'card_ids': json.dumps([str(card['_id']) for card in card_ids])
+            }
+        )
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to delete cards associated with the chapter.", 
+                 "details": response},
+                status=response.status_code
+            )
+        
+        return Response(
+            {"message": "Cards in chapter deleted successfully."},
+            status=status.HTTP_200_OK
+        )
+    
 class DeleteDeck(APIView):
     """
     GET /api/Decks/deleteDeck
