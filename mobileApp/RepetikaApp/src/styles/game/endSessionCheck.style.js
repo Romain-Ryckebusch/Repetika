@@ -65,6 +65,32 @@ const styles = StyleSheet.create({
         buttonsView:{
             width: '80%',
         }
+    },
+    xp:{
+        container: {
+            width: "80%",
+            alignSelf: "center",
+            flexDirection: "column",
+        },
+        titleLevel:{
+            color:colors.orange,
+        },
+        xpAddedNumber:{
+            textAlign:"center",
+            fontFamily:'KronaOne_Regular',
+            fontSize:24,
+            color:colors.orange,
+        },
+        progressView:{
+            width:'100%',
+            flexDirection:'row',
+            alignItems:"center",
+            justifyContent:"space-evenly",
+        },
+        levelNumber:{
+            fontSize:32,
+            fontFamily:'KronaOne_Regular',
+        }
     }
 })
 

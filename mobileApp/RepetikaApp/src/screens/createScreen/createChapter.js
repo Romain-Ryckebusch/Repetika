@@ -1,6 +1,6 @@
 import globalStyles from "../../styles/global";
 import {View, Text, TextInput,Image} from "react-native";
-import {useRoute} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import {useState} from "react";
 import styles from "../../styles/createCourse/createChapter.style";
 import Input from "../../components/frm_input";
@@ -30,6 +30,7 @@ const JoinedInput = ({label,placeholder,value,onChangeText}) => {
 
 const CreateChapter = ()=>{
     const route = useRoute();
+    const navigation = useNavigation();
     const chapterId = route.params?.chapterId ?? null;
 
     const [chapterName,setChapterName] = useState("");
@@ -41,7 +42,7 @@ const CreateChapter = ()=>{
     const [cardsList,setCardsList] = useState([]);
 
      //si l'id exist, on récuperera les infos depuis la bdd
-
+    console.log("ChapterId"+chapterId)
 
     const generateFakeObjectId = () => {
         const timestamp = Math.floor(Date.now() / 1000).toString(16);
@@ -75,7 +76,7 @@ const CreateChapter = ()=>{
             )
         );
         setVersoInput("");
-        setRectoInput("");
+        setRectoInput("")
         setInputModeEdit(false);
         setIdCardToEdit(null);
     }
@@ -87,6 +88,9 @@ const CreateChapter = ()=>{
 
     return(
         <View style={styles.container}>
+            <PlatformPressable onPress={()=>{navigation.goBack()}}>
+                <Image style={styles.backArrow} source={require("../../assets/icons/back.png")}></Image>
+            </PlatformPressable>
             <Text style={globalStyles.title}>{chapterName}</Text>
             <Text style={styles.inputContainer}>Nom du chapitre</Text>
             <Input maxLength={64} value={chapterName} onChangeText={setChapterName} />
