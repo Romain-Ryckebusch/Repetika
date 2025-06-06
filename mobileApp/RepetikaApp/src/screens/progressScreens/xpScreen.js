@@ -5,28 +5,36 @@ import globalStyles from "../../styles/global";
 import React, { useEffect, useRef, useState } from "react";
 import * as Progress from 'react-native-progress';
 import colors from '../../styles/colors';
+import Btn_Fill from "../../components/btn_fill";
 
-const XpView = ({ oldXp, addXp }) => {
+const XpView = ({ oldXp, addXp,nextAction }) => {
     const { t } = useTranslation();
 
     const newXp = oldXp + addXp;
     const level = Math.floor(Math.sqrt(oldXp / 10));
-    const nextLevel = level + 1;
+    let nextLevel = level + 1;
     const xpLevel = Math.round(10 * (level ** 2));
-    const xpNextLevel = Math.round(10 * (nextLevel ** 2));
+    let xpNextLevel = Math.round(10 * (nextLevel ** 2));
+
+    const [firstLevelDisplay, setFirstLevelDisplay] = useState(level);
+    const [secondLevelDisplay, setSecondLevelDisplay] = useState(nextLevel);
 
     let deltaXp = xpNextLevel - xpLevel;
     let initialProgress = (oldXp - xpLevel) / deltaXp;
     let finalProgress = (newXp - xpLevel) / deltaXp;
     let newLevelReached = false;
+    let numberOfNewLevels = 0;
 
     // Cas où on dépasse le niveau suivant
-    if (newXp >= xpNextLevel) {
+    while (newXp >= xpNextLevel) {
         newLevelReached = true;
         const levelAfter = nextLevel + 1;
+        nextLevel++;
         const xpLevelAfter = Math.round(10 * (levelAfter ** 2));
         deltaXp = xpLevelAfter - xpNextLevel;
         finalProgress = (newXp - xpNextLevel) / deltaXp;
+        xpNextLevel = xpLevelAfter;
+        numberOfNewLevels++;
     }
 
     const [progress, setProgress] = useState(initialProgress);
@@ -60,14 +68,35 @@ const XpView = ({ oldXp, addXp }) => {
 
     // Animation barre de progression (niveau ou non)
     useEffect(() => {
+        console.log(numberOfNewLevels);
         if (newLevelReached) {
-            const timeout1 = setTimeout(() => setProgress(1), 1000);
-            const timeout2 = setTimeout(() =>{ setAnimatedProgress(false); setProgress(0)}, 1800);
-            const timeout3 = setTimeout(() => { setAnimatedProgress(true); setProgress(finalProgress)}, 2200);
+            const timeouts = [];
+
+            for (let i = 0; i < numberOfNewLevels; i++) {
+                // Démarre la progression
+                const t1 = setTimeout(() => setProgress(1), 1000 + i * 1000);
+                timeouts.push(t1);
+
+                // Reset et affichage des niveaux
+                const t2 = setTimeout(() => {
+                    setAnimatedProgress(false);
+                    setProgress(0);
+                    setFirstLevelDisplay(nextLevel - (numberOfNewLevels-i));
+                    setSecondLevelDisplay(nextLevel- (numberOfNewLevels-i)+1);
+                }, 1800 + i * 1800);
+                timeouts.push(t2);
+            }
+
+            // Progression finale
+            const t3 = setTimeout(() => {
+                setAnimatedProgress(true);
+                setProgress(finalProgress);
+            }, 2200 + (newLevelReached) * 2200);
+            timeouts.push(t3);
+
+            // Nettoyage
             return () => {
-                clearTimeout(timeout1);
-                clearTimeout(timeout2);
-                clearTimeout(timeout3);
+                timeouts.forEach(clearTimeout);
             };
         } else {
             const timeout = setTimeout(() => setProgress(finalProgress), 1000);
@@ -77,6 +106,7 @@ const XpView = ({ oldXp, addXp }) => {
 
     // Animation "Niveau atteint !"
     useEffect(() => {
+
         if (newLevelReached) {
             const timer = setTimeout(() => {
                 Animated.parallel([
@@ -119,7 +149,7 @@ const XpView = ({ oldXp, addXp }) => {
                         marginTop: 10,
                     }}
                 >
-                    Niveau {nextLevel} atteint !
+                    Niveau {nextLevel-1} atteint !
                 </Animated.Text>
             )}
 
@@ -137,7 +167,7 @@ const XpView = ({ oldXp, addXp }) => {
                 </Animated.Text>
 
                 <View style={styles.xp.progressView}>
-                    <Text style={styles.xp.levelNumber}>{level}</Text>
+                    <Text style={styles.xp.levelNumber}>{firstLevelDisplay}</Text>
                     <View style={{ flex: 1, marginHorizontal: 10 }}>
                         <Progress.Bar
                             height={40}
@@ -150,9 +180,11 @@ const XpView = ({ oldXp, addXp }) => {
                             borderRadius={20}
                         />
                     </View>
-                    <Text style={styles.xp.levelNumber}>{nextLevel}</Text>
+                    <Text style={styles.xp.levelNumber}>{secondLevelDisplay}</Text>
                 </View>
             </View>
+
+            <Btn_Fill title={"Suivant"} style={{width:'80%'}} onPress={nextAction}/>
         </View>
     );
 };

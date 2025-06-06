@@ -61,7 +61,10 @@ const EndSessionChecks = () => {
         {title:"Assidu",description: "Etuider 7 jours de suite"}
     ]);
 
-
+    const xpNextAction = ()=>{
+        setShowXpView(false);
+        navigate("endSessionChecks");
+    }
 
     const streakNextAction =()=>{
         setShowStreakView(false);
@@ -81,9 +84,9 @@ const EndSessionChecks = () => {
 
     if(showXpView){
         let xp = initialPlayerData.xp;
-        let addXp=100;
+        let addXp=250;
         return (
-            <XpView oldXp={xp} addXp={addXp}/>
+            <XpView oldXp={xp} addXp={addXp} nextAction={()=>xpNextAction()}/>
         )
     }
 
