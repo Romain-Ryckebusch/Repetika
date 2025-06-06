@@ -11,6 +11,7 @@ import ScreenWrapper from "../components/navigation/screenWrapper";
 import * as Progress from 'react-native-progress';
 
 import styles from "../styles/UserProfileScreen.style";
+import * as XPF from "../utils/ProgressFunctions";
 
 function removeFriend() {
     console.log("remove friend");
@@ -34,11 +35,13 @@ export default function UserProfileScreen(props) {
         "profilePicture":require('../assets/Profile.png'),
         "accountCreationDate":"19/02/2025",
         "streaks":10,
-        "progress":0.85,
-        "level":43,
+        "xp":1400
 
     }
 
+    const xpData = XPF.XpAllDataFunction(accountData.xp)
+    const progress = xpData.progress;
+    const lvl = xpData.level
 
     useEffect(() => {
         if (!userId) {
@@ -109,10 +112,10 @@ export default function UserProfileScreen(props) {
                             color="#F1C40F"
                             unfilledColor="#d9d9d9"
                             borderWidth={0}
-                            progress={accountData.progress}
+                            progress={progress}
                         />
                         <View style={styles.circle}>
-                            <Text>{accountData.level}</Text>
+                            <Text>{lvl}</Text>
                         </View>
                     </View>
                 </View>

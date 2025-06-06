@@ -48,8 +48,7 @@ export default function RootNavigator() {
                 header: ({ navigation, route, options, back }) => (
                     // Afficher ton Header personnalisé ici
                     <Header
-                        progress={50}
-                        lvl={8}
+                        xp={500}
                         streakDays={12}
                         profilePicture={userProfilePicture}
                     />
