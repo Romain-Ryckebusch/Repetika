@@ -366,7 +366,7 @@ class DeleteCourse(APIView):
         for chapter in chapters:
             id_chapter = chapter["_id"]
             response = requests.get(
-                DECKS_BASE_URL + "/deleteChapter",
+                COURS_BASE_URL + "/deleteChapter",
                 params={
                     "user_id": user_id,
                     "id_chapter": str(id_chapter)  # Convert ObjectId to string for the request
