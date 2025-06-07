@@ -267,6 +267,17 @@ class DeleteChapter(APIView):
             fields=["id_cours"]
         )[0]["id_cours"]
         print("id_course : ", id_course)
+
+        # Get the deck ID from the course
+        id_deck = find_documents_fields(
+            "DB_Cours",
+            "Cours",
+            query={"_id": ObjectId(id_course)},
+            fields=["id_deck"]
+        )
+        if not id_deck:
+            return Response({"error": "Deck not found for the chapter."}, status=status.HTTP_404_NOT_FOUND)
+        id_deck = id_deck[0]["id_deck"]
         
         # Delete the chapter
         delete_count = delete_document(
@@ -287,17 +298,6 @@ class DeleteChapter(APIView):
         )
         if response.status_code != 200:
             return Response({"error": "Failed to delete cards associated with the chapter. details: " + response.text}, status=response.status_code)
-        
-        # Get the deck ID from the course
-        id_deck = find_documents_fields(
-            "DB_Cours",
-            "Cours",
-            query={"_id": ObjectId(id_course)},
-            fields=["id_deck"]
-        )
-        if not id_deck:
-            return Response({"error": "Deck not found for the chapter."}, status=status.HTTP_404_NOT_FOUND)
-        id_deck = id_deck[0]["id_deck"]
 
         # Delete the quiz associated with the chapter (if not done yet)
         print("id_deck : ", id_deck, "id_chapter : ", id_chapter, "user_id : ", user_id) # TODO : correct this part, quiz deletion doesn't seem to work as expected
@@ -336,23 +336,11 @@ class DeleteCourse(APIView):
             "DB_Cours",
             "Cours",
             query={"_id": ObjectId(id_lesson), "id_auteur": ObjectId(user_id)},
-            fields=["_id", "nom_cours"]
+            fields=["_id", "nom_cours", "id_deck"]
         )
         if not course:
             return Response({"error": "Course not found or you are not the owner."}, status=status.HTTP_404_NOT_FOUND)
         course = course[0]
-        # Delete the course
-        delete_count = delete_document(
-            "DB_Cours",
-            "Cours",
-            query={"_id": ObjectId(id_lesson), "id_auteur": ObjectId(user_id)}
-        )
-        if delete_count == 0:
-            return Response({"error": "Failed to delete course."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-
-
-        # TODO : check that chapter deletion and deck deletion work as expected
 
         # Delete the chapters associated with the course using DeleteChapter
         chapters = find_documents_fields(
@@ -415,6 +403,21 @@ class DeleteCourse(APIView):
             "DB_Cours",
             "Comments",
             query={"id_cours": ObjectId(id_lesson)}
+        )
+
+
+        # Delete the course
+        delete_count = delete_document(
+            "DB_Cours",
+            "Cours",
+            query={"_id": ObjectId(id_lesson), "id_auteur": ObjectId(user_id)}
+        )
+        if delete_count == 0:
+            return Response({"error": "Failed to delete course."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        return Response(
+            {"message": "Course deleted successfully."},
+            status=status.HTTP_200_OK
         )
 
         

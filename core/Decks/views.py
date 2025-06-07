@@ -148,7 +148,7 @@ class DeleteCards(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         try:
-            print(f"Received parameters: user_id={id_user}, card_ids={card_ids_json}")
+            print(f"DeleteCards received parameters: user_id={id_user}, card_ids={card_ids_json}")
             card_ids = json.loads(card_ids_json)
         except json.JSONDecodeError:
             return Response(
@@ -257,6 +257,7 @@ class DeleteDeck(APIView):
             "Decks",
             query={"_id": ObjectId(id_deck), "id_user": ObjectId(id_user)}
         )
+        print(f"Deck with ID {id_deck} deleted for user {id_user}")
 
         # Remove all cards individually through deleteCards
         response = requests.get(
