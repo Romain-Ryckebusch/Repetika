@@ -9,5 +9,7 @@ urlpatterns = [
     path('createCards', CreateCards.as_view()),
     path('getDeckNames', GetDeckNames.as_view()),
     path('createCards', CreateCards.as_view()),
+    path('deleteCourse', DeleteCourse.as_view()),
+    path('getAccessibleCourses', GetAccessibleCourses.as_view()),
 ]
 

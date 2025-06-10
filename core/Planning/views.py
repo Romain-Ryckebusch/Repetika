@@ -18,6 +18,8 @@ from core.shared_modules.mongodb_utils import *
 
 from fsrs import Scheduler, Card, Rating, ReviewLog
 
+from bson import ObjectId
+
 
 
 class FirstPlanChapter(APIView):
@@ -31,7 +33,7 @@ class FirstPlanChapter(APIView):
         user_id = request.GET.get('user_id')
         id_chapitre = request.GET.get('id_chapitre')
         id_deck = request.GET.get('id_deck')
-        print(f"Received parameters: user_id={user_id}, id_chapitre={id_chapitre}, id_deck={id_deck}")
+        print(f"FirstPlanChapter received parameters: user_id={user_id}, id_chapitre={id_chapitre}, id_deck={id_deck}")
 
         if not user_id or not id_chapitre or not id_deck:
             return Response(
@@ -107,7 +109,7 @@ class ScheduleNextReviews(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        print(f"Received parameters: user_id={user_id}, results={results}")
+        print(f"ScheduleNextReviews received parameters: user_id={user_id}, results={results}")
         
         
         results = {k: v for k, v in results.items() if v in [RESULT_INCORRECT, RESULT_CORRECT]} # Remove "incomplete" results since we wait for a definite result before storing and using them
@@ -240,7 +242,7 @@ class UnScheduleCards(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        print(f"Received parameters: user_id={user_id}, card_ids={card_ids}")
+        print(f"UnScheduleCards received parameters: user_id={user_id}, card_ids={card_ids}")
 
         # Remove each card from the planning
         for card_id in card_ids:

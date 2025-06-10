@@ -232,6 +232,60 @@ class UploadAPIView(APIView):
         return Response({"message": "Success"}, status=status.HTTP_200_OK)
 
 
+class GetAccessibleCourses(APIView):
+    """
+    GET /api/cours/GetAccessibleCourses
+    Takes user_id
+    Returns list of accessible (owned + subscribed) courses for the user (id_cours, nom_cours, date_creation)
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response({"error": "user_id parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Get the courses owned by the user
+        owned_courses = find_documents_fields(
+            "DB_Cours",
+            "Cours",
+            query={"id_auteur": ObjectId(user_id)},
+            fields=["_id", "nom_cours", "date_creation"]
+        )
+        
+        # Get the courses the user is subscribed to
+        subscribed_courses = find_documents_fields(
+            "DB_Cours",
+            "Souscriveur",
+            query={"id_user": ObjectId(user_id)},
+            fields=["id_cours"]
+        )
+        
+        # Extract course IDs from subscribed courses
+        subscribed_course_ids = [str(course["id_cours"]) for course in subscribed_courses]
+        
+        # Combine owned and subscribed courses
+        accessible_courses = []
+        for course in owned_courses:
+            accessible_courses.append({
+                "id_cours": str(course["_id"]),
+                "nom_cours": course["nom_cours"],
+                "date_creation": course["date_creation"].isoformat() if course["date_creation"] else None,
+                "owned": True,
+                "subscribed": False
+            })
+        
+        for course_id in subscribed_course_ids:
+            if not any(course["id_cours"] == course_id for course in accessible_courses):
+                accessible_courses.append({
+                    "id_cours": course_id,
+                    "nom_cours": None,  # Course name not available in subscription data
+                    "date_creation": None,  # Creation date not available in subscription data
+                    "owned": False,
+                    "subscribed": True
+                })
+        
+        return Response(accessible_courses, status=status.HTTP_200_OK)
+
+
 class DeleteChapter(APIView):
     """
     GET /api/cours/DeleteChapter
@@ -267,6 +321,17 @@ class DeleteChapter(APIView):
             fields=["id_cours"]
         )[0]["id_cours"]
         print("id_course : ", id_course)
+
+        # Get the deck ID from the course
+        id_deck = find_documents_fields(
+            "DB_Cours",
+            "Cours",
+            query={"_id": ObjectId(id_course)},
+            fields=["id_deck"]
+        )
+        if not id_deck:
+            return Response({"error": "Deck not found for the chapter."}, status=status.HTTP_404_NOT_FOUND)
+        id_deck = id_deck[0]["id_deck"]
         
         # Delete the chapter
         delete_count = delete_document(
@@ -287,17 +352,6 @@ class DeleteChapter(APIView):
         )
         if response.status_code != 200:
             return Response({"error": "Failed to delete cards associated with the chapter. details: " + response.text}, status=response.status_code)
-        
-        # Get the deck ID from the course
-        id_deck = find_documents_fields(
-            "DB_Cours",
-            "Cours",
-            query={"_id": ObjectId(id_course)},
-            fields=["id_deck"]
-        )
-        if not id_deck:
-            return Response({"error": "Deck not found for the chapter."}, status=status.HTTP_404_NOT_FOUND)
-        id_deck = id_deck[0]["id_deck"]
 
         # Delete the quiz associated with the chapter (if not done yet)
         print("id_deck : ", id_deck, "id_chapter : ", id_chapter, "user_id : ", user_id) # TODO : correct this part, quiz deletion doesn't seem to work as expected
@@ -336,23 +390,11 @@ class DeleteCourse(APIView):
             "DB_Cours",
             "Cours",
             query={"_id": ObjectId(id_lesson), "id_auteur": ObjectId(user_id)},
-            fields=["_id", "nom_cours"]
+            fields=["_id", "nom_cours", "id_deck"]
         )
         if not course:
             return Response({"error": "Course not found or you are not the owner."}, status=status.HTTP_404_NOT_FOUND)
         course = course[0]
-        # Delete the course
-        delete_count = delete_document(
-            "DB_Cours",
-            "Cours",
-            query={"_id": ObjectId(id_lesson), "id_auteur": ObjectId(user_id)}
-        )
-        if delete_count == 0:
-            return Response({"error": "Failed to delete course."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-
-
-        # TODO : check that chapter deletion and deck deletion work as expected
 
         # Delete the chapters associated with the course using DeleteChapter
         chapters = find_documents_fields(
@@ -366,7 +408,7 @@ class DeleteCourse(APIView):
         for chapter in chapters:
             id_chapter = chapter["_id"]
             response = requests.get(
-                DECKS_BASE_URL + "/deleteChapter",
+                COURS_BASE_URL + "/deleteChapter",
                 params={
                     "user_id": user_id,
                     "id_chapter": str(id_chapter)  # Convert ObjectId to string for the request
@@ -415,6 +457,21 @@ class DeleteCourse(APIView):
             "DB_Cours",
             "Comments",
             query={"id_cours": ObjectId(id_lesson)}
+        )
+
+
+        # Delete the course
+        delete_count = delete_document(
+            "DB_Cours",
+            "Cours",
+            query={"_id": ObjectId(id_lesson), "id_auteur": ObjectId(user_id)}
+        )
+        if delete_count == 0:
+            return Response({"error": "Failed to delete course."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        return Response(
+            {"message": "Course deleted successfully."},
+            status=status.HTTP_200_OK
         )
 
         

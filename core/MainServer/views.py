@@ -1,5 +1,3 @@
-
-
 from django.utils.timezone import make_aware
 
 import json
@@ -19,13 +17,13 @@ from rest_framework.views import APIView
 from core.shared_modules.mongodb_utils import *
 
 from fsrs import Scheduler, Card, Rating, ReviewLog
+from PyPDF2 import PdfMerger
+from PyPDF2 import PdfReader, PdfWriter
 
+#from .models import UploadedFile
+#from .serializers import UploadedFileSerializer
 
-
-
-
-
-
+from bson import ObjectId
 
 
 class DébutSéanceRévision(APIView):
@@ -117,13 +115,37 @@ class updateSéanceRévision(APIView):
                 {"error": "Failed to SendPlanification"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-from PyPDF2 import PdfMerger
-from PyPDF2 import PdfReader, PdfWriter
 
-#from .models import UploadedFile
-#from .serializers import UploadedFileSerializer
 
-from bson import ObjectId
+
+
+# General functions :
+
+class GetAccessibleCourses(APIView):
+    """
+    GET /GetAccessibleCourses
+    Takes user_id
+    Returns list of accessible (owned + subscribed) courses for the user (id_cours, nom_cours, date_creation)
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = requests.get(COURS_BASE_URL + "/getAccessibleCourses", params={"user_id": user_id})
+
+        return Response(
+            response.json(),
+            status=response.status_code
+        )
+
+
+
+
+
+
+
+
 
 class GetDeckNames(APIView):
     """
@@ -197,6 +219,85 @@ class CompleteQuiz(APIView):
             "id_deck": id_deck
         })
 
+class DeleteCourse(APIView):
+
+    def get(self, request):
+        """
+        GET /DeleteCourse
+        Takes: id_user, id_course
+        Returns: success message
+        """
+        id_user = request.GET.get('id_user')
+        if not id_user:
+            return Response({"error": "id_user parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        id_course = request.GET.get('id_course')
+        if not id_course:
+            return Response({"error": "id_course parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+         
+
+        # Réception de l'information sur la nature du cours (public ou privé) ainsi que de la liste des noms des chapitres ; 
+        response = requests.get(
+            COURS_BASE_URL + "/deleteCourse", 
+            params={
+                "id_user": id_user,
+                "id_course": id_course
+                }
+            )
+        if response.status_code != 200:
+            return Response(
+                response.json(),
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+
+        # Envoi de ces informations à Quiz pour suppression ; 
+        # TODO: Uncomment when Quiz service is ready
+                        
+        #response = requests.get(
+        #    QUIZ_BASE_URL + "/deleteCourse", 
+        #    params={
+        #        "id_user": id_user,
+        #        "id_course": id_course
+        #        }
+        #    )
+        #if response.status_code != 200:
+        #    return Response(
+        #        {"error": "Failed to delete course from quiz"},
+        #        status=status.HTTP_400_BAD_REQUEST
+        #    )
+
+
+        # Envoi de ces informations à Decks pour obtenir la liste des id des cartes concernées ([privé] et supprimer ces lignes de la BDD) ; 
+        response = requests.get(
+            DECKS_BASE_URL + "/deleteCourse", 
+            params={
+                "id_user": id_user,
+                "id_course": id_course
+                }
+            )
+        if response.status_code != 200:
+            return Response(
+                response.json(),
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Envoi de cette liste d'id à Planification
+        # Planification
+        #
+        #response = requests.get(
+        #    PLANNING_BASE_URL + "/deleteCourse", 
+        #    params={
+        #        "id_user": id_user,
+        #        "id_course_list": id_course_list
+        #        }
+        #    )
+        #if response.status_code != 200:
+        #    return Response(
+        #        response.json(),
+        #        status=status.HTTP_400_BAD_REQUEST
+        #    )
+
         return Response(
             response.json(),
             status=response.status_code
@@ -221,7 +322,7 @@ class DeleteCourse(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        response = requests.get(DECKS_BASE_URL + "/deleteCourse", params={
+        response = requests.get(COURS_BASE_URL + "/deleteCourse", params={
             "user_id": user_id,
             "id_chapitre": id_chapitre,
             "id_deck": id_deck
