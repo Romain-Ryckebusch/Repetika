@@ -117,6 +117,36 @@ class updateSéanceRévision(APIView):
             )
 
 
+
+
+# General functions :
+
+class GetAccessibleCourses(APIView):
+    """
+    GET /GetAccessibleCourses
+    Takes user_id
+    Returns list of accessible (owned + subscribed) courses for the user (id_cours, nom_cours, date_creation)
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = requests.get(COURS_BASE_URL + "/getAccessibleCourses", params={"user_id": user_id})
+
+        return Response(
+            response.json(),
+            status=response.status_code
+        )
+
+
+
+
+
+
+
+
+
 class GetDeckNames(APIView):
     """
     GET /GetDeckNames

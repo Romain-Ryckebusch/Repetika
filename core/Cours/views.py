@@ -232,6 +232,60 @@ class UploadAPIView(APIView):
         return Response({"message": "Success"}, status=status.HTTP_200_OK)
 
 
+class GetAccessibleCourses(APIView):
+    """
+    GET /api/cours/GetAccessibleCourses
+    Takes user_id
+    Returns list of accessible (owned + subscribed) courses for the user (id_cours, nom_cours, date_creation)
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response({"error": "user_id parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Get the courses owned by the user
+        owned_courses = find_documents_fields(
+            "DB_Cours",
+            "Cours",
+            query={"id_auteur": ObjectId(user_id)},
+            fields=["_id", "nom_cours", "date_creation"]
+        )
+        
+        # Get the courses the user is subscribed to
+        subscribed_courses = find_documents_fields(
+            "DB_Cours",
+            "Souscriveur",
+            query={"id_user": ObjectId(user_id)},
+            fields=["id_cours"]
+        )
+        
+        # Extract course IDs from subscribed courses
+        subscribed_course_ids = [str(course["id_cours"]) for course in subscribed_courses]
+        
+        # Combine owned and subscribed courses
+        accessible_courses = []
+        for course in owned_courses:
+            accessible_courses.append({
+                "id_cours": str(course["_id"]),
+                "nom_cours": course["nom_cours"],
+                "date_creation": course["date_creation"].isoformat() if course["date_creation"] else None,
+                "owned": True,
+                "subscribed": False
+            })
+        
+        for course_id in subscribed_course_ids:
+            if not any(course["id_cours"] == course_id for course in accessible_courses):
+                accessible_courses.append({
+                    "id_cours": course_id,
+                    "nom_cours": None,  # Course name not available in subscription data
+                    "date_creation": None,  # Creation date not available in subscription data
+                    "owned": False,
+                    "subscribed": True
+                })
+        
+        return Response(accessible_courses, status=status.HTTP_200_OK)
+
+
 class DeleteChapter(APIView):
     """
     GET /api/cours/DeleteChapter
