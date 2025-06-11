@@ -133,6 +133,33 @@ class GetAccessibleCourses(APIView):
             return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
         
         response = requests.get(COURS_BASE_URL + "/getAccessibleCourses", params={"user_id": user_id})
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to retrieve accessible courses."},
+                status=response.status_code
+            )
+
+        return Response(
+            response.json(),
+            status=response.status_code
+        )
+    
+
+
+class GetCourseChapters(APIView):
+    """
+    GET /GetCourseChapters
+    Takes user_id, id_course
+    Returns list of chapters in the course (id_chapitre, nom_chapitre, date_creation)
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        id_course = request.GET.get('id_course')
+
+        if not user_id or not id_course:
+            return Response({"error": "user_id and id_course are required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = requests.get(COURS_BASE_URL + "/getCourseChapters", params={"user_id": user_id, "id_course": id_course})
 
         return Response(
             response.json(),
@@ -338,3 +365,51 @@ class DeleteCourse(APIView):
         )
     
     
+class UploadPDF(APIView):
+    """
+    POST /api/ajout-cours/
+    takes: pdf,
+           metadata={
+                    "course_name":"name",
+                    "chapters": [
+                        ["name_chapter1", length1],
+                        ["name_chapter1", length2], ...
+                        ]
+                    }
+
+    return: success message
+    """
+    parser_classes = [MultiPartParser]
+    def get(self, request):
+        return Response({'message': 'Use POST to upload a file.'})
+
+    def post(self, request, *args, **kwargs):
+        pdf_file = request.FILES.get('pdf')
+        metadata = request.data.get('metadata')
+
+        if not pdf_file or not metadata:
+            return Response({"error": "Missing PDF or metadata"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            metadata_json = json.loads(metadata)
+        except json.JSONDecodeError:
+            return Response({"error": "Invalid JSON in metadata"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = requests.post(
+            "http://localhost:8000/api/cours/ajout-cours", 
+            files={'pdf': pdf_file,}, 
+            data={'metadata': json.dumps(metadata_json)}
+        )
+    
+        if response.status_code == 200:
+            return Response(
+                {"message": "Success SendPlanification"},
+                status=status.HTTP_200_OK
+            )
+
+        else:
+            return Response(
+            {"error": "Failed to UploadPDF"},
+            status=status.HTTP_400_BAD_REQUEST
+            )           
+        

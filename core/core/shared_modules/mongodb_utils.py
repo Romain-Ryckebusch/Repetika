@@ -2,11 +2,10 @@ from pymongo import MongoClient
 from bson import ObjectId
 
 MONGO_URI = "mongodb://localhost:27017/" # TODO : Set these values with Django settings later
+_client = MongoClient(MONGO_URI)
 
 def get_db(database_name):
-    client = MongoClient(MONGO_URI)
-    db = client[database_name]
-    return db
+    return _client[database_name]
 
 def insert_document(database_name, collection_name, document):
     db = get_db(database_name)
@@ -29,7 +28,7 @@ def find_documents_all(database_name, collection_name, query={}):
     db = get_db(database_name)
     collection = db[collection_name]
     results = collection.find(query)
-    results = [serialize_document(doc) for doc in results]
+    results = [serialize_document(doc) for doc in results]  
     return list(results)
 
 def update_document(database_name, collection_name, query, update_values):
