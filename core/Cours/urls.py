@@ -11,5 +11,6 @@ urlpatterns = [
     path('addToSubscribers', AddToSubscribers.as_view()),
     path('deleteChapter', DeleteChapter.as_view()),
     path('getAccessibleCourses', GetAccessibleCourses.as_view()),
+    path('getCourseChapters', GetCourseChapters.as_view()),
 
 ]

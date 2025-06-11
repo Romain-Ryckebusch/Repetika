@@ -98,6 +98,46 @@ class GetChapter(APIView):
             status=status.HTTP_200_OK
         )
 
+class GetCourseChapters(APIView):
+    """ GET /api/LireCours/getCourseChapters
+    Takes user_id, id_course
+    Returns List of chapters (id_chapitre, nom_chapitre, date_creation)
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        id_course = request.GET.get('id_course')
+        if not id_course:
+            return Response(
+                {"error": "id_course parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        
+        # Get the chapters for the course
+        chapters = find_documents_fields(
+            "DB_Cours",
+            "Chapitres",
+            query={"id_cours": ObjectId(id_course)},
+            fields=["_id", "nom_chapitre", "date_creation"]
+        )
+        print("chapters : ", chapters)
+
+        # Prepare the response data
+        response_data = []
+        for chapter in chapters:
+            response_data.append({
+                "id_chapitre": str(chapter["_id"]),
+                "nom_chapitre": chapter["nom_chapitre"],
+            })
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
 class GetPDF(APIView):
     """
     GET /api/LireCours/getPDF

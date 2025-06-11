@@ -146,7 +146,25 @@ class GetAccessibleCourses(APIView):
     
 
 
-# TODO 06/10 : Créer getChapters, pour obtenir la liste des chapitres d'un cours donné
+class GetCourseChapters(APIView):
+    """
+    GET /GetCourseChapters
+    Takes user_id, id_course
+    Returns list of chapters in the course (id_chapitre, nom_chapitre, date_creation)
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        id_course = request.GET.get('id_course')
+
+        if not user_id or not id_course:
+            return Response({"error": "user_id and id_course are required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = requests.get(COURS_BASE_URL + "/getCourseChapters", params={"user_id": user_id, "id_course": id_course})
+
+        return Response(
+            response.json(),
+            status=response.status_code
+        )
 
 
 
