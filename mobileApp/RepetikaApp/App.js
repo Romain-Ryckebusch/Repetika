@@ -4,6 +4,7 @@ import { navigationRef } from './src/navigation/NavigationService';
 import './src/i18n';
 import { useFonts } from "expo-font";
 import { ActivityIndicator, View } from "react-native";
+import { AuthProvider } from './src/utils/AuthContext';
 
 export default function App() {
     const [fontsLoaded] = useFonts({
@@ -21,8 +22,10 @@ export default function App() {
     }
 
     return (
-        <NavigationContainer ref={navigationRef}>
-            <RootNavigator />
-        </NavigationContainer>
+        <AuthProvider>
+            <NavigationContainer ref={navigationRef}>
+                <RootNavigator />
+            </NavigationContainer>
+        </AuthProvider>
     );
 }

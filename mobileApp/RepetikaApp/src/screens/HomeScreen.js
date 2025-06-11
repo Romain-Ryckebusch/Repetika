@@ -1,5 +1,4 @@
 import { View, Text, TouchableOpacity, ScrollView} from "react-native";
-import { useGlobalFonts } from '../styles/globalFonts';
 
 import globalStyles from '../styles/global';
 import colors from '../styles/colors';
@@ -11,7 +10,6 @@ import {useTranslation} from "react-i18next";
 import {navigate} from "../navigation/NavigationService";
 import api from "../config/apiService";
 import {useEffect, useState} from "react";
-import ErrorView from "../components/error";
 
 const lessons = [
   { id:'1', title: 'European capitals', corpus: 'Learn all european capitals!', progress: '90', crd_number: '5', onPress: () => console.log("Clic sur la leçon !") },
@@ -36,6 +34,12 @@ export default function HomeScreen() {
 
         loadCours(); // Appel au montage
     }, []);
+
+
+
+
+
+
 
 
     return (

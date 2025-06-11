@@ -1,39 +1,37 @@
-import React, {useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AuthTabs from './AuthTabs';
 import AppTabs from './AppTabs';
 import Header from '../components/navigation/Header';
-import SettingsScreen from '../screens/SettingsScreen'
-import GameScreens from '../navigation/gameScreens';
+import SettingsScreen from '../screens/SettingsScreen';
+import GameScreens from './gameScreens';
 import UserProfileScreen from '../screens/UserProfileScreen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ActivityIndicator, View} from "react-native";
-import CreateCourseScreens from "./createCourseScreen";
+import CreateCourseScreens from './createCourseScreen';
+import { ActivityIndicator, View } from 'react-native';
+import { AuthContext } from '../utils/AuthContext';
+import { getSession } from '../utils/session';
 
 const Stack = createNativeStackNavigator();
-
-const userProfilePicture = require('../assets/Profile.png'); // si besoin
+const userProfilePicture = require('../assets/Profile.png');
 
 export default function RootNavigator() {
-    const [showAuth, setShowAuth] = useState(null);
+    const { token, setToken, user, setUser } = useContext(AuthContext);
+    const [loading, setLoading] = useState(true); // pour l'écran de chargement
 
     useEffect(() => {
-
-        const checkFirstLaunch = async () => {
-            const alreadyLaunched = await AsyncStorage.getItem('alreadyLaunched');
-            if (!alreadyLaunched) {
-                await AsyncStorage.setItem('alreadyLaunched', 'true');
-                setShowAuth(true);
-            } else {
-                setShowAuth(false);
+        const checkSession = async () => {
+            const session = await getSession();
+            if (session) {
+                setToken(session);
+                
             }
+            setLoading(false);
         };
-        checkFirstLaunch();
+        checkSession();
     }, []);
 
-
-    if (showAuth === null) {
-        // En attendant que l'état se charge, on peut afficher un écran de chargement
+    if (loading) {
+        // Pendant que la session est vérifiée
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <ActivityIndicator size="large" />
@@ -43,10 +41,9 @@ export default function RootNavigator() {
 
     return (
         <Stack.Navigator
-            initialRouteName={showAuth ? "Auth" : "MainApp"}
+            initialRouteName={token ? 'MainApp' : 'Auth'}
             screenOptions={{
                 header: ({ navigation, route, options, back }) => (
-                    // Afficher ton Header personnalisé ici
                     <Header
                         xp={500}
                         streakDays={12}
@@ -55,48 +52,45 @@ export default function RootNavigator() {
                 ),
                 headerStyle: { height: 120 },
             }}
-
-            id="navigator"
         >
 
                 <Stack.Screen
                     name="Auth"
                     component={AuthTabs}
-                    options={{ headerShown: false }} // pas de header sur Auth
+                    options={{ headerShown: false }}
                 />
 
-                <>
+
                     <Stack.Screen
                         name="MainApp"
                         component={AppTabs}
-                        options={{ headerShown: true }} // header affiché sur AppTabs
+                        options={{ headerShown: true }}
                     />
 
                     <Stack.Screen
                         name="userProfileScreen"
                         component={UserProfileScreen}
-                        options={{headerShown:true}}
+                        options={{ headerShown: true }}
                     />
 
                     <Stack.Screen
                         name="settingsScreen"
                         component={SettingsScreen}
-                        options={{headerShown:true}}
+                        options={{ headerShown: true }}
                     />
 
                     <Stack.Screen
                         name="gameScreens"
                         component={GameScreens}
-                        options={{headerShown:false}}
+                        options={{ headerShown: false }}
                     />
 
                     <Stack.Screen
                         name="createCourseScreens"
                         component={CreateCourseScreens}
-                        options={{headerShown:false}}
+                        options={{ headerShown: false }}
                     />
 
-                </>
 
         </Stack.Navigator>
     );
