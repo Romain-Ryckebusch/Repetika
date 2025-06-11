@@ -162,7 +162,7 @@ class GetPDF(APIView):
         return response
 
 
-class UploadAPIView(APIView):
+class UploadPDF(APIView):
     """
     POST /api/ajout-cours/
     takes: pdf,
@@ -174,7 +174,7 @@ class UploadAPIView(APIView):
                         ]
                     }
 
-    return: nothing
+    return: success message
     """
     parser_classes = [MultiPartParser]
     def get(self, request):

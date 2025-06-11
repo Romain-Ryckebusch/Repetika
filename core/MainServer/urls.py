@@ -11,5 +11,6 @@ urlpatterns = [
     path('createCards', CreateCards.as_view()),
     path('deleteCourse', DeleteCourse.as_view()),
     path('getAccessibleCourses', GetAccessibleCourses.as_view()),
+    path('ajout-cours', UploadPDF.as_view()),
 ]
 
