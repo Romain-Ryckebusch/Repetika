@@ -8,7 +8,6 @@ import SocialScreen from "../screens/SocialScreen";
 //autres
 import { useTranslation } from 'react-i18next';
 import TabBar from "../components/navigation/bottomNavBar";
-import Header from "../components/navigation/Header";
 import {useNavigation} from "@react-navigation/native";
 import StatisticsScreen from "../screens/StatisticsScreen";
 

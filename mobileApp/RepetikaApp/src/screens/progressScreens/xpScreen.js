@@ -6,15 +6,15 @@ import React, { useEffect, useRef, useState } from "react";
 import * as Progress from 'react-native-progress';
 import colors from '../../styles/colors';
 import Btn_Fill from "../../components/btn_fill";
-
+import * as XPF from "../../utils/ProgressFunctions"
 const XpView = ({ oldXp, addXp,nextAction }) => {
     const { t } = useTranslation();
 
     const newXp = oldXp + addXp;
-    const level = Math.floor(Math.sqrt(oldXp / 10));
+    const level = XPF.XpToLevelFunction(oldXp)
     let nextLevel = level + 1;
-    const xpLevel = Math.round(10 * (level ** 2));
-    let xpNextLevel = Math.round(10 * (nextLevel ** 2));
+    const xpLevel = XPF.LevelToXpFunction(level);
+    let xpNextLevel = XPF.LevelToXpFunction(nextLevel)
 
     const [firstLevelDisplay, setFirstLevelDisplay] = useState(level);
     const [secondLevelDisplay, setSecondLevelDisplay] = useState(nextLevel);
@@ -30,7 +30,7 @@ const XpView = ({ oldXp, addXp,nextAction }) => {
         newLevelReached = true;
         const levelAfter = nextLevel + 1;
         nextLevel++;
-        const xpLevelAfter = Math.round(10 * (levelAfter ** 2));
+        const xpLevelAfter = XPF.LevelToXpFunction(levelAfter)
         deltaXp = xpLevelAfter - xpNextLevel;
         finalProgress = (newXp - xpNextLevel) / deltaXp;
         xpNextLevel = xpLevelAfter;
@@ -135,7 +135,8 @@ const XpView = ({ oldXp, addXp,nextAction }) => {
     return (
         <View style={styles.container}>
             <Text style={[globalStyles.title, { width: "80%" }]}>
-                Bravo!{"\n"}Tu es en route vers le niveau <Text style={styles.xp.titleLevel}>{nextLevel}</Text> !
+                {t("XpPage.CongratMessage")}
+                 <Text style={styles.xp.titleLevel}>{nextLevel}</Text> !
             </Text>
 
             {newLevelReached && (
@@ -149,7 +150,7 @@ const XpView = ({ oldXp, addXp,nextAction }) => {
                         marginTop: 10,
                     }}
                 >
-                    Niveau {nextLevel-1} atteint !
+                    {t('XpPage.Level', { level: nextLevel-1 })}
                 </Animated.Text>
             )}
 
@@ -184,7 +185,7 @@ const XpView = ({ oldXp, addXp,nextAction }) => {
                 </View>
             </View>
 
-            <Btn_Fill title={"Suivant"} style={{width:'80%'}} onPress={nextAction}/>
+            <Btn_Fill title={t("XpPage.Next")} style={{width:'80%'}} onPress={nextAction}/>
         </View>
     );
 };

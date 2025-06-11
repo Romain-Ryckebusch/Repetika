@@ -4,10 +4,16 @@ import colors from '../styles/colors';
 import { useGlobalFonts } from '../styles/globalFonts';
 import globalStyles from "../styles/global";
 import * as Progress from 'react-native-progress';
+import * as XPF from "../utils/ProgressFunctions";
 
 
-const RankedUserLine = ({ rank,picture,name,streaks,progress,level,studiedCards, itsme, onPress }) => {
+const RankedUserLine = ({ rank,picture,name,streaks,xp,studiedCards, itsme, onPress }) => {
     const fontsLoaded = useGlobalFonts();
+
+    const xpData = XPF.XpAllDataFunction(xp)
+    const progress = xpData.progress;
+    const level = xpData.level
+
     if (!fontsLoaded) return null;
 
     return (

@@ -12,6 +12,7 @@ import ScreenWrapper from "../components/navigation/screenWrapper";
 import { pickImageAsync } from "../components/pickImage";
 
 import { useTranslation } from "react-i18next";
+import * as XPF from "../utils/ProgressFunctions";
 
 /**
  * getNewProfilePicture - function to get a new profile picture.
@@ -85,8 +86,7 @@ export default function ProfileScreen() {
         "profilePicture":require('../assets/Profile.png'),
         "accountCreationDate":"19/02/2025",
         "streaks":10,
-        "progress":0.85,
-        "level":43,
+        "xp":7900
 
     }
 
@@ -96,6 +96,10 @@ export default function ProfileScreen() {
     const [email, setEmail] = useState(profileData.mail);
     const [password, setPassword] = useState("");
     const [confirmPassword,setConfirmPassword] = useState("");
+
+    const xpData = XPF.XpAllDataFunction(profileData.xp)
+    const progress = xpData.progress;
+    const lvl = xpData.level
 
     return (
         <ScreenWrapper scrollable style={styles.container}>
@@ -146,10 +150,10 @@ export default function ProfileScreen() {
                             color="#F1C40F"
                             unfilledColor="#d9d9d9"
                             borderWidth={0}
-                            progress={profileData.progress}
+                            progress={progress}
                         />
                         <View style={styles.circle}>
-                            <Text>{profileData.level}</Text>
+                            <Text>{lvl}</Text>
                         </View>
                     </View>
 

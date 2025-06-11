@@ -14,9 +14,7 @@ import {useEffect, useState} from "react";
 import ErrorView from "../components/error";
 
 const lessons = [
-  { id:'1', title: 'Cours 1', corpus: 'Apprenez les bases de la physique à l\'échelle atomique.', progress: '9', crd_number: '10', onPress: () => console.log("Clic sur la leçon !") },
-  { id:'2', title: 'Cours 2', corpus: 'Apprenez les bases de la chimie à l\'échelle atomique.', progress: '20', crd_number: '5', onPress: () => console.log("Clic sur la leçon !") },
-  { id:'3', title: 'Cours 2', corpus: "Apprenez les bases de l'informatique à l\'échelle atomique.", progress: '20', crd_number: '5', onPress: () => console.log("Clic sur la leçon !") },
+  { id:'1', title: 'European capitals', corpus: 'Learn all european capitals!', progress: '90', crd_number: '5', onPress: () => console.log("Clic sur la leçon !") },
 ];
 
 export const getCoursOfUser = () => api.get('/cours/getChapter?user_id=68386a41ac5083de66afd675');
@@ -46,7 +44,7 @@ export default function HomeScreen() {
 
                 <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={true} keyboardShouldPersistTaps="always">
                     <Text style={[globalStyles.title, styles.title]}>{t("homeScreen.splashMessage",{prenom:"Louis"})}</Text>
-                    <ErrorView visibility={showNetworkError} text={"Nous n'avons pas pu vous connecter à la base de donnéees. Vérifiez votre connexion internet."}/>
+
 
 
                     <View style={styles.Crd_container}>

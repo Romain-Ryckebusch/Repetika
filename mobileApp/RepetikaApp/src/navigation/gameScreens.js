@@ -9,7 +9,6 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import CourseIndex from "../screens/gameScreens/courseIndex";
 import ReviewFrame from "../screens/gameScreens/reviewFrame";
 import React from "react";
-import Header from "../components/navigation/Header";
 import userProfilePicture from "../assets/Profile.png";
 import CourseFrame from "../screens/gameScreens/courseFrame";
 import ProfileScreen from "../screens/ProfileScreen";

@@ -12,28 +12,28 @@ import {PlatformPressable} from "@react-navigation/elements";
 const course=[
     {
         "id":1,
-        "title":"Introduction",
+        "title":"Western europe",
         "isSrarted":true,
         "isFinished":true,
         "isAvailable":true,
     },
     {
         "id":2,
-        "title":"L'art de la diplomatie",
+        "title":"Southern europe",
         "isSrarted":true,
         "isFinished":false,
         "isAvailable":true,
     },
     {
         "id":3,
-        "title":"L'art de la guerre",
+        "title":"Northern europe",
         "isSrarted":false,
         "isFinished":false,
         "isAvailable":false,
     },
     {
-        "id":4,
-        "title":"L'homme préhistorique",
+        "id":5,
+        "title":"Eastern Europe",
         "isSrarted":false,
         "isFinished":false,
         "isAvailable":false,
@@ -52,7 +52,7 @@ export default function Course (){
         <View style={styles.coursePage.view}>
             <View style={[styles.coursePage.view.sideColumn,{alignItems:"flex-end"}]}>
                 {leftChapters.map(chapter => (
-                    <PlatformPressable onPress={()=>navigate("CourseFrame")} key={chapter.id} style={[{marginBottom:heightCourse}]} >
+                    <PlatformPressable onPress={()=>navigate("CourseFrame")} key={chapter.id} style={[{marginBottom:heightCourse}]} disabled={!chapter.isAvailable}>
                         <View  style={[styles.coursePage.chapterView,{width:widthCircle,height:widthCircle,borderRadius:0.5*widthCircle},{backgroundColor:chapter.isSrarted&&!chapter.isFinished?colors.currentChapter:!chapter.isAvailable?colors.lockedChapter:colors.primary}]}>
                             {!chapter.isAvailable?<Image style={[styles.coursePage.chapterView.icon]} source={require("../../../assets/icons/lock.png")}/>:null}
                         </View>
@@ -67,7 +67,7 @@ export default function Course (){
             </View>
             <View style={[styles.coursePage.view.sideColumn,{alignItems:"flex-end"}]}>
                 {rightChapters.map(chapter => (
-                    <PlatformPressable onPress={()=>navigate("CourseFrame")} key={chapter.id} style={[{marginTop:heightCourse}]} >
+                    <PlatformPressable onPress={()=>navigate("CourseFrame")} key={chapter.id} style={[{marginTop:heightCourse}]} disabled={!chapter.isAvailable}>
                         <View  style={[styles.coursePage.chapterView,{width:widthCircle,height:widthCircle,borderRadius:0.5*widthCircle},{backgroundColor:chapter.isSrarted&&!chapter.isFinished?colors.currentChapter:!chapter.isAvailable?colors.lockedChapter:colors.primary}]}>
                             {!chapter.isAvailable?<Image style={[styles.coursePage.chapterView.icon]} source={require("../../../assets/icons/lock.png")}/>:null}
                         </View>
