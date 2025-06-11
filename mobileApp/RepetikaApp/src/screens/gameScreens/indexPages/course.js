@@ -12,28 +12,28 @@ import {PlatformPressable} from "@react-navigation/elements";
 const course=[
     {
         "id":1,
-        "title":"Introduction",
+        "title":"Western europe",
         "isSrarted":true,
         "isFinished":true,
         "isAvailable":true,
     },
     {
         "id":2,
-        "title":"L'art de la diplomatie",
+        "title":"Southern europe",
         "isSrarted":true,
         "isFinished":false,
         "isAvailable":true,
     },
     {
         "id":3,
-        "title":"L'art de la guerre",
+        "title":"Northern europe",
         "isSrarted":false,
         "isFinished":false,
         "isAvailable":false,
     },
     {
-        "id":4,
-        "title":"L'homme préhistorique",
+        "id":5,
+        "title":"Eastern Europe",
         "isSrarted":false,
         "isFinished":false,
         "isAvailable":false,

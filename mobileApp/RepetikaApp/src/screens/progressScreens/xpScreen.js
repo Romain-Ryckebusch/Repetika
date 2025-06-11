@@ -135,7 +135,8 @@ const XpView = ({ oldXp, addXp,nextAction }) => {
     return (
         <View style={styles.container}>
             <Text style={[globalStyles.title, { width: "80%" }]}>
-                Bravo!{"\n"}Tu es en route vers le niveau <Text style={styles.xp.titleLevel}>{nextLevel}</Text> !
+                {t("XpPage.CongratMessage")}
+                 <Text style={styles.xp.titleLevel}>{nextLevel}</Text> !
             </Text>
 
             {newLevelReached && (
@@ -149,7 +150,7 @@ const XpView = ({ oldXp, addXp,nextAction }) => {
                         marginTop: 10,
                     }}
                 >
-                    Niveau {nextLevel-1} atteint !
+                    {t('XpPage.Level', { level: nextLevel-1 })}
                 </Animated.Text>
             )}
 
@@ -184,7 +185,7 @@ const XpView = ({ oldXp, addXp,nextAction }) => {
                 </View>
             </View>
 
-            <Btn_Fill title={"Suivant"} style={{width:'80%'}} onPress={nextAction}/>
+            <Btn_Fill title={t("XpPage.Next")} style={{width:'80%'}} onPress={nextAction}/>
         </View>
     );
 };
