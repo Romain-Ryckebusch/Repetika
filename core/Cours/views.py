@@ -282,6 +282,49 @@ class GetAccessibleCourses(APIView):
                     "owned": False,
                     "subscribed": True
                 })
+
+        cards_today = requests.get(PLANNING_BASE_URL + "/cardsToday", params={"user_id": user_id})
+        if cards_today.status_code != 200:
+            return Response(
+                {"error": "Failed to retrieve cards for today. details: " + cards_today.text},
+                status=cards_today.status_code
+            )
+        cards_today_data = cards_today.json()
+        # Get the course corresponding to each card from the database (cards_today_data only contains id_chapitre, so we have to find the corresponding id_cours from the Chapitre table)
+
+
+        card_list = requests.get(
+            DECKS_BASE_URL + "/getCardsFromID",
+            params={"card_ids": [card["id_card"] for card in cards_today_data]}
+        ).json()
+        # Add id_chapitre to each card in cards_today_data
+        for i in range(len(cards_today_data)):
+            cards_today_data[i]["id_chapitre"] = card_list[i]["id_chapitre"]  # Add id_chapitre to each card in cards_today_data
+
+        chapters = find_documents_fields(
+            "DB_Cours",
+            "Chapitres",
+            query={"_id": {"$in": [ObjectId(card["id_chapitre"]) for card in cards_today_data]}},  # Use the id_chapitre from cards_today_data
+            fields=["_id", "id_cours"]
+        )
+
+        # Mapping chapitre → cours
+        course_ids = {str(ch["_id"]): str(ch["id_cours"]) for ch in chapters}
+
+        # Count the number of cards for each course
+        course_card_count = {}
+        for card in cards_today_data:
+            id_chapitre = card.get("id_chapitre")
+            if str(id_chapitre) in course_ids:
+                course_id = course_ids[str(id_chapitre)]
+                if course_id not in course_card_count:
+                    course_card_count[course_id] = 0
+                course_card_count[course_id] += 1
+        # Prepare the final response with course information and card counts
+        for course in accessible_courses:
+            course_id = str(course["id_cours"])
+            course["cards_today"] = course_card_count.get(course_id, 0)
+
         
         return Response(accessible_courses, status=status.HTTP_200_OK)
 
