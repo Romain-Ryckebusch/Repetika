@@ -11,7 +11,7 @@ const TrophyView = ({title, description, onPress}) => {
     return (
         <View style={styles.container}>
             <View style={styles.trophy.textView}>
-                <Text style={globalStyles.title}>Félicitations!{"\n"}{"\n"}Tu as obtenu le trophée:{"\n"}</Text>
+                <Text style={globalStyles.title}>{t("TropheyPage.CongrateMessage")}</Text>
                 <Text style={styles.trophy.trophyName}>{title}</Text>
             </View>
             <View style={styles.trophy.imageView}>

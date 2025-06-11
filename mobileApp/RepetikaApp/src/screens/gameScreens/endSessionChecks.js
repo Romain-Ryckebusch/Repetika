@@ -57,8 +57,8 @@ const EndSessionChecks = () => {
     const [showXpView, setShowXpView] = useState(true);
     const [showStreakView, setShowStreakView] = useState(!isSameDate(initialPlayerData.lastSessionDate,new Date()));
     const [TrophyToShow, setTrophyToShow] = useState([
-        {title:"Tryharder",description:"Travailler 500 cartes"},
-        {title:"Assidu",description: "Etuider 7 jours de suite"}
+        {title:"Hard worker",description:"Work 500 cards"},
+        {title:"Studius",description: "Work 7 days in a row"}
     ]);
 
     const xpNextAction = ()=>{
