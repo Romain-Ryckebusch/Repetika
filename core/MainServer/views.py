@@ -133,11 +133,20 @@ class GetAccessibleCourses(APIView):
             return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
         
         response = requests.get(COURS_BASE_URL + "/getAccessibleCourses", params={"user_id": user_id})
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to retrieve accessible courses."},
+                status=response.status_code
+            )
 
         return Response(
             response.json(),
             status=response.status_code
         )
+    
+
+
+# TODO 06/10 : Créer getChapters, pour obtenir la liste des chapitres d'un cours donné
 
 
 

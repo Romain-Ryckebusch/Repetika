@@ -101,7 +101,7 @@ export default function ReviewFrame() {
                 <Pressable style={[styles.header.backArrowBtn]} onPress={() =>navigate("CourseIndex")}>
                     <Image style={styles.header.backArrowImg} source={backIcon}></Image>
                 </Pressable>
-                <Text style={[styles.header.headerTitle,{paddingBottom:2}]}>Pays du monde</Text>
+                <Text style={[styles.header.headerTitle,{paddingBottom:2}]}>European capitals</Text>
             </View>
             <Progress.Bar
                 style={[globalStyles.card_progressbar,styles.header.progressBar]}

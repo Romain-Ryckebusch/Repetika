@@ -135,5 +135,13 @@
     "streakTitleEnd": "days now !",
     "Next": "Next",
     "Share": "Share"
+  },
+  "XpPage":{
+    "CongratMessage": "Well done! You're on your way to level ",
+    "Level": "Level {{level}} reached",
+    "Next": "Next"
+  },
+  "TropheyPage": {
+    "CongrateMessage": "Congratulations!\n\n You've owned the trophy:\n"
   }
 }

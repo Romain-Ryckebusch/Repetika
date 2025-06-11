@@ -182,7 +182,6 @@ class ScheduleNextReviews(APIView):
             query={"id_user": ObjectId(user_id), "id_card": ObjectId(card.card_id)},
             fields=["date_planned", "stability", "difficulty"],
         )[0]
-        print("----------------------")
         card = Card(
             stability = planning_data["stability"],
             difficulty = planning_data["difficulty"],
@@ -214,7 +213,7 @@ class CardsToday(APIView):
                 "id_user": ObjectId(user_id),
                 "date_planned": {"$lte": today}
             },
-            fields=["id_card", "date_planned"]
+            fields=["id_card", "date_planned", "id_chapitre"]
         )
         
         return Response(cartes_a_reviser, status=status.HTTP_200_OK)

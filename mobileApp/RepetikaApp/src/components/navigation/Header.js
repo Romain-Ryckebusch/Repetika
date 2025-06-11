@@ -6,11 +6,12 @@ import styles from '../../styles/navigation/TopBar.style';
 import { navigate, getCurrentRoute } from '../../navigation/NavigationService';
 import settingsIcon from "../../assets/icons/settings.png";
 import {useNavigation, useRoute} from "@react-navigation/native";
+import * as XPF from "../../utils/ProgressFunctions"
 import backIcon from "../../assets/icons/back.png";
 
 
 
-const DefaultHeader = ({ progress, lvl, streakDays, profilePicture }) => {
+const DefaultHeader = ({ xp, streakDays, profilePicture }) => {
     const streakIcon = require('../../assets/icons/streakIcon.png');
     const settingsIcon = require('../../assets/icons/settings.png');
     const backIcon = require('../../assets/icons/back.png');
@@ -19,7 +20,9 @@ const DefaultHeader = ({ progress, lvl, streakDays, profilePicture }) => {
     const currentRoute = getCurrentRoute();
     const routeName = currentRoute?.name ?? null;
 
-
+    const xpData = XPF.XpAllDataFunction(xp)
+    const progress = xpData.progress;
+    const lvl = xpData.level
 
     if (routeName === "Home" || routeName ==="Social" || routeName === "Stats") {
         return (
@@ -31,7 +34,7 @@ const DefaultHeader = ({ progress, lvl, streakDays, profilePicture }) => {
                         color="#F1C40F"
                         unfilledColor="#d9d9d9"
                         borderWidth={0}
-                        progress={progress / 100}
+                        progress={progress}
                     />
                     <View style={styles.circle}>
                         <Text>{lvl}</Text>

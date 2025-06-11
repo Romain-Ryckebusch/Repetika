@@ -35,7 +35,7 @@ export default function SocialScreen() {
             streak: 200,
             progress: 0.74,
             level: 67,
-            totalXp: 13450,
+            totalXp: 1100,
             studiedCardsToday: 14,
             activeCards: 123
         },
@@ -209,8 +209,8 @@ export default function SocialScreen() {
                             sortUsersByKey(scopeToUsersMap[scopeSelected],filterSelected,true).map((user,index) => (
                                 <RankedUserLine 
                                 key={user.id} 
-                                progress={user.progress} 
-                                level={user.level} rank={index+1} 
+                                xp={user.totalXp}
+                                rank={index+1}
                                 name={user.name} 
                                 picture={user.profilePicture} 
                                 streaks={user.streak} 

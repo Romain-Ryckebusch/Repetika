@@ -46,3 +46,6 @@ __pycache__/
 
 # MongoDB
 core/Cours/DB/*
+
+# Junia
+.management/

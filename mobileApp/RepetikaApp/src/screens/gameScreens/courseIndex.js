@@ -42,7 +42,7 @@ export default function CourseIndex() {
                     })}>
                         <Image style={styles.header.backArrowImg} source={backIcon}></Image>
                     </Pressable>
-                    <Text style={[styles.header.headerTitle,{paddingBottom:2}]}>Pays du monde</Text>
+                    <Text style={[styles.header.headerTitle,{paddingBottom:2}]}>European capitals</Text>
                 </View>
             </View>
 
