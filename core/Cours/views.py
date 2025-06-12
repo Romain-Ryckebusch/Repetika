@@ -124,7 +124,7 @@ class GetCourseChapters(APIView):
             "DB_Cours",
             "Chapitres",
             query={"id_cours": ObjectId(id_course)},
-            fields=["_id", "nom_chapitre", "date_creation"]
+            fields=["_id", "nom_chapitre", "position"]
         )
         print("chapters : ", chapters)
 
@@ -134,6 +134,7 @@ class GetCourseChapters(APIView):
             response_data.append({
                 "id_chapitre": str(chapter["_id"]),
                 "nom_chapitre": chapter["nom_chapitre"],
+                "position": chapter["position"]
             })
 
         return Response(response_data, status=status.HTTP_200_OK)
