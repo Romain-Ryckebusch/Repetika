@@ -15,17 +15,21 @@ const Stack = createNativeStackNavigator();
 const userProfilePicture = require('../assets/Profile.png');
 
 export default function RootNavigator() {
-    const { token, setToken, user, setUser } = useContext(AuthContext);
+    const { token, setToken, userId, setUserId } = useContext(AuthContext);
     const [loading, setLoading] = useState(true); // pour l'écran de chargement
 
     useEffect(() => {
         const checkSession = async () => {
             const session = await getSession();
             if (session) {
-                setToken(session);
-                
+
+                setToken(session.token);
+                setUserId(session.userId)
+
             }
+
             setLoading(false);
+
         };
         checkSession();
     }, []);

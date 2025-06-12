@@ -14,10 +14,12 @@ import {navigate} from "../../../navigation/NavigationService";
 
 
 
-export default function Review() {
+export default function Review(lessonId) {
     const {t}=useTranslation();
 
-    const deck = [
+    console.log(lessonId.lessonId);
+
+    const defaultDeck = [
         { id: 1, front: "What is the capital of Albania?", back: "Tirana", correct: true },
         { id: 2, front: "What is the capital of Andorra?", back: "Andorra la Vella", correct: true },
         { id: 3, front: "What is the capital of Armenia?", back: "Yerevan", correct: true },
@@ -71,6 +73,7 @@ export default function Review() {
         { id: 51, front: "What is the capital of Vatican City?", back: "Vatican City", correct: false }, // 5
     ];
 
+    const [deck,setDeck] = useState(defaultDeck);
 
 
     const cardsNumber = deck.filter((card)=>card.correct===false).length;
@@ -79,6 +82,7 @@ export default function Review() {
 
     return (
         <View style={styles.reviewPage.view}>
+
             <Text style={styles.reviewPage.text}>{t("courseIndexScreen.reviewMainTextStart")}<Text style={{color:colors.orange}}>{cardsNumber}</Text>{t("courseIndexScreen.reviewMainTextEnd")}</Text>
             <View style={styles.reviewPage.interactView}>
                 <Btn_Fill  title={t("courseIndexScreen.reviewStartButtonText")} onPress={()=>navigate("ReviewFrame",{courseId:1,deck:filtredDeck})} textStyle={{fontFamily: 'OpenSans_Regular',}} />

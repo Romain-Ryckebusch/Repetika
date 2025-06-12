@@ -23,6 +23,7 @@ export default function CourseIndex() {
     const lessonId= route.params?.lessonId;
 
 
+
     const [scopeSelected, setScopeSelected] = useState("Review");
 
 
@@ -58,7 +59,7 @@ export default function CourseIndex() {
                             </PlatformPressable>
                         </View>
                         {(scopeSelected==="Review")?(
-                            <Review/>
+                            <Review lessonId={lessonId}/>
                             ):(<Course/>)
                         }
                     </ScrollView>

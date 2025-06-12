@@ -114,7 +114,6 @@ const styles = StyleSheet.create({
     width: '50%',
     margin:30,
     alignSelf: 'center',
-    marginBottom: 180,
   },
 
 });
