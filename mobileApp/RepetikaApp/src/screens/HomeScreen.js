@@ -13,6 +13,7 @@ import {useContext, useEffect, useState} from "react";
 import ErrorView from "../components/error";
 import useFetch from "../utils/useFetch";
 import {AuthContext} from "../utils/AuthContext";
+import {checkAchievements} from "../utils/achievements/checkAchievements";
 
 
 export const getCoursOfUser = () => api.get('/main/getAccessibleCourses?user_id=68386a41ac5083de66afd675');
@@ -62,7 +63,25 @@ export default function HomeScreen() {
         }
     }, [error]);
 
+    const {userStats,setUserStats} = useContext(AuthContext);
 
+
+    useEffect(() => {
+        console.log("start of check")
+        checkAchievements(userStats, (achievement) => {
+
+            // Ajoute aux succès débloqués
+            const updatedStats = {
+                ...userStats,
+                unlockedAchievements: [...userStats.unlockedAchievements, achievement.id],
+            };
+            setUserStats(updatedStats);
+
+
+            // Feedback UI
+            console.log("Achievement débloqué"+achievement.titleFr)
+        });
+    }, [userStats]); // ou après une action spécifique
 
 
 

@@ -1,11 +1,12 @@
-export const achievements = [
+    export const achievements = [
     {
         id: 0,
         titleFr: "C'est mieux à deux",
         titleEn: "It's better with two",
         descriptionFr: "Ajouter un ami",
         descriptionEn: "Add a friend",
-        condition: false,
+        condition: (stats)=>{return(stats.friendCount===1)},
+
     },
     {
         id: 1,
@@ -13,7 +14,7 @@ export const achievements = [
         titleEn: "The more the merrier...",
         descriptionFr: "Ajouter 5 amis",
         descriptionEn: "Add 5 friends",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 2,
@@ -21,7 +22,7 @@ export const achievements = [
         titleEn: "I have a long arm",
         descriptionFr: "Ajouter 50 amis",
         descriptionEn: "Add 50 friends",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 3,
@@ -29,7 +30,7 @@ export const achievements = [
         titleEn: "Competitor",
         descriptionFr: "Être premier parmi ses amis (XP) 10 jours de suite",
         descriptionEn: "Be first among friends (XP) 10 days in a row",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 4,
@@ -37,7 +38,7 @@ export const achievements = [
         titleEn: "First thing in the morning",
         descriptionFr: "Etudier entre 5h et 8h du matin",
         descriptionEn: "Study between 5am and 8am",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 5,
@@ -45,7 +46,7 @@ export const achievements = [
         titleEn: "All night long",
         descriptionFr: "Etudier entre miniut et 3 heures",
         descriptionEn: "Study between midnight and 3am",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 6,
@@ -53,7 +54,7 @@ export const achievements = [
         titleEn: "Hot week",
         descriptionFr: "Etudier tous les jours pendant une semaine",
         descriptionEn: "Study every day for a week",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 7,
@@ -61,7 +62,7 @@ export const achievements = [
         titleEn: "Studious month",
         descriptionFr: "Etudier tous les jours pendant un mois",
         descriptionEn: "Study every day for a month",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 8,
@@ -69,7 +70,7 @@ export const achievements = [
         titleEn: "A new era",
         descriptionFr: "Etudier tous les jours pendant un an",
         descriptionEn: "Study every day for a year",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 9,
@@ -77,7 +78,7 @@ export const achievements = [
         titleEn: "Knowledge is a weapon",
         descriptionFr: "Etudier tous les jours pendant 1000 jours",
         descriptionEn: "Study every day for 1000 days",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 10,
@@ -85,7 +86,7 @@ export const achievements = [
         titleEn: "Multi-tasking",
         descriptionFr: "Etudier 3 cours en meme temps",
         descriptionEn: "Study 3 courses at the same time",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 11,
@@ -93,7 +94,7 @@ export const achievements = [
         titleEn: "Curious",
         descriptionFr: "Etudier 5 cours en meme temps",
         descriptionEn: "Study 5 courses at the same time",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 12,
@@ -101,7 +102,7 @@ export const achievements = [
         titleEn: "Emilien",
         descriptionFr: "Etudier 10 cours en meme temps",
         descriptionEn: "Study 10 courses at the same time",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 13,
@@ -109,7 +110,7 @@ export const achievements = [
         titleEn: "A short break?",
         descriptionFr: "Revenir après 7 jours d'inactivité",
         descriptionEn: "Come back after 7 days of inactivity",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 14,
@@ -117,7 +118,7 @@ export const achievements = [
         titleEn: "It's been a while",
         descriptionFr: "Revenir après un mois d'inactivité",
         descriptionEn: "Come back after a month's inactivity",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 15,
@@ -125,7 +126,7 @@ export const achievements = [
         titleEn: "A fresh start",
         descriptionFr: "Revenir après un an d'inactivité",
         descriptionEn: "Come back after a year's inactivity",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 16,
@@ -133,7 +134,7 @@ export const achievements = [
         titleEn: "This awful nightmare is over",
         descriptionFr: "Connaitre toutes les cartes d'un cours",
         descriptionEn: "See all the cards in a course",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 17,
@@ -141,7 +142,7 @@ export const achievements = [
         titleEn: "Creator",
         descriptionFr: "Créer un cours",
         descriptionEn: "Create a course",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 18,
@@ -149,7 +150,7 @@ export const achievements = [
         titleEn: "Petika and repetika are in a boat",
         descriptionFr: "Installer l'application",
         descriptionEn: "Install the application",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 19,
@@ -157,7 +158,7 @@ export const achievements = [
         titleEn: "Good resolution",
         descriptionFr: "Réviser le premier janvier",
         descriptionEn: "Revise on the first of January",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 20,
@@ -165,7 +166,7 @@ export const achievements = [
         titleEn: "All I want for Christmas is you",
         descriptionFr: "Réviser le jour de Noël",
         descriptionEn: "Revise on Christmas Day",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 21,
@@ -173,7 +174,7 @@ export const achievements = [
         titleEn: "El professor",
         descriptionFr: "Avoir créé 5 cours",
         descriptionEn: "Have created 5 courses",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 22,
@@ -181,7 +182,7 @@ export const achievements = [
         titleEn: "The student",
         descriptionFr: "Avoir importé 3 cours dans l'application",
         descriptionEn: "Imported 3 courses into the application",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 23,
@@ -189,7 +190,7 @@ export const achievements = [
         titleEn: "Snoop",
         descriptionFr: "Avoir cliqué 27 fois (d'affilée) sur le nom de la version de l'app",
         descriptionEn: "Clicked 27 times (in a row) on the app version name",
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 24,
@@ -197,7 +198,7 @@ export const achievements = [
         titleEn: "Developer",
         descriptionFr: 'Avoir nommé un cours "TEST_DEV_PANORAMA"',
         descriptionEn: 'Named a course "TEST_DEV_PANORAMA"',
-        condition: false,
+        condition: (stats)=>{return(false)},
     },
     {
         id: 25,
@@ -205,6 +206,6 @@ export const achievements = [
         titleEn: "Omniscient",
         descriptionFr: 'S\'appeler "Damien Louet"',
         descriptionEn: 'Your name is "Damien Louet"',
-        condition: false,
+        condition: (stats)=>{return(false)},
     }
 ];

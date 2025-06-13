@@ -20,12 +20,14 @@ export default function LoginScreen() {
 
 
     const loginFunction= ()=>{
-        saveSession("test","68386a41ac5083de66afd675")
+        saveSession("test", "68386a41ac5083de66afd675").then(
+            navigation.navigate('MainApp', {
+                screen: 'Home'
+            })
+        )
 
 
-        navigation.navigate('MainApp', {
-            screen: 'Home'
-        })
+
 
     }
 
