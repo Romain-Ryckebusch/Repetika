@@ -89,3 +89,29 @@ class Login(APIView):
 # To log out, simply delete the token from the client side.
 # Once again, God bless Django, React Native, and the America.
 #
+
+class Update(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        username = request.data.get('username')
+        email = request.data.get('email', '')
+        avatar_url = request.data.get('avatar_url', '')
+        preferences_json = request.data.get('preferences_json', '{}')
+
+        if username:
+            user.username = username
+        if email:
+            user.email = email
+        if avatar_url:
+            user.avatar_url = avatar_url
+        if preferences_json:
+            user.preferences_json = preferences_json
+
+        user.save()
+
+        return Response(
+            {"message": "User updated successfully."},
+            status=status.HTTP_200_OK
+        )
