@@ -17,5 +17,6 @@ urlpatterns = [
     path('doesQuizExist', DoesQuizExist.as_view()),
     path('showAllSharedCourses', ShowAllSharedCourses.as_view()),
     path('addToSubscribers', AddToSubscribers.as_view()),
+    path('cardsReviewedToday', CardsReviewedToday.as_view()),
 ]
 
