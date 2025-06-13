@@ -15,15 +15,16 @@ const Stack = createNativeStackNavigator();
 const userProfilePicture = require('../assets/Profile.png');
 
 export default function RootNavigator() {
-    const { token, setToken, userId, setUserId } = useContext(AuthContext);
+    const { tokenAccess, setTokenAccess,tokenRefresh,setTokenRefresh, userId, setUserId } = useContext(AuthContext);
     const [loading, setLoading] = useState(true); // pour l'écran de chargement
 
     useEffect(() => {
         const checkSession = async () => {
             const session = await getSession();
-            if (session) {
-
-                setToken(session.token);
+            if (session.tokenAccess) {
+                console.log(session);
+                setTokenAccess(session.tokenAccess);
+                setTokenRefresh(session.tokenRefresh);
                 setUserId(session.userId)
 
             }
@@ -45,7 +46,7 @@ export default function RootNavigator() {
 
     return (
         <Stack.Navigator
-            initialRouteName={token ? 'MainApp' : 'Auth'}
+            initialRouteName={tokenAccess ? 'MainApp' : 'Auth'}
             screenOptions={{
                 header: ({ navigation, route, options, back }) => (
                     <Header

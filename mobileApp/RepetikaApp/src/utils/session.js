@@ -2,9 +2,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-export const saveSession = async (token, user) => {
-    await AsyncStorage.setItem('userToken', token);
-    await AsyncStorage.setItem('userId', user);
+export const saveSession = async (tokenAccess, tokenRefresh, userId) => {
+    await AsyncStorage.setItem('tokenAccess', tokenAccess);
+    await AsyncStorage.setItem('tokenRefresh', tokenRefresh);
+    await AsyncStorage.setItem('userId', userId);
 
     const userStats = {
         friendCount: 1,
@@ -22,18 +23,21 @@ export const saveSession = async (token, user) => {
 
 
 export const getSession = async () => {
-    const token = await AsyncStorage.getItem('userToken');
+    const tokenAccess = await AsyncStorage.getItem('tokenAccess');
+    const tokenRefresh = await AsyncStorage.getItem('tokenRefresh');
     const user = await AsyncStorage.getItem('userId');
     const statsString = await AsyncStorage.getItem('userStats');
     const stats = statsString ? JSON.parse(statsString) : null;
 
     return {
-        token,
+        tokenAccess: tokenAccess,
+        tokenRefresh: tokenRefresh,
         user: user || null,
         stats,
     };
 };
 
 export const clearSession = async () => {
-    await AsyncStorage.multiRemove(['userToken', 'userId','userStats']);
+    await AsyncStorage.multiRemove(['tokenAccess',"tokenRefresh", 'userId','userStats']);
+    console.log("Session cleard")
 };

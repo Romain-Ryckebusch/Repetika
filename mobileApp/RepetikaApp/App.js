@@ -13,6 +13,8 @@ export default function App() {
         OpenSans_Bold: require('./src/assets/fonts/Open_Sans/static/OpenSans-Bold.ttf'),
     });
 
+
+
     if (!fontsLoaded) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
