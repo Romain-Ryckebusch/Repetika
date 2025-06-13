@@ -59,7 +59,7 @@ class GetCardsChapter(APIView):
 class GetCardsFromID(APIView):
     """
     Get /api/Decks/getCardsFromID
-    Takes List of card IDs
+    Takes card_ids one or multiple times in the request, attention dans une ancienne version elle prenait une List of card IDs
     Returns list of cards with the given IDs
     """
     def get(self, request):
@@ -69,7 +69,7 @@ class GetCardsFromID(APIView):
                 {"error": "card_ids parameter is required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        print("card ids : ",card_ids)
+        #print("card ids : ",card_ids)
         # Convert card_ids to ObjectId
         card_ids = [ObjectId(card_id) for card_id in card_ids]
         # Find all cards with the given IDs
