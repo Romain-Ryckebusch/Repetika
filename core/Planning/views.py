@@ -205,7 +205,7 @@ class CardsToday(APIView):
                 {"error": "user_id parameter is required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        today = make_aware(datetime.now())   
+        today = make_aware(datetime.now())+timedelta(days=1)
         cartes_a_reviser = find_documents_fields(
             "DB_Planning",
             "Planning",
@@ -217,6 +217,33 @@ class CardsToday(APIView):
         )
         
         return Response(cartes_a_reviser, status=status.HTTP_200_OK)
+    
+class CardsReviewedToday(APIView):
+    """
+    GET /api/planning/cardsReviewedToday
+    Takes user_id
+    Returns all cards reviewed today
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        today = make_aware(datetime.now())-timedelta(days=1)   
+        cards = find_documents_fields(
+            "DB_Planning",
+            "History",
+            query={
+                "id_user": ObjectId(user_id),
+                "date_reviewed": {"$gte": today}
+            },
+            fields=["id_card", "date_planned", "id_chapitre"]
+        )
+        
+        return Response(cards, status=status.HTTP_200_OK)
+
 class UnScheduleCards(APIView):
     """
     GET /api/Planning/unScheduleCards
