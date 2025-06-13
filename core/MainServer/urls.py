@@ -14,5 +14,6 @@ urlpatterns = [
     path('getCourseChapters', GetCourseChapters.as_view()),
     path('ajout-cours', UploadPDF.as_view()),
     path('completeQuiz', CompleteQuiz.as_view()),
+    path('doesQuizExist', DoesQuizExist.as_view()),
 ]
 

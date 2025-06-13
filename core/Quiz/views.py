@@ -160,3 +160,37 @@ class RemoveQuiz(APIView):
             {"number_entries_deleted": number_entries_deleted},
             status=status.HTTP_200_OK
         )
+    
+class DoesQuizExist(APIView):
+    """
+    GET /api/Quiz/doesQuizExist
+    Takes user_id, id_chapitre, id_deck
+    Returns bool
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        id_chapitre = request.GET.get('id_chapitre')
+        id_deck = request.GET.get('id_deck')
+
+        if not user_id or not id_chapitre or not id_deck:
+            return Response(
+                {"error": "user_id, id_chapitre and id_deck parameters are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        query = {
+            "id_user": ObjectId(user_id),
+            "id_chapitre": ObjectId(id_chapitre),
+            "id_deck": ObjectId(id_deck)
+        }
+
+        number_entries_deleted = len(find_documents_all(
+            "DB_Quiz",
+            "Quiz",
+            query
+        ))
+
+        return Response(
+            {"isQuizExisting": number_entries_deleted>0},
+            status=status.HTTP_200_OK
+        )
