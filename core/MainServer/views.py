@@ -25,6 +25,8 @@ from PyPDF2 import PdfReader, PdfWriter
 
 from bson import ObjectId
 
+COURS_BASE_URL="http://localhost:8000/api/cours" 
+
 
 class DébutSéanceRévision(APIView):
     """
@@ -479,4 +481,50 @@ class UploadPDF(APIView):
             {"error": "Failed to UploadPDF"},
             status=status.HTTP_400_BAD_REQUEST
             )           
-        
+
+       
+class ShowAllSharedCourses(APIView):
+    """
+    GET /showAllSharedCourses
+    Takes: nothing
+    Returns: List of public shared courses
+    """
+    def get(self, request):
+        response = requests.get(COURS_BASE_URL + "/showAllSharedCourses")
+        if response.status_code == 200:
+            return Response(
+                response.json(),
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                response.json(),
+                status=status.HTTP_400_BAD_REQUEST
+        )
+
+class AddToSubscribers(APIView):
+    """
+    GET /api/cours/addToSubscribers
+    Takes: id_user, course_name, author_id
+    Returns: nothing
+    """
+    def get(self, request):
+        id_user = request.GET.get('id_user')
+        course_name = request.GET.get('course_name')
+        author_id = request.GET.get('author_id')
+
+        response = requests.get(COURS_BASE_URL + "/addToSubscribers", params={
+                "id_user": id_user,
+                "course_name": course_name,
+                "author_id": author_id
+            })
+        if response.status_code == 200:
+            return Response(
+                {"message": "Success AddToSubscribers"},
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {"message": "Failed AddToSubscribers"},
+                status=status.HTTP_400_BAD_REQUEST
+        )
