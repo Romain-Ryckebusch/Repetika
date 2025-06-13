@@ -19,20 +19,22 @@ export const saveSession = async (tokenAccess, tokenRefresh, userId) => {
     };
 
     await AsyncStorage.setItem('userStats', JSON.stringify(userStats));
+
+
 };
 
 
 export const getSession = async () => {
     const tokenAccess = await AsyncStorage.getItem('tokenAccess');
     const tokenRefresh = await AsyncStorage.getItem('tokenRefresh');
-    const user = await AsyncStorage.getItem('userId');
+    const userId = await AsyncStorage.getItem('userId');
     const statsString = await AsyncStorage.getItem('userStats');
     const stats = statsString ? JSON.parse(statsString) : null;
 
     return {
         tokenAccess: tokenAccess,
         tokenRefresh: tokenRefresh,
-        user: user || null,
+        userId: userId || null,
         stats,
     };
 };

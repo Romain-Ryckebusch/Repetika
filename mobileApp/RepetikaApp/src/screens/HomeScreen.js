@@ -49,7 +49,6 @@ export default function HomeScreen() {
     const {userId}=useContext(AuthContext);
 
     const url = config.BASE_URL+`/main/getAccessibleCourses?user_id=${userId}`;
-
     const { data, loading, error } = useFetch(url);
 
     useEffect(() => {
@@ -84,7 +83,7 @@ export default function HomeScreen() {
         });
     }, [userStats]); // ou après une action spécifique
 
-
+    console.log(lessons);
 
 
 
@@ -107,6 +106,7 @@ export default function HomeScreen() {
                         }
 
                         {lessons.map((lesson) => (
+
                             <Crd_lesson
                                 key={lesson.id_cours}
                                 title={lesson.nom_cours}
@@ -117,6 +117,7 @@ export default function HomeScreen() {
                                     screen:"CourseIndex",
                                     params: {
                                         lessonId: lesson.id_cours,
+                                        deckId:lesson.id_deck
                                     }
                                 })}
                             />

@@ -21,7 +21,7 @@ export default function CourseIndex() {
     const navigation = useNavigation();
     const route = useRoute();
     const lessonId= route.params?.lessonId;
-
+    const deckId = route.params?.deckId
 
 
     const [scopeSelected, setScopeSelected] = useState("Review");
@@ -59,7 +59,7 @@ export default function CourseIndex() {
                             </PlatformPressable>
                         </View>
                         {(scopeSelected==="Review")?(
-                            <Review lessonId={lessonId}/>
+                            <Review lessonId={lessonId} deckId={deckId}/>
                             ):(<Course/>)
                         }
                     </ScrollView>

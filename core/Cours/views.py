@@ -289,7 +289,7 @@ class GetAccessibleCourses(APIView):
             "DB_Cours",
             "Cours",
             query={"id_auteur": ObjectId(user_id)},
-            fields=["_id", "nom_cours", "date_creation"]
+            fields=["_id", "nom_cours", "date_creation","id_deck"]
         )
         
         # Get the courses the user is subscribed to
@@ -310,6 +310,7 @@ class GetAccessibleCourses(APIView):
                 "id_cours": str(course["_id"]),
                 "nom_cours": course["nom_cours"],
                 "date_creation": course["date_creation"].isoformat() if course["date_creation"] else None,
+                "id_deck":course["id_deck"],
                 "owned": True,
                 "subscribed": False
             })
@@ -320,6 +321,7 @@ class GetAccessibleCourses(APIView):
                     "id_cours": course_id,
                     "nom_cours": None,  # Course name not available in subscription data
                     "date_creation": None,  # Creation date not available in subscription data
+                    "id_deck":None,
                     "owned": False,
                     "subscribed": True
                 })

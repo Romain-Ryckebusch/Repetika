@@ -22,7 +22,12 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ tokenAccess: tokenAccess, setTokenAccess: setTokenAccess, userId, setUserId,userStats,setUserStats }}>
+        <AuthContext.Provider value={{
+            tokenAccess, setTokenAccess,
+            tokenRefresh, setTokenRefresh,
+            userId, setUserId,
+            userStats, setUserStats
+        }}>
             {children}
         </AuthContext.Provider>
     );

@@ -16,11 +16,15 @@ import { useNavigation } from '@react-navigation/native';
 import {getSession, saveSession} from "../../utils/session";
 import {useState} from "react";
 import config from "../../config/config";
+import { useContext } from 'react';
+import { AuthContext } from "../../utils/AuthContext"
+
 
 
 export default function LoginScreen() {
     const {t}=useTranslation();
     const navigation = useNavigation();
+    const { setTokenAccess, setTokenRefresh, setUserId, setUserStats } = useContext(AuthContext);
 
 
     const [username, setUsername] = useState("");
@@ -28,6 +32,7 @@ export default function LoginScreen() {
 
     const [wrongPasswordError, setWrongPasswordError] = useState("");
     const [networkError, setNetworkError] = useState("");
+
 
     const loginFunction = async () => {
         try {
@@ -52,7 +57,26 @@ export default function LoginScreen() {
             }else{
                 setNetworkError("");
                 setWrongPasswordError("");
-                await saveSession(data.tokens.access, data.tokens.refresh, data.user_id)
+                await saveSession(data.tokens.access, data.tokens.refresh, "68386a41ac5083de66afd675")
+
+
+                // Met à jour le contexte
+                setTokenAccess(data.tokens.access);
+                setTokenRefresh(data.tokens.refresh);
+                setUserId(data.user_id);
+
+// Tu peux reconstruire les stats comme tu le fais dans saveSession
+                const userStats = {
+                    friendCount: 1,
+                    studyStreak: 0,
+                    importedCourses: 0,
+                    createdCourses: 0,
+                    lastStudyDate: '2025/06/06',
+                    activeCourses: 0,
+                    name: 'Aymeric',
+                    unlockedAchievements: [],
+                };
+                setUserStats(userStats);
                 navigation.navigate('MainApp', { screen: 'Home' });
             }
 
@@ -90,6 +114,7 @@ export default function LoginScreen() {
                             //placeholder={t('LoginScreen.password')}
                             value={password}
                             onChangeText={setPassword}
+                            secureTextEntry={true}
                         />
 
 

@@ -6,18 +6,21 @@ import styles from '../../../styles/game/courseIndex.style';
 import ScreenWrapper from "../../../components/navigation/screenWrapper";
 import {useTranslation} from "react-i18next";
 import {PlatformPressable} from "@react-navigation/elements";
-import {useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import colors from "../../../styles/colors";
 import Btn_Fill from "../../../components/btn_fill";
 import {navigate} from "../../../navigation/NavigationService";
+import config from "../../../config/config";
+import useFetch from "../../../utils/useFetch";
+import {AuthContext} from "../../../utils/AuthContext";
 
 
 
 
-export default function Review(lessonId) {
+export default function Review({lessonId,deckId}) {
     const {t}=useTranslation();
 
-    console.log(lessonId.lessonId);
+    console.log(lessonId);
 
     const defaultDeck = [
         { id: 1, front: "What is the capital of Albania?", back: "Tirana", correct: true },
@@ -74,7 +77,26 @@ export default function Review(lessonId) {
     ];
 
     const [deck,setDeck] = useState(defaultDeck);
+    const {userId}=useContext(AuthContext);
+    const url = config.BASE_URL+`/main/start-session?user_id=${userId}&deck_id=${deckId}`;
+    console.log(url);
+    const { data, loading, error } = useFetch(url);
 
+    useEffect(() => {
+        if (data) {
+            setDeck(data);
+            console.log(data)
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (error) {
+            console.log(error)
+        }
+    }, [error]);
+
+    console.log(userId)
+    console.log(deckId)
 
     const cardsNumber = deck.filter((card)=>card.correct===false).length;
     const filtredDeck =  deck.filter((card)=>card.correct===false)
