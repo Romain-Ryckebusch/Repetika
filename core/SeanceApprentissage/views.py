@@ -64,11 +64,15 @@ class GetCartes(APIView):
             cardsID_json = [ObjectId("683b84c948bed3e43b775ca5")]
             #cardsID_json = ["683b84c948bed3e43b775ca5"]
 
+
+        
         response2 = requests.get(
-            #"http://planification:8000/api/sauvegarder-revision/",  #à modifier avec docker
             "http://localhost:8000/api/decks/getCardsFromID",
-            
-            params={"card_ids": cardsID_json})
+            params={"card_ids": [card["id_card"] for card in cardsID_json]}
+        )
+        
+
+        
         if response2.status_code != 200:
             return Response(
                 {"error": "Failed to retrieve cards from decks."},
