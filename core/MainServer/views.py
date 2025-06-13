@@ -25,6 +25,9 @@ from PyPDF2 import PdfReader, PdfWriter
 
 from bson import ObjectId
 
+COURS_BASE_URL="http://localhost:8000/api/cours" 
+PLANNING_BASE_URL="http://localhost:8000/api/planning"
+
 
 class DébutSéanceRévision(APIView):
     """
@@ -479,4 +482,87 @@ class UploadPDF(APIView):
             {"error": "Failed to UploadPDF"},
             status=status.HTTP_400_BAD_REQUEST
             )           
+
+       
+class ShowAllSharedCourses(APIView):
+    """
+    GET /showAllSharedCourses
+    Takes: nothing
+    Returns: List of public shared courses
+    """
+    def get(self, request):
+        response = requests.get(COURS_BASE_URL + "/showAllSharedCourses")
+        if response.status_code == 200:
+            return Response(
+                response.json(),
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                response.json(),
+                status=status.HTTP_400_BAD_REQUEST
+        )
+
+class AddToSubscribers(APIView):
+    """
+    GET /addToSubscribers
+    Takes: id_user, course_name, author_id
+    Returns: nothing
+    """
+    def get(self, request):
+        id_user = request.GET.get('id_user')
+        if not id_user:
+            return Response({"error": "id_user parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        course_name = request.GET.get('course_name')
+        if not course_name:
+            return Response({"error": "course_name parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        author_id = request.GET.get('author_id')
+        if not author_id:
+            return Response({"error": "author_id parameter is required."}, status=status.HTTP_400_BAD_REQUEST)           
+
+        response = requests.get(COURS_BASE_URL + "/addToSubscribers", params={
+                "id_user": id_user,
+                "course_name": course_name,
+                "author_id": author_id
+            })
+        if response.status_code == 200:
+            return Response(
+                {"message": "Success AddToSubscribers"},
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {"message": "Failed AddToSubscribers"},
+                status=status.HTTP_400_BAD_REQUEST
+        )
+
+class CardsReviewedToday(APIView):
+    """
+    GET /cardsReviewedToday
+    Takes user_id
+    Returns all cards reviewed today
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required. test"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        response = requests.get(PLANNING_BASE_URL + "/cardsReviewedToday", params={
+                "user_id": user_id
+            })
+        if response.status_code == 200:
+            return Response(
+                response.json(),
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                response.json(),
+                status=status.HTTP_400_BAD_REQUEST
+        )
         

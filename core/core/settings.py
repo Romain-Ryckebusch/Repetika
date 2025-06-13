@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 import sys
 
@@ -137,8 +138,19 @@ QUIZ_BASE_URL = 'http://localhost:8000/api/quiz'
 PLANNING_BASE_URL = 'http://localhost:8000/api/planning'
 DECKS_BASE_URL = 'http://localhost:8000/api/decks'
 
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    
+    # 'ROTATE_REFRESH_TOKENS': True, 
+    # a new refresh token is generated at each refresh.   
+    # 'BLACKLIST_AFTER_ROTATION': True, 
+    # the old refresh token is blacklisted after rotation.
 }

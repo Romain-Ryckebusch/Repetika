@@ -15,5 +15,8 @@ urlpatterns = [
     path('ajout-cours', UploadPDF.as_view()),
     path('completeQuiz', CompleteQuiz.as_view()),
     path('doesQuizExist', DoesQuizExist.as_view()),
+    path('showAllSharedCourses', ShowAllSharedCourses.as_view()),
+    path('addToSubscribers', AddToSubscribers.as_view()),
+    path('cardsReviewedToday', CardsReviewedToday.as_view()),
 ]
 
