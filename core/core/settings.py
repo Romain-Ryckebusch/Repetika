@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'Quiz',
     'Decks',
     'Planning',
-    #'SeanceApprentissage',
+    'Authentification',
 ]
 
 MIDDLEWARE = [
@@ -130,10 +130,15 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+AUTH_USER_MODEL = 'Authentification.CustomUser'
 
 COURS_BASE_URL = 'http://localhost:8000/api/cours' # URLs of the services, currently all are localhost but they will be set to their actual values once in production
 QUIZ_BASE_URL = 'http://localhost:8000/api/quiz'
 PLANNING_BASE_URL = 'http://localhost:8000/api/planning'
 DECKS_BASE_URL = 'http://localhost:8000/api/decks'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
