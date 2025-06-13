@@ -384,7 +384,7 @@ class CompleteQuiz(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        response = requests.get(DECKS_BASE_URL + "/completeQuiz", params={
+        response = requests.get(QUIZ_BASE_URL + "/completeQuiz", params={
             "user_id": user_id,
             "id_chapitre": id_chapitre,
             "id_deck": id_deck
