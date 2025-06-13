@@ -14,6 +14,7 @@ import ErrorView from "../components/error";
 import useFetch from "../utils/useFetch";
 import {AuthContext} from "../utils/AuthContext";
 import {checkAchievements} from "../utils/achievements/checkAchievements";
+import config from "../config/config";
 
 
 export const getCoursOfUser = () => api.get('/main/getAccessibleCourses?user_id=68386a41ac5083de66afd675');
@@ -47,7 +48,7 @@ export default function HomeScreen() {
 
     const {userId}=useContext(AuthContext);
 
-    const url = `http://192.168.1.180:8000/api/main/getAccessibleCourses?user_id=${userId}`;
+    const url = config.BASE_URL+`/main/getAccessibleCourses?user_id=${userId}`;
 
     const { data, loading, error } = useFetch(url);
 
