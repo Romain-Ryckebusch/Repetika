@@ -48,11 +48,20 @@ export default function Course (){
     const screenWidth = Dimensions.get('window').width;
     const widthCircle = screenWidth*0.3; // 80% d'un tiers de la largeur écran
     const heightCourse= widthCircle+16+8;
+
+    const navigateCourseFrame = (id)=>{
+        navigate("CourseFrame", {
+            chapterId: id
+        });
+
+    }
+
+
     return (
         <View style={styles.coursePage.view}>
             <View style={[styles.coursePage.view.sideColumn,{alignItems:"flex-end"}]}>
                 {leftChapters.map(chapter => (
-                    <PlatformPressable onPress={()=>navigate("CourseFrame")} key={chapter.id} style={[{marginBottom:heightCourse}]} disabled={!chapter.isAvailable}>
+                    <PlatformPressable onPress={()=>navigateCourseFrame("6838678eac5083de66afd673")} key={chapter.id} style={[{marginBottom:heightCourse}]} disabled={!chapter.isAvailable}>
                         <View  style={[styles.coursePage.chapterView,{width:widthCircle,height:widthCircle,borderRadius:0.5*widthCircle},{backgroundColor:chapter.isSrarted&&!chapter.isFinished?colors.currentChapter:!chapter.isAvailable?colors.lockedChapter:colors.primary}]}>
                             {!chapter.isAvailable?<Image style={[styles.coursePage.chapterView.icon]} source={require("../../../assets/icons/lock.png")}/>:null}
                         </View>
@@ -67,7 +76,7 @@ export default function Course (){
             </View>
             <View style={[styles.coursePage.view.sideColumn,{alignItems:"flex-end"}]}>
                 {rightChapters.map(chapter => (
-                    <PlatformPressable onPress={()=>navigate("CourseFrame")} key={chapter.id} style={[{marginTop:heightCourse}]} disabled={!chapter.isAvailable}>
+                    <PlatformPressable onPress={()=>navigateCourseFrame("6838678eac5083de66afd673")} key={chapter.id} style={[{marginTop:heightCourse}]} disabled={!chapter.isAvailable}>
                         <View  style={[styles.coursePage.chapterView,{width:widthCircle,height:widthCircle,borderRadius:0.5*widthCircle},{backgroundColor:chapter.isSrarted&&!chapter.isFinished?colors.currentChapter:!chapter.isAvailable?colors.lockedChapter:colors.primary}]}>
                             {!chapter.isAvailable?<Image style={[styles.coursePage.chapterView.icon]} source={require("../../../assets/icons/lock.png")}/>:null}
                         </View>

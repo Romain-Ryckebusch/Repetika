@@ -12,10 +12,25 @@ import ScreenWrapper from "../../components/navigation/screenWrapper";
 import { useTranslation } from "react-i18next";
 import {navigate} from "../../navigation/NavigationService";
 import { useNavigation } from '@react-navigation/native';
+import {getSession, saveSession} from "../../utils/session";
 
 export default function LoginScreen() {
     const {t}=useTranslation();
     const navigation = useNavigation();
+
+
+    const loginFunction= ()=>{
+        saveSession("test", "68386a41ac5083de66afd675").then(
+            navigation.navigate('MainApp', {
+                screen: 'Home'
+            })
+        )
+
+
+
+
+    }
+
     return (
         <ScreenWrapper scrollable>
 
@@ -41,9 +56,7 @@ export default function LoginScreen() {
                         <Btn_Fill
                         style={{ marginTop: 20 }}
                         title={t('LoginScreen.loginBtn')}
-                        onPress={() =>navigation.navigate('MainApp', {
-                            screen: 'Home'
-                        })}
+                        onPress={() =>loginFunction()}
                         />
                     </View>
                 </View>

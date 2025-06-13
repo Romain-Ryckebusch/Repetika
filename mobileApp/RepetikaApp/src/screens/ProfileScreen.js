@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import globalStyles from '../styles/global';
 import styles from '../styles/ProfileScreen.style';
+import colors from '../styles/colors';
 import * as Progress from 'react-native-progress';
 
 import Input from "../components/frm_input";
@@ -13,6 +14,9 @@ import { pickImageAsync } from "../components/pickImage";
 
 import { useTranslation } from "react-i18next";
 import * as XPF from "../utils/ProgressFunctions";
+import {clearSession} from "../utils/session";
+import * as navigation from "../navigation/NavigationService";
+
 
 /**
  * getNewProfilePicture - function to get a new profile picture.
@@ -69,6 +73,14 @@ const trophyRows = chunkArray(userTrophies, 4);
 
 function saveUserChanges() {
     console.log('Entregistrement des modifications utilisateur');
+}
+
+function disconnect(){
+    clearSession().then(
+        navigation.navigate('Auth', {
+            screen: 'Login'
+        })
+    )
 }
 
 /**
@@ -217,6 +229,13 @@ export default function ProfileScreen() {
                     saveUserChanges();
                 }} 
                 style={styles.saveBtn}/>
+
+            <Btn_Fill
+                title={t("profileScreen.section_info.disconnectBtn")}
+                onPress={() => {
+                    disconnect();
+                }}
+                style={[styles.saveBtn,{backgroundColor:colors.red}]}/>
 
         </ScreenWrapper>
     )
