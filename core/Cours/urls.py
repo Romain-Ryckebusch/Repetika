@@ -12,5 +12,6 @@ urlpatterns = [
     path('deleteChapter', DeleteChapter.as_view()),
     path('getAccessibleCourses', GetAccessibleCourses.as_view()),
     path('getCourseChapters', GetCourseChapters.as_view()),
+    path('getCourseIDFromChapterID', GetCourseIDFromChapterID.as_view()),
 
 ]

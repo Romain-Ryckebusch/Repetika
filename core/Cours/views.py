@@ -847,3 +847,32 @@ class AddToSubscribers(APIView):
         return Response(
             status=status.HTTP_200_OK
         )
+
+class GetCourseIDFromChapterID(APIView):
+    """
+    Get /api/Decks/getCourseIDFromChapterID
+    Takes chapter_ids one or multiple times in the request
+    Returns dict ID_Chapitre->ID_Cours
+    """
+    def get(self, request):
+        chapter_ids = request.GET.getlist('chapter_ids')
+        if not chapter_ids:
+            return Response(
+                {"error": "chapter_ids parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        #print("card ids : ",chapter_ids)
+        # Convert chapter_ids to ObjectId
+        chapter_ids = [ObjectId(id_chapitre) for id_chapitre in chapter_ids]
+        # Find all cards with the given IDs
+        coursesID = find_documents_fields(
+            "DB_Cours",
+            "Chapitres",
+            query={"_id": {"$in": chapter_ids}},
+            fields=["_id","id_cours"]
+        )
+        result = {item["_id"]: item["id_cours"] for item in coursesID}
+        return Response(
+            result,
+            status=status.HTTP_200_OK
+        )
