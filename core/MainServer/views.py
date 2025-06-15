@@ -551,7 +551,7 @@ class CardsReviewedToday(APIView):
     """
     GET /cardsReviewedToday
     Takes user_id
-    Returns all cards reviewed today
+    Returns all cards reviewed today and their id_cours
     """
     def get(self, request):
         user_id = request.GET.get('user_id')
