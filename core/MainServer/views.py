@@ -438,13 +438,19 @@ class DoesQuizExist(APIView):
 class UploadPDF(APIView):
     """
     POST /api/ajout-cours/
+    All fields of metadata and metadata itself are optional 
     takes: pdf,
-           metadata={
+           metadata={                                   
                     "course_name":"name",
                     "chapters": [
                         ["name_chapter1", length1],
                         ["name_chapter1", length2], ...
-                        ]
+                        ],
+                    "author_id":ObjectId('id'),         #remplacer id par un id valide ex: 68386a41ac5083de66afd675
+                    "name_author":"name_author"
+                    "id_deck":ObjectId('id')
+                    "matiere":"Informatique"
+                    "public":false                      #or true
                     }
 
     return: success message
@@ -457,13 +463,16 @@ class UploadPDF(APIView):
         pdf_file = request.FILES.get('pdf')
         metadata = request.data.get('metadata')
 
-        if not pdf_file or not metadata:
-            return Response({"error": "Missing PDF or metadata"}, status=status.HTTP_400_BAD_REQUEST)
+        if not pdf_file:
+            return Response({"error": "Missing PDF"}, status=status.HTTP_400_BAD_REQUEST)
         
-        try:
-            metadata_json = json.loads(metadata)
-        except json.JSONDecodeError:
-            return Response({"error": "Invalid JSON in metadata"}, status=status.HTTP_400_BAD_REQUEST)
+        if not metadata:
+            metadata_json={}
+        else:
+            try:
+                metadata_json = json.loads(metadata)
+            except json.JSONDecodeError:
+                return Response({"error": "Invalid JSON in metadata"}, status=status.HTTP_400_BAD_REQUEST)
         
         response = requests.post(
             "http://localhost:8000/api/cours/ajout-cours", 
@@ -473,7 +482,7 @@ class UploadPDF(APIView):
     
         if response.status_code == 200:
             return Response(
-                {"message": "Success SendPlanification"},
+                {"message": "Success UploadPDF"},
                 status=status.HTTP_200_OK
             )
 

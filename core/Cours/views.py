@@ -2,9 +2,11 @@ import json
 import requests
 import os
 from core.settings import *
+from datetime import datetime
 
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
+from django.utils.timezone import make_aware
 
 from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes
@@ -206,13 +208,19 @@ class GetPDF(APIView):
 class UploadPDF(APIView):
     """
     POST /api/ajout-cours/
+    All fields of metadata and metadata itself are optional 
     takes: pdf,
            metadata={
                     "course_name":"name",
                     "chapters": [
                         ["name_chapter1", length1],
                         ["name_chapter1", length2], ...
-                        ]
+                        ],
+                    "author_id":ObjectId('id'),         #remplacer id par un id valide ex: 68386a41ac5083de66afd675
+                    "name_author":"name_author"
+                    "id_deck":ObjectId('id')
+                    "matiere":"Informatique"
+                    "public":false                      #or true
                     }
 
     return: success message
@@ -226,50 +234,98 @@ class UploadPDF(APIView):
         metadata = request.data.get('metadata')
         list_pdf=[]
 
-        if not pdf_file or not metadata:
-            return Response({"error": "Missing PDF or metadata"}, status=status.HTTP_400_BAD_REQUEST)
+        if not pdf_file:
+            return Response({"error": "Missing PDF"}, status=status.HTTP_400_BAD_REQUEST)
         
-
-        try:           
-            metadata_json = json.loads(metadata)
-            print(metadata_json)
+        if not metadata:
+            metadata_json={}
+        else:
+            try:
+                metadata_json = json.loads(metadata)
+            except json.JSONDecodeError:
+                return Response({"error": "Invalid JSON in metadata"}, status=status.HTTP_400_BAD_REQUEST)
             
-            if 'chapters' not in metadata_json or not metadata_json['chapters']:
-                list_pdf=[pdf_file]
+        #on interprète metadata et on complète les info n'ayant pas été transmises           
+        if 'course_name' not in metadata_json or not metadata_json['course_name']:
+            nom_cours='default_name'
+        else:
+            nom_cours=metadata_json['course_name']
 
+        if 'author_id' not in metadata_json or not metadata_json['author_id']:
+            id_auteur=ObjectId('68386a41ac5083de66afd675')                      #utilisateur test
+        else:
+            id_auteur=metadata_json['user_id']
 
-            else:
-                list_chapter=metadata_json['chapters']
-                reader = PdfReader(pdf_file)
-                total_pages = len(reader.pages)
-                current=0
-                
-                for (title,length) in list_chapter:
-                    writer = PdfWriter()
-                    end_page = current + length - 1
-                    
-                    if end_page >= total_pages:
-                        end_page = total_pages - 1
-                    start_page=current
-                    
-                    for page_num in range(start_page, end_page + 1):
-                        writer.add_page(reader.pages[page_num])
-                        current+=1
-                    with open(title+".pdf", "wb") as f_out:
-                        writer.write(f_out)
-                    list_pdf.append(title+".pdf")
+        if 'name_author' not in metadata_json or not metadata_json['name_author']:
+            name_author=''                                   
+        else:
+            name_author=metadata_json['name_author'] + '/'
 
+        if 'id_deck' not in metadata_json or not metadata_json['id_deck']:
+            id_deck=ObjectId('68386a41ac5083de66afd675')                        #deck test
+        else:
+            id_deck=metadata_json['id_deck']
 
+        if 'matiere' not in metadata_json or not metadata_json['matiere']:
+            matiere=''                                          
+        else:
+            matiere=metadata_json['matiere'] + '/'
 
-        except json.JSONDecodeError:
-            return Response({"error": "Invalid JSON in metadata"}, status=status.HTTP_400_BAD_REQUEST)
-
-
-        #permet d'envoyer à la bdd et d'informer que l'envoi c'est bien passé
-        #uploaded_file = UploadedFile.objects.create(file=pdf_file, metadata=metadata_json)
-        #serializer = UploadedFileSerializer(uploaded_file)
-        #return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if 'public' not in metadata_json or not metadata_json['public']:
+            public='false'                                          
+        else:
+            public=metadata_json['public']
         
+        if 'chapters' not in metadata_json or not metadata_json['chapters']:#on crée les pdf si il n'y a pas de chapitres
+            list_pdf=[pdf_file]
+            path='cours_pdf/'+name_author + matiere + nom_cours +".pdf"
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            reader = PdfReader(pdf_file)
+            writer = PdfWriter()
+            writer.append_pages_from_reader(reader)
+            with open(path, "wb") as f_out:
+                writer.write(f_out)
+        
+        else:                                                                #on crée les pdf pour les differents chapitres
+            list_chapter=metadata_json['chapters']
+            reader = PdfReader(pdf_file)
+            total_pages = len(reader.pages)
+            current=0
+            
+            for (title,length) in list_chapter:
+                path='cours_pdf/'+name_author + matiere + nom_cours +'/'+ title +".pdf"
+                os.makedirs(os.path.dirname(path), exist_ok=True)             #on cree les sous dossiers
+
+                writer = PdfWriter()
+                end_page = current + length - 1
+                
+                if end_page >= total_pages:
+                    end_page = total_pages - 1
+                start_page=current
+                
+                for page_num in range(start_page, end_page + 1):
+                    writer.add_page(reader.pages[page_num])
+                    current+=1
+                with open(path, "wb") as f_out:
+                    writer.write(f_out)
+                list_pdf.append(title+".pdf")
+
+        
+        
+        #update bdd
+        chemin_dossier=path
+        date_creation=make_aware(datetime.now())
+
+        document = {
+                "id_auteur": ObjectId(id_auteur),
+                "id_deck": ObjectId(id_deck),
+                "chemin_dossier": chemin_dossier,
+                "public": public,
+                "date_creation": date_creation,
+                "nom_cours": nom_cours,
+                }
+        insert_document("DB_Session", "IncompleteReviews", document)
+
         return Response({"message": "Success"}, status=status.HTTP_200_OK)
 
 

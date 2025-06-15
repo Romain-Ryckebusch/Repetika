@@ -59,7 +59,7 @@ class GetCardsChapter(APIView):
 class GetCardsFromID(APIView):
     """
     Get /api/Decks/getCardsFromID
-    Takes card_ids one or multiple times in the request, attention dans une ancienne version elle prenait une List of card IDs
+    Takes card_ids one or multiple times in the request
     Returns list of cards with the given IDs
     """
     def get(self, request):
