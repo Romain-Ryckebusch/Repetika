@@ -575,3 +575,123 @@ class CardsReviewedToday(APIView):
                 status=status.HTTP_400_BAD_REQUEST
         )
         
+
+
+# AUTHENTIFICATION ROUTES
+
+class UserLogin(APIView):
+    """
+    POST /UserLogin
+    Takes: username, password
+    Returns: JSON response with user data or error message
+    """
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        if not username or not password:
+            return Response({"error": "Username and password are required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = requests.post(
+            AUTH_BASE_URL + "/login/",
+            data={"username": username, "password": password}
+        )
+
+        return Response(response.json(), status=response.status_code)
+
+
+class UserLogout(APIView):
+    """
+    POST /UserLogout
+    Takes: refresh token
+    Returns: success message or error message
+    """
+    def post(self, request):
+        refresh_token = request.data.get('refresh')
+
+        if not refresh_token:
+            return Response({"error": "Refresh token is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = requests.post(
+            AUTH_BASE_URL + "/logout/",
+            data={"refresh": refresh_token}
+        )
+
+        return Response(response.json(), status=response.status_code)
+    
+class UserRegister(APIView):
+    """
+    POST /UserRegister
+    Takes: username, password, email, avatar_url, preferences_json
+    Returns: success message or error message
+    """
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        email = request.data.get('email', '')
+        avatar_url = request.data.get('avatar_url', '')
+        preferences_json = request.data.get('preferences_json', '{}')
+
+        if not username or not password:
+            return Response({"error": "Username and password are required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = requests.post(
+            AUTH_BASE_URL + "/register/",
+            data={
+                "username": username,
+                "password": password,
+                "email": email,
+                "avatar_url": avatar_url,
+                "preferences_json": preferences_json
+            }
+        )
+
+        return Response(response.json(), status=response.status_code)
+    
+class UserDelete(APIView):
+    """
+    POST /UserDeleteAccount
+    Takes: user_id
+    Returns: success message or error message
+    """
+    def post(self, request):
+        user_id = request.data.get('user_id')
+
+        if not user_id:
+            return Response({"error": "user_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = requests.post(
+            AUTH_BASE_URL + "/deleteAccount/",
+            data={"user_id": user_id}
+        )
+
+        return Response(response.json(), status=response.status_code)
+    
+class UserUpdateProfile(APIView):
+    """
+    POST /UserUpdateProfile
+    Takes: user_id, username, email, avatar_url, preferences_json
+    Returns: success message or error message
+    """
+    def post(self, request):
+        user_id = request.data.get('user_id')
+        username = request.data.get('username')
+        email = request.data.get('email', '')
+        avatar_url = request.data.get('avatar_url', '')
+        preferences_json = request.data.get('preferences_json', '{}')
+
+        if not user_id:
+            return Response({"error": "user_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = requests.post(
+            AUTH_BASE_URL + "/update/",
+            data={
+                "user_id": user_id,
+                "username": username,
+                "email": email,
+                "avatar_url": avatar_url,
+                "preferences_json": preferences_json
+            }
+        )
+
+        return Response(response.json(), status=response.status_code)

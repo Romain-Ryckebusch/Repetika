@@ -18,5 +18,12 @@ urlpatterns = [
     path('showAllSharedCourses', ShowAllSharedCourses.as_view()),
     path('addToSubscribers', AddToSubscribers.as_view()),
     path('cardsReviewedToday', CardsReviewedToday.as_view()),
+
+    # AUTHENTIFICATION URLs
+    path('register', UserRegister.as_view()),
+    path('deleteAccount', UserDelete.as_view()),
+    path('login', UserLogin.as_view()),
+    path('logout', UserLogout.as_view()),
+    path('updateProfile', UserUpdateProfile.as_view()),
 ]
 
