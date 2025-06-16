@@ -5,6 +5,7 @@ import './src/i18n';
 import { useFonts } from "expo-font";
 import { ActivityIndicator, View } from "react-native";
 import { AuthProvider } from './src/utils/AuthContext';
+import {CourseProvider} from "./src/utils/CourseContext";
 
 export default function App() {
     const [fontsLoaded] = useFonts({
@@ -25,9 +26,11 @@ export default function App() {
 
     return (
         <AuthProvider>
-            <NavigationContainer ref={navigationRef}>
-                <RootNavigator />
-            </NavigationContainer>
+            <CourseProvider>
+                <NavigationContainer ref={navigationRef}>
+                    <RootNavigator />
+                </NavigationContainer>
+            </CourseProvider>
         </AuthProvider>
     );
 }
