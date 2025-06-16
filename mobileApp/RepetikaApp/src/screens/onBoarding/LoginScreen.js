@@ -36,7 +36,7 @@ export default function LoginScreen() {
 
     const loginFunction = async () => {
         try {
-            const response = await fetch(config.BASE_URL + '/auth/login/', {
+            const response = await fetch(config.BASE_URL + '/main/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -63,7 +63,7 @@ export default function LoginScreen() {
                 // Met à jour le contexte
                 setTokenAccess(data.tokens.access);
                 setTokenRefresh(data.tokens.refresh);
-                setUserId(data.user_id);
+                setUserId("68386a41ac5083de66afd675");
 
 // Tu peux reconstruire les stats comme tu le fais dans saveSession
                 const userStats = {

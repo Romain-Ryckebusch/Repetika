@@ -67,14 +67,19 @@ export default function RegisterScreen() {
 
         if (valid) {
             console.log("Valide!")
-            fetch(config.BASE_URL+'/auth/register/', {
+            console.log(JSON.stringify({
+                "username":userName,
+                "email":Mail,
+                "password":password
+            }))
+            fetch(config.BASE_URL+'/main/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     "username":userName,
-                    "mail":Mail,
+                    "email":Mail,
                     "password":password
                 })
             })
