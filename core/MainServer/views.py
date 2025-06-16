@@ -69,16 +69,17 @@ class DébutSéanceRévision(APIView):
 class updateSéanceRévision(APIView):
     """
     en prenant note pour chaque carte de si elle est répondue correctement ou non (en cas de réponse incorrecte, elle reste dans le roulement jusqu'à ce que la réponse soit correcte) puis envoie ces informations à "Planification" pour sauvegarder la progression et update les prochaines dates de révision de ces cartes
+    result vaut 0 si bon du premier coup, 1 si faux d'abord et pas encore bon au moment de sauvegarder les résultats, et 2 si bon après une ou plusieurs erreurs
     """
     def post(self, request):
         """
-        POST /update-session            (eventellement ajouter /api si on modif urls dans core)
+        POST /update-session            
         Takes: Takes: ID utilisateur + Liste résultats
         metadata={
                     "user_id":"name",
                     "results"= {
                         "id1": réponse1,
-                        "id2": réponse2], ...
+                        "id2": réponse2, ...
                         }
                 }
 

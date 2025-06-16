@@ -106,7 +106,7 @@ class SendPlanification(APIView):
                     "user_id":"name",
                     "results"= {
                         "id1": réponse1,
-                        "id2": réponse2], ...
+                        "id2": réponse2, ...
                         }
                 }
         return: nothing
