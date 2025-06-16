@@ -11,6 +11,8 @@ from rest_framework.response import Response
 
 from .models import CustomUser
 
+#aller sur: "http://127.0.0.1:8000/api/auth/admin/Authentification/customuser/" pour la base de donné, mot de passe de quentin: 123
+
 class Register(APIView):
     def post(self, request):
         username = request.data.get('username')
