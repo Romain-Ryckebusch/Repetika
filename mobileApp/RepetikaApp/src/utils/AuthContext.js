@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
             tokenAccess, setTokenAccess,
             tokenRefresh, setTokenRefresh,
             userId, setUserId,
-            userStats, setUserStats
+            userStats, setUserStats,
         }}>
             {children}
         </AuthContext.Provider>

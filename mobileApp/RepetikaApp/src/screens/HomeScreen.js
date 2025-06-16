@@ -15,6 +15,7 @@ import useFetch from "../utils/useFetch";
 import {AuthContext} from "../utils/AuthContext";
 import {checkAchievements} from "../utils/achievements/checkAchievements";
 import config from "../config/config";
+import {CourseContext} from "../utils/CourseContext";
 
 
 export const getCoursOfUser = () => api.get('/main/getAccessibleCourses?user_id=68386a41ac5083de66afd675');
@@ -49,6 +50,7 @@ export default function HomeScreen() {
     const {userId}=useContext(AuthContext);
 
     const url = config.BASE_URL+`/main/getAccessibleCourses?user_id=${userId}`;
+    console.log(url);
     const { data, loading, error } = useFetch(url);
 
     useEffect(() => {
@@ -64,7 +66,7 @@ export default function HomeScreen() {
     }, [error]);
 
     const {userStats,setUserStats} = useContext(AuthContext);
-
+    const {setCurrentDeckId,setCurrentCoursId} = useContext(CourseContext);
 
     useEffect(() => {
         console.log("start of check")
@@ -82,6 +84,18 @@ export default function HomeScreen() {
             console.log("Achievement débloqué"+achievement.titleFr)
         });
     }, [userStats]); // ou après une action spécifique
+
+
+    const navigateToCours = (idCours,idDeck)=>{
+
+        setCurrentDeckId(idDeck);
+        setCurrentCoursId(idCours);
+        navigate("gameScreens",{
+
+            screen:"CourseIndex",
+        })
+    }
+
 
     console.log(lessons);
 
@@ -113,13 +127,7 @@ export default function HomeScreen() {
                                 corpus={"description"}
                                 progress={lesson.progress}
                                 crd_number={lesson.cards_today}
-                                onPress={()=>navigate("gameScreens",{
-                                    screen:"CourseIndex",
-                                    params: {
-                                        lessonId: lesson.id_cours,
-                                        deckId:lesson.id_deck
-                                    }
-                                })}
+                                onPress={()=>navigateToCours(lesson.id_cours,lesson.id_deck)}
                             />
                         ))}
 
