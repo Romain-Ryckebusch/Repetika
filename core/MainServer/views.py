@@ -90,12 +90,13 @@ class updateSéanceRévision(APIView):
         if not metadata:
             return Response({"error": "Missing user_id or results"}, status=status.HTTP_400_BAD_REQUEST)
         
-        metadata_json = json.loads(metadata)
+        #metadata_json = json.loads(metadata)
+        metadata_json=metadata
         user_id=metadata_json['user_id']
         results=metadata_json['results']
 
         response = requests.post(
-            "http://localhost:8000/api/learning_session/send-planification/",
+            "http://localhost:8000/api/learning-session/send-planification/",
             json={
                 "metadata": {
                     "user_id": user_id,
