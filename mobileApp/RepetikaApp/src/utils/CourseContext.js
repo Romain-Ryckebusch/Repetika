@@ -1,4 +1,4 @@
-// AuthContext.js
+
 import React, { createContext, useState, useEffect } from 'react';
 import { getSession } from './session';
 

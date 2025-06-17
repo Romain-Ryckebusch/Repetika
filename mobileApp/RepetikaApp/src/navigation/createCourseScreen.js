@@ -11,6 +11,7 @@ import React from "react";
 
 import CreateCourseScreen from "../screens/createScreen/createCourse";
 import CreateChapter from "../screens/createScreen/createChapter";
+import {CreateCourseProvider} from "../utils/CreateCourseContext";
 
 
 
@@ -24,12 +25,14 @@ const CreateCourseScreens=()=> {
     const navigation = useNavigation();
 
     return (
-        <Stack.Navigator
-            id={"createCourseNavigator"}
-        >
-            <Stack.Screen name="CreateCourseScreen"  options={{headerShown:false}} component={CreateCourseScreen}/>
-            <Stack.Screen name={"CreateChapterScreen"} options={{headerShown:false}} component={CreateChapter}/>
-        </Stack.Navigator>
+        <CreateCourseProvider>
+            <Stack.Navigator
+                id={"createCourseNavigator"}
+            >
+                <Stack.Screen name="CreateCourseScreen"  options={{headerShown:false}} component={CreateCourseScreen}/>
+                <Stack.Screen name={"CreateChapterScreen"} options={{headerShown:false}} component={CreateChapter}/>
+            </Stack.Navigator>
+        </CreateCourseProvider>
     );
 }
 

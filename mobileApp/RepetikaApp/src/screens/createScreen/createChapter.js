@@ -1,12 +1,14 @@
 import globalStyles from "../../styles/global";
 import {View, Text, TextInput,Image} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
-import {useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import styles from "../../styles/createCourse/createChapter.style";
 import Input from "../../components/frm_input";
 import {PlatformPressable} from "@react-navigation/elements";
 import Btn_Fill from "../../components/btn_fill";
 import ScreenWrapper from "../../components/navigation/screenWrapper";
+import {CreateCourseContext} from "../../utils/CreateCourseContext";
+import {useEvent} from "expo";
 
 
 
@@ -39,10 +41,21 @@ const CreateChapter = ()=>{
     const [inputModeEdit,setInputModeEdit] = useState(false);
     const [idCardToEdit,setIdCardToEdit] = useState(null);
 
+    const {chapterList,setChapterList,cardsListByChapter,setCardsListByChapter} = useContext(CreateCourseContext)
+
     const [cardsList,setCardsList] = useState([]);
 
      //si l'id exist, on récuperera les infos depuis la bdd
     console.log("ChapterId"+chapterId)
+
+
+    useEffect(() => {
+        if(chapterId){
+            setChapterName(chapterList.find(item=>item.id === chapterId).title);
+            setCardsList(cardsListByChapter.find(item => item.chapterId === chapterId).cards)
+        }
+    }, []);
+
 
     const generateFakeObjectId = () => {
         const timestamp = Math.floor(Date.now() / 1000).toString(16);
@@ -85,6 +98,34 @@ const CreateChapter = ()=>{
         setCardsList(prevState => prevState.filter(card => card.id !== id));
     }
 
+    const saveChapter=()=>{
+        if(chapterId){
+            let chapterCards = cardsListByChapter.find(item => item.chapterId === chapterId);
+            let chapterData = chapterList.find(item=>item.id === chapterId);
+            chapterData.title=chapterName;
+            chapterCards.cards=cardsList
+            setCardsListByChapter(prev =>
+                prev.map(item =>
+                    item.chapterId === chapterId
+                        ? { ...item, cards: cardsList }
+                        : item
+                )
+            );
+
+            setChapterList(prev =>
+                prev.map(item =>
+                    item.id === chapterId
+                        ? { ...item, title: chapterName }
+                        : item
+                )
+            );
+        }else {
+            const id = Date.now()
+            setChapterList(prev => [...prev, {"id": id, "title": chapterName}]);
+            setCardsListByChapter(prev => [...prev, {"chapterId": id, "cards": cardsList}]);
+        }
+        navigation.navigate("CreateCourseScreen");
+    }
 
     return(
         <View style={styles.container}>
@@ -122,7 +163,7 @@ const CreateChapter = ()=>{
                 }
                 </ScreenWrapper>
 
-            <Btn_Fill title={"Sauvegarder"} style={{marginBottom:32, marginTop:16}}/>
+            <Btn_Fill title={"Sauvegarder"} style={{marginBottom:32, marginTop:16}} onPress={()=>saveChapter()}/>
 
         </View>
     )

@@ -5,7 +5,7 @@ import colors from '../../styles/colors';
 import styles from '../../styles/game/reviewFrame.style';
 
 import {useTranslation} from "react-i18next";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import Btn_Fill from "../../components/btn_fill";
 import Input from "../../components/frm_input";
 import backIcon from "../../assets/icons/back.png";
@@ -16,6 +16,7 @@ import {useRoute} from "@react-navigation/native";
 import Markdown from 'react-native-markdown-display';
 import config from "../../config/config";
 import {saveSession} from "../../utils/session";
+import {AuthContext} from "../../utils/AuthContext";
 
 
 
@@ -24,6 +25,7 @@ export default function ReviewFrame() {
     const route = useRoute();
     const courseId = route.params?.courseId;
     const deck = route.params?.deck;
+    const {userId}= useContext(AuthContext);
     useEffect(() => {
         if (!courseId || !deck) {
             navigate("MainApp");
@@ -52,7 +54,13 @@ export default function ReviewFrame() {
 
     async function updateCard(cardId,userId,value){
         try {
-            const response = await fetch(config.BASE_URL + '/main/login', {
+            console.log(JSON.stringify({
+                metadata:{
+                    user_id:userId,
+                    results:{cardId,value}
+                }
+            }))
+            const response = await fetch(config.BASE_URL + '/main/update-session', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -71,7 +79,7 @@ export default function ReviewFrame() {
             console.log('Données reçues:', data);
 
             if(data.error){
-                console.error(error);
+                console.error(data.error);
             }else{
                 console.log(data);
 
@@ -118,8 +126,10 @@ export default function ReviewFrame() {
             console.log(falseCards);
             console.log(card)
             if(falseCards.includes(card._id)){
+                updateCard(card._id,userId,2)
                 console.log("Tu as déja eu faux a cette question!")
             }else{
+                updateCard(card._id,userId,0)
                 console.log("Vrai du premier coup!")
             }
 
