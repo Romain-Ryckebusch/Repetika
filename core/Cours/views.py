@@ -20,6 +20,8 @@ from PyPDF2 import PdfMerger
 from PyPDF2 import PdfReader, PdfWriter
 
 from bson import ObjectId
+DECK_BASE_URL="http://localhost:8000/api/decks"
+
 
 class GetChapter(APIView):
     """
@@ -217,10 +219,11 @@ class UploadPDF(APIView):
                         ["name_chapter1", length2], ...
                         ],
                     "author_id":ObjectId('id'),         #remplacer id par un id valide ex: 68386a41ac5083de66afd675
-                    "name_author":"name_author"
-                    "id_deck":ObjectId('id')
-                    "matiere":"Informatique"
-                    "public":false                      #or true
+                    "name_author":"name_author",
+                    "id_deck":ObjectId('id'),
+                    "matiere":"Informatique",
+                    "public":false,                      #or true
+                    "tags":[]
                     }
 
     return: success message
@@ -261,8 +264,13 @@ class UploadPDF(APIView):
         else:
             name_author=metadata_json['name_author'] + '/'
 
-        if 'id_deck' not in metadata_json or not metadata_json['id_deck']:
-            id_deck=ObjectId('68386a41ac5083de66afd675')                        #deck test
+        if 'tags' not in metadata_json or not metadata_json['tags']:
+            tags=[]                         
+        else:
+            tags=metadata_json['tags']
+
+        if 'id_deck' not in metadata_json or not metadata_json['id_deck']:      #on crée un deck
+            id_deck=self.crer_deck(id_auteur,nom_cours,tags)                        
         else:
             id_deck=metadata_json['id_deck']
 
@@ -310,7 +318,7 @@ class UploadPDF(APIView):
                     writer.write(f_out)
                 list_pdf.append((title,path))
 
-        #update bdd=
+        #update bdd:
         #ajout du cours
         chemin_dossier='cours_pdf/'+name_author + matiere + nom_cours
         date_creation=make_aware(datetime.now())
@@ -338,6 +346,22 @@ class UploadPDF(APIView):
             insert_document("DB_Cours", "Chapitres", document)
 
         return Response({"message": "Success"}, status=status.HTTP_200_OK)
+    
+    def crer_deck(self,id_auteur,nom_cours,tags):
+        id_user = id_auteur
+        nom_deck = nom_cours
+        
+        response = requests.get(DECK_BASE_URL + "/createDeck", params={
+                "user_id": id_user,
+                "nom_deck":nom_deck,
+                "tags":tags
+            })
+        if response.status_code == 200:
+            response_json=response.json()
+            return response_json["id_deck"]
+        else:
+            return ObjectId('68386a41ac5083de66afd675') #id deck test
+
 
 
 class GetAccessibleCourses(APIView):

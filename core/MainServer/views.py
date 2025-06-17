@@ -467,10 +467,11 @@ class UploadPDF(APIView):
                         ["name_chapter1", length2], ...
                         ],
                     "author_id":ObjectId('id'),         #remplacer id par un id valide ex: 68386a41ac5083de66afd675
-                    "name_author":"name_author"
-                    "id_deck":ObjectId('id')
-                    "matiere":"Informatique"
-                    "public":false                      #or true
+                    "name_author":"name_author",
+                    "id_deck":ObjectId('id'),
+                    "matiere":"Informatique",
+                    "public":false,                      #or true
+                    "tags":[]
                     }
 
     return: success message
