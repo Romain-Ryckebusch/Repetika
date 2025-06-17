@@ -277,8 +277,8 @@ class UploadPDF(APIView):
             public=metadata_json['public']
         
         if 'chapters' not in metadata_json or not metadata_json['chapters']:#on crée les pdf si il n'y a pas de chapitres
-            list_pdf=[pdf_file]
             path='cours_pdf/'+name_author + matiere + nom_cours +".pdf"
+            list_pdf=[(nom_cours,path)]
             os.makedirs(os.path.dirname(path), exist_ok=True)
             reader = PdfReader(pdf_file)
             writer = PdfWriter()
@@ -308,12 +308,11 @@ class UploadPDF(APIView):
                     current+=1
                 with open(path, "wb") as f_out:
                     writer.write(f_out)
-                list_pdf.append(title+".pdf")
+                list_pdf.append((title,path))
 
-        
-        
-        #update bdd
-        chemin_dossier=path
+        #update bdd=
+        #ajout du cours
+        chemin_dossier='cours_pdf/'+name_author + matiere + nom_cours
         date_creation=make_aware(datetime.now())
 
         document = {
@@ -324,7 +323,19 @@ class UploadPDF(APIView):
                 "date_creation": date_creation,
                 "nom_cours": nom_cours,
                 }
-        insert_document("DB_Session", "IncompleteReviews", document)
+        id_cours = insert_document("DB_Cours", "Cours", document)
+
+        #ajout des chapitres 
+        for i,chapitre in enumerate(list_pdf):
+            nom_chapitre=chapitre[0]
+            chemin_pdf=chapitre[1]
+            document = {
+                    "id_cours": id_cours,
+                    "nom_chapitre": nom_chapitre,
+                    "position": i,
+                    "chemin_pdf": chemin_pdf
+                    }
+            insert_document("DB_Cours", "Chapitres", document)
 
         return Response({"message": "Success"}, status=status.HTTP_200_OK)
 

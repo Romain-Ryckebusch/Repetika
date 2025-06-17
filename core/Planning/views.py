@@ -205,7 +205,9 @@ class CardsToday(APIView):
                 {"error": "user_id parameter is required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        today = make_aware(datetime.now())+timedelta(days=1)
+        today = make_aware(datetime.now())#+timedelta(days=1)
+        today = datetime.combine(today, datetime.max.time())  # date à 23:59:59
+        
         cartes_a_reviser = find_documents_fields(
             "DB_Planning",
             "Planning",
@@ -231,7 +233,9 @@ class CardsReviewedToday(APIView):
                 {"error": "user_id parameter is required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        today = make_aware(datetime.now())-timedelta(days=1)   
+        today = make_aware(datetime.now())
+        today = datetime.combine(today, datetime.min.time())  # date à 00:00:00
+
         cards = find_documents_fields(
             "DB_Planning",
             "History",
