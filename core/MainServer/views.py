@@ -474,7 +474,7 @@ class UploadPDF(APIView):
                     "tags":[]
                     }
 
-    return: success message
+    return: id_cours, id_chapitres (a list of ids), id_deck
     """
     parser_classes = [MultiPartParser]
     def get(self, request):
@@ -503,7 +503,7 @@ class UploadPDF(APIView):
     
         if response.status_code == 200:
             return Response(
-                {"message": "Success UploadPDF"},
+                response.json(),
                 status=status.HTTP_200_OK
             )
 

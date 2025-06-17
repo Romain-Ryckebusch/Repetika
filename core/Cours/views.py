@@ -220,13 +220,13 @@ class UploadPDF(APIView):
                         ],
                     "author_id":ObjectId('id'),         #remplacer id par un id valide ex: 68386a41ac5083de66afd675
                     "name_author":"name_author",
-                    "id_deck":ObjectId('id'),
+                    "id_deck":ObjectId('id'),           #si un id est donné il est rataché au cours et sinon un deck est créé
                     "matiere":"Informatique",
                     "public":false,                      #or true
                     "tags":[]
                     }
 
-    return: success message
+    return: id_cours, id_chapitres (a list of ids), id_deck
     """
     parser_classes = [MultiPartParser]
     def get(self, request):
@@ -334,6 +334,7 @@ class UploadPDF(APIView):
         id_cours = insert_document("DB_Cours", "Cours", document)
 
         #ajout des chapitres 
+        id_chapitres=[]
         for i,chapitre in enumerate(list_pdf):
             nom_chapitre=chapitre[0]
             chemin_pdf=chapitre[1]
@@ -343,9 +344,15 @@ class UploadPDF(APIView):
                     "position": i,
                     "chemin_pdf": chemin_pdf
                     }
-            insert_document("DB_Cours", "Chapitres", document)
+            id_chapitre=insert_document("DB_Cours", "Chapitres", document)
+            id_chapitres.append(id_chapitre)
+        
+        data={"id_cours":str(id_cours), 
+              "id_chapitres":[str(x) for x in id_chapitres], 
+              "id_deck":str(id_deck)
+        }
 
-        return Response({"message": "Success"}, status=status.HTTP_200_OK)
+        return Response(data, status=status.HTTP_200_OK)
     
     def crer_deck(self,id_auteur,nom_cours,tags):
         id_user = id_auteur
