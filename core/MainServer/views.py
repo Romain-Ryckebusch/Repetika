@@ -27,6 +27,7 @@ from bson import ObjectId
 
 COURS_BASE_URL="http://localhost:8000/api/cours" 
 PLANNING_BASE_URL="http://localhost:8000/api/planning"
+DECK_BASE_URL="http://localhost:8000/api/decks"
 
 
 class DébutSéanceRévision(APIView):
@@ -159,14 +160,6 @@ class GetCourseChapters(APIView):
             status=response.status_code
         )
 
-
-
-
-
-
-
-
-
 class GetDeckNames(APIView):
     """
     GET /GetDeckNames
@@ -184,6 +177,43 @@ class GetDeckNames(APIView):
         return Response(
             response.json(),
             status=response.status_code
+        )
+
+class CreateDeck(APIView):
+    """
+    GET /createDeck
+    Takes: user_id, nom_deck, tags          # nom_deck and tags are optional 
+    Returns: id_deck
+    """
+    def get(self, request):
+        id_user = request.GET.get('user_id')
+        nom_deck = request.GET.get('nom_deck')
+        tags = request.GET.get('tags')
+
+        if not id_user:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        if not tags:
+            tags=[]
+        if not nom_deck:
+            nom_deck="default_name"
+        
+        response = requests.get(DECK_BASE_URL + "/createDeck", params={
+                "user_id": id_user,
+                "nom_deck":nom_deck,
+                "tags":tags
+            })
+        if response.status_code == 200:
+            return Response(
+                response.json(),
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                response.json(),
+                status=status.HTTP_400_BAD_REQUEST
         )
     
 # design-services.md : Création cartes
@@ -437,13 +467,14 @@ class UploadPDF(APIView):
                         ["name_chapter1", length2], ...
                         ],
                     "author_id":ObjectId('id'),         #remplacer id par un id valide ex: 68386a41ac5083de66afd675
-                    "name_author":"name_author"
-                    "id_deck":ObjectId('id')
-                    "matiere":"Informatique"
-                    "public":false                      #or true
+                    "name_author":"name_author",
+                    "id_deck":ObjectId('id'),
+                    "matiere":"Informatique",
+                    "public":false,                      #or true
+                    "tags":[]
                     }
 
-    return: success message
+    return: id_cours, id_chapitres (a list of ids), id_deck
     """
     parser_classes = [MultiPartParser]
     def get(self, request):
@@ -472,7 +503,7 @@ class UploadPDF(APIView):
     
         if response.status_code == 200:
             return Response(
-                {"message": "Success UploadPDF"},
+                response.json(),
                 status=status.HTTP_200_OK
             )
 
@@ -547,7 +578,7 @@ class CardsReviewedToday(APIView):
         user_id = request.GET.get('user_id')
         if not user_id:
             return Response(
-                {"error": "user_id parameter is required. test"},
+                {"error": "user_id parameter is required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
