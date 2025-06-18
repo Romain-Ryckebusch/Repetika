@@ -63,6 +63,7 @@ class FirstPlanChapter(APIView):
         )
         scheduled_card = Card()
         scheduled_card, review_log = scheduler.review_card(scheduled_card, Rating.Good)
+        scheduled_card.due = make_aware(datetime.now())
 
 
         for card_id in cards_id:
