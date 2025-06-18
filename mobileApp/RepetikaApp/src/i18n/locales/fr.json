@@ -137,5 +137,46 @@
     "streakTitleEnd": "jours que tu t'entraînes !",
     "Next": "Suivant",
     "Share": "Partager"
+  },
+  "XpPage":{
+    "CongratMessage": "Félicitations! Tu es en route vers le niveau ",
+    "Level": "Niveau {{level}} atteint",
+    "Next": "Suivant"
+  },
+  "TropheyPage": {
+    "CongrateMessage": "Félicitations!\n\n Tu as obtenu le trophée:\n"
+  },
+  "CreateCoursePage": {
+    "Title": "Créer un cours",
+    "SubtitleInfo": "Informations générales",
+    "SubtitleChapters": "Chapitres",
+    "NameCourseLabel": "Nom du cours",
+    "DescCourseLabel": "Description du cours",
+    "AddPdfLabel": "Ajouter un PDF",
+    "EditPdfLabel": "Modifier le PDF",
+    "edit": "Modifier",
+    "Save": "Sauvegarder",
+    "Delete": "Supprimer",
+    "PdfSelectError": "Impossible de sélectionner un fichier PDF.",
+    "PdfNotSelected": "Veuillez sélectionner un fichier PDF.",
+    "SendSuccess": "Le cours a été sauvegardé",
+    "SendError": "Une erreur c'est produite lors de la sauvegarde du cours",
+    "ServerError": "Nous n'avons pas pu contacter le serveur",
+    "BackTitle": "Confirmation",
+    "BackContent": "Veux tu vraiment revenir a la page d'accueil? Toutes les modifications non sauvegardées seront perdues.",
+    "BackConfirm": "CONFIRMER",
+    "BackCancel": "ANNULER"
+  },
+  "CreateChapterPage": {
+    "ChapterNameLabel": "Nom du chapitre",
+    "Subtitle": "Ajouter une carte",
+    "Recto": "Recto :",
+    "Verso": "Verso :",
+    "Question": "Question",
+    "Reponse": "Réponse",
+    "Add": "Ajouter",
+    "Edit": "Modifier",
+    "ChapterCards": "Cartes du chapitre",
+    "Save": "Sauvegarder"
   }
 }

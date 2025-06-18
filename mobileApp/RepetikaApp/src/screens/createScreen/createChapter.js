@@ -9,6 +9,7 @@ import Btn_Fill from "../../components/btn_fill";
 import ScreenWrapper from "../../components/navigation/screenWrapper";
 import {CreateCourseContext} from "../../utils/CreateCourseContext";
 import {useEvent} from "expo";
+import {useTranslation} from "react-i18next";
 
 
 
@@ -33,6 +34,8 @@ const JoinedInput = ({label,placeholder,value,onChangeText}) => {
 const CreateChapter = ()=>{
     const route = useRoute();
     const navigation = useNavigation();
+    const {t}=useTranslation();
+
     const chapterId = route.params?.chapterId ?? null;
 
     const [chapterName,setChapterName] = useState("");
@@ -133,18 +136,18 @@ const CreateChapter = ()=>{
                 <Image style={styles.backArrow} source={require("../../assets/icons/back.png")}></Image>
             </PlatformPressable>
             <Text style={globalStyles.title}>{chapterName}</Text>
-            <Text style={styles.inputContainer}>Nom du chapitre</Text>
+            <Text style={styles.inputContainer}>{t("CreateChapterPage.ChapterNameLabel")}</Text>
             <Input maxLength={64} value={chapterName} onChangeText={setChapterName} />
 
 
             <View style={styles.formView}>
-                <Text style={globalStyles.title}>Ajouter une carte</Text>
-                <JoinedInput label={"Recto :"} placeholder={"Question"} value={rectoInput} onChangeText={setRectoInput} />
-                <JoinedInput label={"Verso :"} placeholder={"Réponse"} value={versoInput} onChangeText={setVersoInput} />
-                <Btn_Fill title={inputModeEdit?"Modifier":"Ajouter"} style={{marginTop:16}} onPress={!inputModeEdit?()=>addCard(rectoInput,versoInput):()=>saveEditedCard(idCardToEdit)} />
+                <Text style={globalStyles.title}>{t("CreateChapterPage.Subtitle")}</Text>
+                <JoinedInput label={t("CreateChapterPage.Recto")} placeholder={t("CreateChapterPage.Question")} value={rectoInput} onChangeText={setRectoInput} />
+                <JoinedInput label={t("CreateChapterPage.Verso")} placeholder={t("CreateChapterPage.Reponse")} value={versoInput} onChangeText={setVersoInput} />
+                <Btn_Fill title={inputModeEdit?t("CreateChapterPage.Edit"):t("CreateChapterPage.Add")} style={{marginTop:16}} onPress={!inputModeEdit?()=>addCard(rectoInput,versoInput):()=>saveEditedCard(idCardToEdit)} />
             </View>
 
-                <Text style={globalStyles.title}>Cartes du chapitre</Text>
+                <Text style={globalStyles.title}>{t("CreateChapterPage.ChapterCards")}</Text>
                 <ScreenWrapper scrollable style={styles.chapterList}>
                 {
                     cardsList.map((card,i)=>{
@@ -163,7 +166,7 @@ const CreateChapter = ()=>{
                 }
                 </ScreenWrapper>
 
-            <Btn_Fill title={"Sauvegarder"} style={{marginBottom:32, marginTop:16}} onPress={()=>saveChapter()}/>
+            <Btn_Fill title={t("CreateChapterPage.Save")} style={{marginBottom:32, marginTop:16}} onPress={()=>saveChapter()}/>
 
         </View>
     )

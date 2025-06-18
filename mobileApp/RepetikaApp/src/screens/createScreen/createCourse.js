@@ -14,15 +14,17 @@ import {CreateCourseContext} from "../../utils/CreateCourseContext";
 import Config from "../../config/config";
 import config from "../../config/config";
 import {saveSession} from "../../utils/session";
+import {useTranslation} from "react-i18next";
 
 
 const ChapterBox = ({id,name,onUp,onDown})=>{
+    const {t}=useTranslation();
 
     return(
         <View style={styles.chapterBox}>
             <View style={styles.chapterBox.leftBox}>
                 <Text style={styles.chapterBox.leftBox.title}>{name}</Text>
-                <Btn_Fill title={"Modifier"} style={styles.chapterBox.leftBox.btn} onPress={()=>editChapter(id)}/>
+                <Btn_Fill title={t("CreateCoursePage.edit")} style={styles.chapterBox.leftBox.btn} onPress={()=>editChapter(id)}/>
             </View>
             <View style={styles.chapterBox.rightBox}>
                 <Pressable style={styles.chapterBox.rightBox.btn} onPress={()=>{onUp()}}>
@@ -58,7 +60,7 @@ function editChapter(id){
 
 const CreateCourseScreen =  () => {
     const navigation = useNavigation();
-
+    const {t}=useTranslation();
     const [courseTitle,setCourseTitle] = useState("");
     const [courseDescription,setCourseDescription] = useState("");
     const [pdfFile, setPdfFile] = useState(null);
@@ -78,7 +80,7 @@ const CreateCourseScreen =  () => {
             }
         } catch (err) {
             console.error('Erreur sélection PDF:', err);
-            Alert.alert('Erreur', 'Impossible de sélectionner un fichier PDF.');
+            Alert.alert('Erreur', t("CreateCoursePage.PdfSelectError"));
         }
     };
 
@@ -90,12 +92,7 @@ const CreateCourseScreen =  () => {
                 const chaptersIdsList = r.id_chapitres
                 const coursId = r.id_cours;
 
-                /*console.log(deckId)
-                console.log(chaptersIdsList)
-                console.log(coursId)
-                console.log(chapterList)
-                console.log(cardsListByChapter)
-*/
+
                 let finalList = []
                 let i =0;
                 cardsListByChapter.map(chapterCards => {
@@ -148,7 +145,7 @@ const CreateCourseScreen =  () => {
 
     const postData = async () => {
         if (!pdfFile) {
-            Alert.alert("Erreur", "Veuillez sélectionner un fichier PDF.");
+            Alert.alert("Erreur", t("CreateCoursePage.PdfNotSelected"));
             return;
         }
 
@@ -178,18 +175,18 @@ const CreateCourseScreen =  () => {
 
             const data = await response.json();
             if (response.ok) {
-                Alert.alert("Succès", "Le cours a été envoyé !");
+                Alert.alert("Succès", t("CreateCoursePage.SendSuccess"));
                 console.log(data);
                 return(data)
             } else {
                 console.error("Erreur serveur:", data);
-                Alert.alert("Erreur", "Échec de l'envoi");
+                Alert.alert("Erreur", t("CreateCoursePage.SendError"));
                 return false
             }
 
         } catch (err) {
             console.error("Erreur réseau:", err);
-            Alert.alert("Erreur", "Impossible de contacter le serveur");
+            Alert.alert("Erreur", t("CreateCoursePage.ServerError"));
             return false
         }
     };
@@ -216,10 +213,31 @@ const CreateCourseScreen =  () => {
                 updatedItems.splice(fromIndex + change, 0, movedItem);
                 return updatedItems;
             })
-            
+
         }else{
 
         }
+    };
+
+
+    const confirmerAction = () => {
+        Alert.alert(
+            t("CreateCoursePage.BackTitle"),
+            t("CreateCoursePage.BackContent"),
+            [
+                {
+                    text: t("CreateCoursePage.BackCancel"),
+                    style: "cancel"
+                },
+                {
+                    text: t("CreateCoursePage.BackConfirm"),
+                    onPress: () => {
+                        navigation.navigate("MainApp", { screen: "Home" });
+                    }
+                }
+            ],
+            { cancelable: false }
+        );
     };
 
 
@@ -227,24 +245,24 @@ const CreateCourseScreen =  () => {
 
     return(
         <View style={styles.container}>
-            <PlatformPressable onPress={()=>{navigation.goBack()}}>
+            <PlatformPressable onPress={()=>{confirmerAction()}}>
                 <Image style={styles.backArrow} source={require("../../assets/icons/back.png")}></Image>
             </PlatformPressable>
-            <Text style={globalStyles.title}>Créer un cours</Text>
+            <Text style={globalStyles.title}>{t("CreateCoursePage.Title")}</Text>
             <View>
-                <Text style={styles.subtitle}>Informations générales</Text>
-                <Text style={styles.inputContainer}>Nom du cours</Text>
+                <Text style={styles.subtitle}>{t("CreateCoursePage.SubtitleInfo")}</Text>
+                <Text style={styles.inputContainer}>{t("CreateCoursePage.NameCourseLabel")}</Text>
                 <Input maxLength={64} value={courseTitle} onChangeText={setCourseTitle} />
-                <Text style={styles.inputContainer}>Description du cours</Text>
+                <Text style={styles.inputContainer}>{t("CreateCoursePage.DescCourseLabel")}</Text>
                 <Input maxLength={256} value={courseDescription} onChangeText={setCourseDescription} multiline={true} numberOfLines={4} />
                 <Text style={styles.inputContainer}>{pdfFile?pdfFile.assets[0].name:""}</Text>
                 <TouchableOpacity style={styles.editPictureBtn} onPress={() => getPdf()}>
-                    <Text style={styles.editPictureBtnText}>{pdfFile?"Modifier le pdf":"Ajouter un pdf"}</Text>
+                    <Text style={styles.editPictureBtnText}>{pdfFile?t("CreateCoursePage.EditPdfLabel"):t("CreateCoursePage.AddPdfLabel")}</Text>
                 </TouchableOpacity>
-                <Text style={styles.inputContainer}>Tags</Text>
-                <Text style={[styles.inputContainer,{fontStyle:'italic'}]}>Coming sooon</Text>
+                {/* <Text style={styles.inputContainer}>Tags</Text>
+                <Text style={[styles.inputContainer,{fontStyle:'italic'}]}>Coming sooon</Text>*/}
             </View>
-            <Text style={styles.subtitle}>Chapitres</Text>
+            <Text style={styles.subtitle}>{t("CreateCoursePage.SubtitleChapters")}</Text>
             <ScreenWrapper scrollable style={styles.chapterList}>
                 {chapterList.map((item,index)=>{
                     return(
@@ -260,8 +278,8 @@ const CreateCourseScreen =  () => {
             </ScreenWrapper>
 
             <View style={styles.btnView}>
-                <Btn_Fill title={"Sauvegarder"} onPress={()=>saveCourse()}/>
-                <Btn_Fill title={"Supprimer"}/>
+                <Btn_Fill title={t("CreateCoursePage.Save")} onPress={()=>saveCourse()}/>
+                <Btn_Fill title={t("CreateCoursePage.Delete")}/>
             </View>
         </View>
     )
