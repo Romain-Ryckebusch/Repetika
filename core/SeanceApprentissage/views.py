@@ -64,11 +64,15 @@ class GetCartes(APIView):
             cardsID_json = [ObjectId("683b84c948bed3e43b775ca5")]
             #cardsID_json = ["683b84c948bed3e43b775ca5"]
 
+
+        
         response2 = requests.get(
-            #"http://planification:8000/api/sauvegarder-revision/",  #à modifier avec docker
             "http://localhost:8000/api/decks/getCardsFromID",
-            
-            params={"card_ids": cardsID_json})
+            params={"card_ids": [card["id_card"] for card in cardsID_json]}
+        )
+        
+
+        
         if response2.status_code != 200:
             return Response(
                 {"error": "Failed to retrieve cards from decks."},
@@ -102,7 +106,7 @@ class SendPlanification(APIView):
                     "user_id":"name",
                     "results"= {
                         "id1": réponse1,
-                        "id2": réponse2], ...
+                        "id2": réponse2, ...
                         }
                 }
         return: nothing
@@ -113,6 +117,7 @@ class SendPlanification(APIView):
             return Response({"error": "Missing metadata"}, status=status.HTTP_400_BAD_REQUEST)
         
         metadata_json = json.loads(metadata)
+        #metadata_json=metadata
         user_id=metadata_json['user_id']
         results=metadata_json['results']
         

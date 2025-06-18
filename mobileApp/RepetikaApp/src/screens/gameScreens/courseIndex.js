@@ -7,12 +7,13 @@ import styles from '../../styles/game/courseIndex.style';
 import ScreenWrapper from "../../components/navigation/screenWrapper";
 import {useTranslation} from "react-i18next";
 import {PlatformPressable} from "@react-navigation/elements";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import Review from "./indexPages/review";
 import Course from "./indexPages/course";
 import backIcon from "../../assets/icons/back.png";
 import Progress from "react-native-progress";
 import {useNavigation, useRoute} from "@react-navigation/native";
+import {CourseContext} from "../../utils/CourseContext";
 
 
 
@@ -20,7 +21,9 @@ export default function CourseIndex() {
     const {t}=useTranslation();
     const navigation = useNavigation();
     const route = useRoute();
-    const lessonId= route.params?.lessonId;
+    const {currentDeckId,currentCoursId} = useContext(CourseContext);
+    const lessonId= currentCoursId
+    const deckId = currentDeckId
 
 
     const [scopeSelected, setScopeSelected] = useState("Review");
@@ -58,7 +61,7 @@ export default function CourseIndex() {
                             </PlatformPressable>
                         </View>
                         {(scopeSelected==="Review")?(
-                            <Review/>
+                            <Review lessonId={lessonId} deckId={deckId}/>
                             ):(<Course/>)
                         }
                     </ScrollView>

@@ -3,9 +3,11 @@ import requests
 import os
 from core.settings import *
 from bson import ObjectId
+from datetime import datetime
 
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
+from django.utils.timezone import make_aware
 
 from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes
@@ -25,7 +27,7 @@ from bson import ObjectId
 
 class GetCardsChapter(APIView):
     """
-    GET /api/Decks/getCardsChapter
+    GET /api/decks/getCardsChapter
     Takes user_id, id_chapitre, id_deck
     Returns list all cards in the chapter
     """
@@ -58,8 +60,8 @@ class GetCardsChapter(APIView):
 
 class GetCardsFromID(APIView):
     """
-    Get /api/Decks/getCardsFromID
-    Takes List of card IDs
+    Get /api/decks/getCardsFromID
+    Takes card_ids one or multiple times in the request
     Returns list of cards with the given IDs
     """
     def get(self, request):
@@ -69,7 +71,7 @@ class GetCardsFromID(APIView):
                 {"error": "card_ids parameter is required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        print("card ids : ",card_ids)
+        #print("card ids : ",card_ids)
         # Convert card_ids to ObjectId
         card_ids = [ObjectId(card_id) for card_id in card_ids]
         # Find all cards with the given IDs
@@ -85,7 +87,7 @@ class GetCardsFromID(APIView):
 
 class GetDeckNames(APIView):
     """
-    GET /api/Decks/GetDeckNames
+    GET /api/decks/GetDeckNames
     Takes: user_id
     Returns: List(deck_name)
     """
@@ -111,7 +113,7 @@ class GetDeckNames(APIView):
 
 class addCards(APIView):
     """
-    GET /api/Decks/addCards
+    GET /api/decks/addCards
     Takes: List(card)
     Returns: nothing
     """
@@ -134,7 +136,7 @@ class addCards(APIView):
     
 class DeleteCards(APIView):
     """
-    GET /api/Decks/deleteCards
+    GET /api/decks/deleteCards
     Takes: user_id, list(card_id)
     Returns: validation message
     """
@@ -186,7 +188,7 @@ class DeleteCards(APIView):
     
 class DeleteCardsChapter(APIView):
     """
-    GET /api/Decks/deleteCardsChapter
+    GET /api/decks/deleteCardsChapter
     Takes: user_id, id_chapitre
     Returns: validation message
     """
@@ -230,7 +232,7 @@ class DeleteCardsChapter(APIView):
     
 class DeleteDeck(APIView):
     """
-    GET /api/Decks/deleteDeck
+    GET /api/decks/deleteDeck
     Takes: user_id, id_deck
     Returns: validation message
     """
@@ -278,3 +280,39 @@ class DeleteDeck(APIView):
             {"message": "Deck deleted successfully."},
             status=status.HTTP_200_OK
         )
+    
+class CreateDeck(APIView):
+    """
+    GET /api/decks/createDeck
+    Takes: user_id, nom_deck, tags
+    Returns: id_deck
+    """
+    def get(self, request):
+        id_user = request.GET.get('user_id')
+        nom_deck = request.GET.get('nom_deck')
+        tags = request.GET.get('tags')
+
+
+        if not id_user:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        if not tags:
+            tags=[]
+        
+        if not nom_deck:
+            nom_deck="default_name"
+
+        today = make_aware(datetime.now())
+        document = {
+                    "id_user": id_user,
+                    "nom_deck": nom_deck,
+                    "tags": tags,
+                    "date_creation":today
+                    }
+        id_deck=insert_document("DB_Decks", "Decks", document)
+
+        return Response({"id_deck": str(id_deck)}, status=status.HTTP_200_OK)
+        
+

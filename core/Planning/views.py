@@ -206,7 +206,9 @@ class CardsToday(APIView):
                 {"error": "user_id parameter is required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        today = make_aware(datetime.now())   
+        today = make_aware(datetime.now())#+timedelta(days=1)
+        today = datetime.combine(today, datetime.max.time())  # date à 23:59:59
+        
         cartes_a_reviser = find_documents_fields(
             "DB_Planning",
             "Planning",
@@ -218,6 +220,67 @@ class CardsToday(APIView):
         )
         
         return Response(cartes_a_reviser, status=status.HTTP_200_OK)
+    
+class CardsReviewedToday(APIView):
+    """
+    GET /api/planning/cardsReviewedToday
+    Takes user_id
+    Returns all cards reviewed today and their id_cours
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        today = make_aware(datetime.now())
+        today = datetime.combine(today, datetime.min.time())  # date à 00:00:00
+
+        cards = find_documents_fields(
+            "DB_Planning",
+            "History",
+            query={
+                "id_user": ObjectId(user_id),
+                "date_reviewed": {"$gte": today}
+            },
+            fields=["id_card"]
+        )
+
+        #on a les id des cartes et on cherche le chapitre associé à chaque carte
+        response = requests.get(
+            "http://localhost:8000/api/decks/getCardsFromID",
+            params={"card_ids": [card["id_card"] for card in cards]}
+        )
+        
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to retrieve cards from decks."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )     
+        cards= response.json()
+
+        #on a les id des cartes et des chapitres et on cherche le cours associé à chaque carte
+        response2 = requests.get(
+            "http://localhost:8000/api/cours/getCourseIDFromChapterID",
+            params={"chapter_ids": [card["id_chapitre"] for card in cards]}
+        )
+
+        if response2.status_code != 200:
+            return Response(
+                {"error": "Failed to getCourseIDFromChapterID."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+                
+        dictionnaire= response2.json()
+        result=[]
+        for card in cards:
+            new_card={"_id":card["_id"]}
+            new_card["id_cours"]=dictionnaire[card["id_chapitre"]]
+            result.append(new_card)
+
+        return Response(result, status=status.HTTP_200_OK)
+
 class UnScheduleCards(APIView):
     """
     GET /api/Planning/unScheduleCards

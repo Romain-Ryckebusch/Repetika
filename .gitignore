@@ -49,3 +49,6 @@ core/Cours/DB/*
 
 # Junia
 .management/
+
+#pdf
+cours_pdf/

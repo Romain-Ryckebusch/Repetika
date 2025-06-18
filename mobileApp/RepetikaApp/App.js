@@ -4,6 +4,8 @@ import { navigationRef } from './src/navigation/NavigationService';
 import './src/i18n';
 import { useFonts } from "expo-font";
 import { ActivityIndicator, View } from "react-native";
+import { AuthProvider } from './src/utils/AuthContext';
+import {CourseProvider} from "./src/utils/CourseContext";
 
 export default function App() {
     const [fontsLoaded] = useFonts({
@@ -11,6 +13,8 @@ export default function App() {
         OpenSans_Regular: require('./src/assets/fonts/Open_Sans/static/OpenSans-Regular.ttf'),
         OpenSans_Bold: require('./src/assets/fonts/Open_Sans/static/OpenSans-Bold.ttf'),
     });
+
+
 
     if (!fontsLoaded) {
         return (
@@ -21,8 +25,12 @@ export default function App() {
     }
 
     return (
-        <NavigationContainer ref={navigationRef}>
-            <RootNavigator />
-        </NavigationContainer>
+        <AuthProvider>
+            <CourseProvider>
+                <NavigationContainer ref={navigationRef}>
+                    <RootNavigator />
+                </NavigationContainer>
+            </CourseProvider>
+        </AuthProvider>
     );
 }

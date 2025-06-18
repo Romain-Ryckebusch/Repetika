@@ -25,6 +25,10 @@ from PyPDF2 import PdfReader, PdfWriter
 
 from bson import ObjectId
 
+COURS_BASE_URL="http://localhost:8000/api/cours" 
+PLANNING_BASE_URL="http://localhost:8000/api/planning"
+DECK_BASE_URL="http://localhost:8000/api/decks"
+
 
 class DébutSéanceRévision(APIView):
     """
@@ -66,16 +70,17 @@ class DébutSéanceRévision(APIView):
 class updateSéanceRévision(APIView):
     """
     en prenant note pour chaque carte de si elle est répondue correctement ou non (en cas de réponse incorrecte, elle reste dans le roulement jusqu'à ce que la réponse soit correcte) puis envoie ces informations à "Planification" pour sauvegarder la progression et update les prochaines dates de révision de ces cartes
+    result vaut 0 si bon du premier coup, 1 si faux d'abord et pas encore bon au moment de sauvegarder les résultats, et 2 si bon après une ou plusieurs erreurs
     """
     def post(self, request):
         """
-        POST /update-session            (eventellement ajouter /api si on modif urls dans core)
+        POST /update-session            
         Takes: Takes: ID utilisateur + Liste résultats
         metadata={
                     "user_id":"name",
                     "results"= {
                         "id1": réponse1,
-                        "id2": réponse2], ...
+                        "id2": réponse2, ...
                         }
                 }
 
@@ -87,23 +92,12 @@ class updateSéanceRévision(APIView):
         if not metadata:
             return Response({"error": "Missing user_id or results"}, status=status.HTTP_400_BAD_REQUEST)
         
-        metadata_json = json.loads(metadata)
-        user_id=metadata_json['user_id']
-        results=metadata_json['results']
-
         response = requests.post(
-            "http://localhost:8000/api/learning_session/send-planification/",
-            json={
-                "metadata": {
-                    "user_id": user_id,
-                    "results": results
-                }
-            }
+            "http://localhost:8000/api/learning-session/send-planification/",
+            data={'metadata': metadata}
         )
         
         if response.status_code == 200:
-            print("Success SendPlanification")
-            #status=status.HTTP_200_OK
             return Response(
                 {"message": "Success SendPlanification"},
                 status=status.HTTP_200_OK
@@ -166,14 +160,6 @@ class GetCourseChapters(APIView):
             status=response.status_code
         )
 
-
-
-
-
-
-
-
-
 class GetDeckNames(APIView):
     """
     GET /GetDeckNames
@@ -191,6 +177,43 @@ class GetDeckNames(APIView):
         return Response(
             response.json(),
             status=response.status_code
+        )
+
+class CreateDeck(APIView):
+    """
+    GET /createDeck
+    Takes: user_id, nom_deck, tags          # nom_deck and tags are optional 
+    Returns: id_deck
+    """
+    def get(self, request):
+        id_user = request.GET.get('user_id')
+        nom_deck = request.GET.get('nom_deck')
+        tags = request.GET.get('tags')
+
+        if not id_user:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        if not tags:
+            tags=[]
+        if not nom_deck:
+            nom_deck="default_name"
+        
+        response = requests.get(DECK_BASE_URL + "/createDeck", params={
+                "user_id": id_user,
+                "nom_deck":nom_deck,
+                "tags":tags
+            })
+        if response.status_code == 200:
+            return Response(
+                response.json(),
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                response.json(),
+                status=status.HTTP_400_BAD_REQUEST
         )
     
 # design-services.md : Création cartes
@@ -435,16 +458,23 @@ class DoesQuizExist(APIView):
 class UploadPDF(APIView):
     """
     POST /api/ajout-cours/
+    All fields of metadata and metadata itself are optional 
     takes: pdf,
-           metadata={
+           metadata={                                   
                     "course_name":"name",
                     "chapters": [
                         ["name_chapter1", length1],
                         ["name_chapter1", length2], ...
-                        ]
+                        ],
+                    "author_id":ObjectId('id'),         #remplacer id par un id valide ex: 68386a41ac5083de66afd675
+                    "name_author":"name_author",
+                    "id_deck":ObjectId('id'),
+                    "matiere":"Informatique",
+                    "public":false,                      #or true
+                    "tags":[]
                     }
 
-    return: success message
+    return: id_cours, id_chapitres (a list of ids), id_deck
     """
     parser_classes = [MultiPartParser]
     def get(self, request):
@@ -454,13 +484,16 @@ class UploadPDF(APIView):
         pdf_file = request.FILES.get('pdf')
         metadata = request.data.get('metadata')
 
-        if not pdf_file or not metadata:
-            return Response({"error": "Missing PDF or metadata"}, status=status.HTTP_400_BAD_REQUEST)
+        if not pdf_file:
+            return Response({"error": "Missing PDF"}, status=status.HTTP_400_BAD_REQUEST)
         
-        try:
-            metadata_json = json.loads(metadata)
-        except json.JSONDecodeError:
-            return Response({"error": "Invalid JSON in metadata"}, status=status.HTTP_400_BAD_REQUEST)
+        if not metadata:
+            metadata_json={}
+        else:
+            try:
+                metadata_json = json.loads(metadata)
+            except json.JSONDecodeError:
+                return Response({"error": "Invalid JSON in metadata"}, status=status.HTTP_400_BAD_REQUEST)
         
         response = requests.post(
             "http://localhost:8000/api/cours/ajout-cours", 
@@ -470,7 +503,7 @@ class UploadPDF(APIView):
     
         if response.status_code == 200:
             return Response(
-                {"message": "Success SendPlanification"},
+                response.json(),
                 status=status.HTTP_200_OK
             )
 
@@ -479,4 +512,207 @@ class UploadPDF(APIView):
             {"error": "Failed to UploadPDF"},
             status=status.HTTP_400_BAD_REQUEST
             )           
+
+       
+class ShowAllSharedCourses(APIView):
+    """
+    GET /showAllSharedCourses
+    Takes: nothing
+    Returns: List of public shared courses
+    """
+    def get(self, request):
+        response = requests.get(COURS_BASE_URL + "/showAllSharedCourses")
+        if response.status_code == 200:
+            return Response(
+                response.json(),
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                response.json(),
+                status=status.HTTP_400_BAD_REQUEST
+        )
+
+class AddToSubscribers(APIView):
+    """
+    GET /addToSubscribers
+    Takes: id_user, course_name, author_id
+    Returns: nothing
+    """
+    def get(self, request):
+        id_user = request.GET.get('id_user')
+        if not id_user:
+            return Response({"error": "id_user parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
         
+        course_name = request.GET.get('course_name')
+        if not course_name:
+            return Response({"error": "course_name parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        author_id = request.GET.get('author_id')
+        if not author_id:
+            return Response({"error": "author_id parameter is required."}, status=status.HTTP_400_BAD_REQUEST)           
+
+        response = requests.get(COURS_BASE_URL + "/addToSubscribers", params={
+                "id_user": id_user,
+                "course_name": course_name,
+                "author_id": author_id
+            })
+        if response.status_code == 200:
+            return Response(
+                {"message": "Success AddToSubscribers"},
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {"message": "Failed AddToSubscribers"},
+                status=status.HTTP_400_BAD_REQUEST
+        )
+
+class CardsReviewedToday(APIView):
+    """
+    GET /cardsReviewedToday
+    Takes user_id
+    Returns all cards reviewed today and their id_cours
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        response = requests.get(PLANNING_BASE_URL + "/cardsReviewedToday", params={
+                "user_id": user_id
+            })
+        if response.status_code == 200:
+            return Response(
+                response.json(),
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                response.json(),
+                status=status.HTTP_400_BAD_REQUEST
+        )
+        
+
+
+# AUTHENTIFICATION ROUTES
+
+class UserLogin(APIView):
+    """
+    POST /UserLogin
+    Takes: username, password
+    Returns: JSON response with user data or error message
+    """
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        if not username or not password:
+            return Response({"error": "Username and password are required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = requests.post(
+            AUTH_BASE_URL + "/login/",
+            data={"username": username, "password": password}
+        )
+
+        return Response(response.json(), status=response.status_code)
+
+
+class UserLogout(APIView):
+    """
+    POST /UserLogout
+    Takes: refresh token
+    Returns: success message or error message
+    """
+    def post(self, request):
+        refresh_token = request.data.get('refresh')
+
+        if not refresh_token:
+            return Response({"error": "Refresh token is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = requests.post(
+            AUTH_BASE_URL + "/logout/",
+            data={"refresh": refresh_token}
+        )
+
+        return Response(response.json(), status=response.status_code)
+    
+class UserRegister(APIView):
+    """
+    POST /UserRegister
+    Takes: username, password, email, avatar_url, preferences_json
+    Returns: success message or error message
+    """
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        email = request.data.get('email', '')
+        avatar_url = request.data.get('avatar_url', '')
+        preferences_json = request.data.get('preferences_json', '{}')
+
+        if not username or not password:
+            return Response({"error": "Username and password are required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = requests.post(
+            AUTH_BASE_URL + "/register/",
+            data={
+                "username": username,
+                "password": password,
+                "email": email,
+                "avatar_url": avatar_url,
+                "preferences_json": preferences_json
+            }
+        )
+
+        return Response(response.json(), status=response.status_code)
+    
+class UserDelete(APIView):
+    """
+    POST /UserDeleteAccount
+    Takes: user_id
+    Returns: success message or error message
+    """
+    def post(self, request):
+        user_id = request.data.get('user_id')
+
+        if not user_id:
+            return Response({"error": "user_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = requests.post(
+            AUTH_BASE_URL + "/deleteAccount/",
+            data={"user_id": user_id}
+        )
+
+        return Response(response.json(), status=response.status_code)
+    
+class UserUpdateProfile(APIView):
+    """
+    POST /UserUpdateProfile
+    Takes: user_id, username, email, avatar_url, preferences_json
+    Returns: success message or error message
+    """
+    def post(self, request):
+        user_id = request.data.get('user_id')
+        username = request.data.get('username')
+        email = request.data.get('email', '')
+        avatar_url = request.data.get('avatar_url', '')
+        preferences_json = request.data.get('preferences_json', '{}')
+
+        if not user_id:
+            return Response({"error": "user_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = requests.post(
+            AUTH_BASE_URL + "/update/",
+            data={
+                "user_id": user_id,
+                "username": username,
+                "email": email,
+                "avatar_url": avatar_url,
+                "preferences_json": preferences_json
+            }
+        )
+
+        return Response(response.json(), status=response.status_code)

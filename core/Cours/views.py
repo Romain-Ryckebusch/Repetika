@@ -2,9 +2,11 @@ import json
 import requests
 import os
 from core.settings import *
+from datetime import datetime
 
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
+from django.utils.timezone import make_aware
 
 from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes
@@ -18,6 +20,8 @@ from PyPDF2 import PdfMerger
 from PyPDF2 import PdfReader, PdfWriter
 
 from bson import ObjectId
+DECK_BASE_URL="http://localhost:8000/api/decks"
+
 
 class GetChapter(APIView):
     """
@@ -206,16 +210,23 @@ class GetPDF(APIView):
 class UploadPDF(APIView):
     """
     POST /api/ajout-cours/
+    All fields of metadata and metadata itself are optional 
     takes: pdf,
            metadata={
                     "course_name":"name",
                     "chapters": [
                         ["name_chapter1", length1],
                         ["name_chapter1", length2], ...
-                        ]
+                        ],
+                    "author_id":ObjectId('id'),         #remplacer id par un id valide ex: 68386a41ac5083de66afd675
+                    "name_author":"name_author",
+                    "id_deck":ObjectId('id'),           #si un id est donné il est rataché au cours et sinon un deck est créé
+                    "matiere":"Informatique",
+                    "public":false,                      #or true
+                    "tags":[]
                     }
 
-    return: success message
+    return: id_cours, id_chapitres (a list of ids), id_deck
     """
     parser_classes = [MultiPartParser]
     def get(self, request):
@@ -226,51 +237,138 @@ class UploadPDF(APIView):
         metadata = request.data.get('metadata')
         list_pdf=[]
 
-        if not pdf_file or not metadata:
-            return Response({"error": "Missing PDF or metadata"}, status=status.HTTP_400_BAD_REQUEST)
+        if not pdf_file:
+            return Response({"error": "Missing PDF"}, status=status.HTTP_400_BAD_REQUEST)
         
-
-        try:           
-            metadata_json = json.loads(metadata)
-            print(metadata_json)
+        if not metadata:
+            metadata_json={}
+        else:
+            try:
+                metadata_json = json.loads(metadata)
+            except json.JSONDecodeError:
+                return Response({"error": "Invalid JSON in metadata"}, status=status.HTTP_400_BAD_REQUEST)
             
-            if 'chapters' not in metadata_json or not metadata_json['chapters']:
-                list_pdf=[pdf_file]
+        #on interprète metadata et on complète les info n'ayant pas été transmises           
+        if 'course_name' not in metadata_json or not metadata_json['course_name']:
+            nom_cours='default_name'
+        else:
+            nom_cours=metadata_json['course_name']
 
+        if 'author_id' not in metadata_json or not metadata_json['author_id']:
+            id_auteur=ObjectId('68386a41ac5083de66afd675')                      #utilisateur test
+        else:
+            id_auteur=metadata_json['user_id']
 
-            else:
-                list_chapter=metadata_json['chapters']
-                reader = PdfReader(pdf_file)
-                total_pages = len(reader.pages)
-                current=0
-                
-                for (title,length) in list_chapter:
-                    writer = PdfWriter()
-                    end_page = current + length - 1
-                    
-                    if end_page >= total_pages:
-                        end_page = total_pages - 1
-                    start_page=current
-                    
-                    for page_num in range(start_page, end_page + 1):
-                        writer.add_page(reader.pages[page_num])
-                        current+=1
-                    with open(title+".pdf", "wb") as f_out:
-                        writer.write(f_out)
-                    list_pdf.append(title+".pdf")
+        if 'name_author' not in metadata_json or not metadata_json['name_author']:
+            name_author=''                                   
+        else:
+            name_author=metadata_json['name_author'] + '/'
 
+        if 'tags' not in metadata_json or not metadata_json['tags']:
+            tags=[]                         
+        else:
+            tags=metadata_json['tags']
 
+        if 'id_deck' not in metadata_json or not metadata_json['id_deck']:      #on crée un deck
+            id_deck=self.crer_deck(id_auteur,nom_cours,tags)                        
+        else:
+            id_deck=metadata_json['id_deck']
 
-        except json.JSONDecodeError:
-            return Response({"error": "Invalid JSON in metadata"}, status=status.HTTP_400_BAD_REQUEST)
+        if 'matiere' not in metadata_json or not metadata_json['matiere']:
+            matiere=''                                          
+        else:
+            matiere=metadata_json['matiere'] + '/'
 
-
-        #permet d'envoyer à la bdd et d'informer que l'envoi c'est bien passé
-        #uploaded_file = UploadedFile.objects.create(file=pdf_file, metadata=metadata_json)
-        #serializer = UploadedFileSerializer(uploaded_file)
-        #return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if 'public' not in metadata_json or not metadata_json['public']:
+            public='false'                                          
+        else:
+            public=metadata_json['public']
         
-        return Response({"message": "Success"}, status=status.HTTP_200_OK)
+        if 'chapters' not in metadata_json or not metadata_json['chapters']:#on crée les pdf si il n'y a pas de chapitres
+            path='cours_pdf/'+name_author + matiere + nom_cours +".pdf"
+            list_pdf=[(nom_cours,path)]
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            reader = PdfReader(pdf_file)
+            writer = PdfWriter()
+            writer.append_pages_from_reader(reader)
+            with open(path, "wb") as f_out:
+                writer.write(f_out)
+        
+        else:                                                                #on crée les pdf pour les differents chapitres
+            list_chapter=metadata_json['chapters']
+            reader = PdfReader(pdf_file)
+            total_pages = len(reader.pages)
+            current=0
+            
+            for (title,length) in list_chapter:
+                path='cours_pdf/'+name_author + matiere + nom_cours +'/'+ title +".pdf"
+                os.makedirs(os.path.dirname(path), exist_ok=True)             #on cree les sous dossiers
+
+                writer = PdfWriter()
+                end_page = current + length - 1
+                
+                if end_page >= total_pages:
+                    end_page = total_pages - 1
+                start_page=current
+                
+                for page_num in range(start_page, end_page + 1):
+                    writer.add_page(reader.pages[page_num])
+                    current+=1
+                with open(path, "wb") as f_out:
+                    writer.write(f_out)
+                list_pdf.append((title,path))
+
+        #update bdd:
+        #ajout du cours
+        chemin_dossier='cours_pdf/'+name_author + matiere + nom_cours
+        date_creation=make_aware(datetime.now())
+
+        document = {
+                "id_auteur": ObjectId(id_auteur),
+                "id_deck": ObjectId(id_deck),
+                "chemin_dossier": chemin_dossier,
+                "public": public,
+                "date_creation": date_creation,
+                "nom_cours": nom_cours,
+                }
+        id_cours = insert_document("DB_Cours", "Cours", document)
+
+        #ajout des chapitres 
+        id_chapitres=[]
+        for i,chapitre in enumerate(list_pdf):
+            nom_chapitre=chapitre[0]
+            chemin_pdf=chapitre[1]
+            document = {
+                    "id_cours": id_cours,
+                    "nom_chapitre": nom_chapitre,
+                    "position": i,
+                    "chemin_pdf": chemin_pdf
+                    }
+            id_chapitre=insert_document("DB_Cours", "Chapitres", document)
+            id_chapitres.append(id_chapitre)
+        
+        data={"id_cours":str(id_cours), 
+              "id_chapitres":[str(x) for x in id_chapitres], 
+              "id_deck":str(id_deck)
+        }
+
+        return Response(data, status=status.HTTP_200_OK)
+    
+    def crer_deck(self,id_auteur,nom_cours,tags):
+        id_user = id_auteur
+        nom_deck = nom_cours
+        
+        response = requests.get(DECK_BASE_URL + "/createDeck", params={
+                "user_id": id_user,
+                "nom_deck":nom_deck,
+                "tags":tags
+            })
+        if response.status_code == 200:
+            response_json=response.json()
+            return response_json["id_deck"]
+        else:
+            return ObjectId('68386a41ac5083de66afd675') #id deck test
+
 
 
 class GetAccessibleCourses(APIView):
@@ -289,7 +387,7 @@ class GetAccessibleCourses(APIView):
             "DB_Cours",
             "Cours",
             query={"id_auteur": ObjectId(user_id)},
-            fields=["_id", "nom_cours", "date_creation"]
+            fields=["_id", "nom_cours", "date_creation","id_deck"]
         )
         
         # Get the courses the user is subscribed to
@@ -310,6 +408,7 @@ class GetAccessibleCourses(APIView):
                 "id_cours": str(course["_id"]),
                 "nom_cours": course["nom_cours"],
                 "date_creation": course["date_creation"].isoformat() if course["date_creation"] else None,
+                "id_deck":course["id_deck"],
                 "owned": True,
                 "subscribed": False
             })
@@ -320,6 +419,7 @@ class GetAccessibleCourses(APIView):
                     "id_cours": course_id,
                     "nom_cours": None,  # Course name not available in subscription data
                     "date_creation": None,  # Creation date not available in subscription data
+                    "id_deck":None,
                     "owned": False,
                     "subscribed": True
                 })
@@ -787,5 +887,34 @@ class AddToSubscribers(APIView):
         # TODO : Update the number of members in the course metadata?
         
         return Response(
+            status=status.HTTP_200_OK
+        )
+
+class GetCourseIDFromChapterID(APIView):
+    """
+    Get /api/Decks/getCourseIDFromChapterID
+    Takes chapter_ids one or multiple times in the request
+    Returns dict ID_Chapitre->ID_Cours
+    """
+    def get(self, request):
+        chapter_ids = request.GET.getlist('chapter_ids')
+        if not chapter_ids:
+            return Response(
+                {"error": "chapter_ids parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        #print("card ids : ",chapter_ids)
+        # Convert chapter_ids to ObjectId
+        chapter_ids = [ObjectId(id_chapitre) for id_chapitre in chapter_ids]
+        # Find all cards with the given IDs
+        coursesID = find_documents_fields(
+            "DB_Cours",
+            "Chapitres",
+            query={"_id": {"$in": chapter_ids}},
+            fields=["_id","id_cours"]
+        )
+        result = {item["_id"]: item["id_cours"] for item in coursesID}
+        return Response(
+            result,
             status=status.HTTP_200_OK
         )

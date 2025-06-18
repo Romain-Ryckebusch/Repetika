@@ -21,7 +21,8 @@
       "mail": "Mail",
       "password": "Nouveau mot de passe",
       "passwordConfirm": "Confirmer le nouveau mot de passe",
-      "editBtn":"Enregistrer"
+      "editBtn":"Enregistrer",
+      "disconnectBtn": "Se déconnecter"
       }
   },
   

@@ -1,12 +1,37 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { View, StyleSheet,Pressable,Image,Text } from 'react-native';
 import { WebView } from 'react-native-webview';
 import backIcon from "../../assets/icons/back.png";
 import {navigate} from "../../navigation/NavigationService";
+import Btn_Fill from "../../components/btn_fill";
+import {useRoute} from "@react-navigation/native";
+import useFetch from "../../utils/useFetch";
+import {AuthContext} from "../../utils/AuthContext";
 
 export default function CourseFrame() {
+    const { userId } = useContext(AuthContext); // <- une seule fois
+    console.log(userId);
     const pdfUrl = "https://aymeric-droulers.github.io/ISEN3_24-25_Lancement-PFA3.pdf"
     const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=`+pdfUrl;
+    const route = useRoute();
+
+    const finishChapter = async () => {
+        const idChapitre = route.params?.chapterId;
+        const idDeck = "68386a41ac5083de66afd675";
+
+        const url = `http://192.168.1.180:8000/api/main/completeQuiz?user_id=${userId}&id_chapitre=${idChapitre}&id_deck=${idDeck}`;
+        console.log(url);
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log('Réponse :', data);
+        } catch (error) {
+            console.error('Erreur lors de la complétion du chapitre :', error);
+        }
+    }
+
+
 
     return (
         <>
@@ -23,6 +48,7 @@ export default function CourseFrame() {
                     source={{ uri: viewerUrl}}
                     style={{ flex: 1 }}
                 />
+                <Btn_Fill style={{marginBottom:'10%',width:'80%',marginLeft:'10%',marginTop:'5%'}} title={"Terminer le chapitre"} onPress={()=>finishChapter()}/>
             </View>
         </>
     );
