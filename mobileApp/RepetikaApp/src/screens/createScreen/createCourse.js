@@ -12,6 +12,8 @@ import {useNavigation} from "@react-navigation/native";
 import * as DocumentPicker from 'expo-document-picker';
 import {CreateCourseContext} from "../../utils/CreateCourseContext";
 import Config from "../../config/config";
+import config from "../../config/config";
+import {saveSession} from "../../utils/session";
 
 
 const ChapterBox = ({id,name,onUp,onDown})=>{
@@ -37,9 +39,6 @@ const ChapterBox = ({id,name,onUp,onDown})=>{
 }
 
 
-function saveCourse(){
-
-}
 
 
 
@@ -63,7 +62,7 @@ const CreateCourseScreen =  () => {
     const [courseTitle,setCourseTitle] = useState("");
     const [courseDescription,setCourseDescription] = useState("");
     const [pdfFile, setPdfFile] = useState(null);
-    const {chapterList,setChapterList} = useContext(CreateCourseContext)
+    const {chapterList,setChapterList,cardsListByChapter,setCardsListByChapter} = useContext(CreateCourseContext)
 
     const getPdf = async () => {
         try {
@@ -82,6 +81,69 @@ const CreateCourseScreen =  () => {
             Alert.alert('Erreur', 'Impossible de sélectionner un fichier PDF.');
         }
     };
+
+
+    function saveCourse(){
+        postData().then(async r => {
+            if (r !== false) {
+                const deckId = r.id_deck;
+                const chaptersIdsList = r.id_chapitres
+                const coursId = r.id_cours;
+
+                /*console.log(deckId)
+                console.log(chaptersIdsList)
+                console.log(coursId)
+                console.log(chapterList)
+                console.log(cardsListByChapter)
+*/
+                let finalList = []
+                let i =0;
+                cardsListByChapter.map(chapterCards => {
+                    const cardsList = chapterCards.cards;
+                    cardsList.forEach(card => {
+                        finalList.push({
+                            id_deck:deckId,
+                            id_chapitre:chaptersIdsList[i],
+                            front:card.recto,
+                            back:card.verso,
+                        });
+                    })
+                    i++;
+                })
+
+
+                console.log(finalList);
+                try {
+                    const response = await fetch(config.BASE_URL + '/main/createCards', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            "cartes":finalList
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    // Tu peux ici vérifier et utiliser les données reçues
+                    console.log('Données reçues:', data);
+
+                    if (data.error) {
+                        console.log(data.error);
+
+                    } else {
+                        console.log("Succes")
+
+                    }
+
+                } catch (err) {
+                    console.log(err.message);
+                }
+            }
+        })
+    }
+
 
 
     const postData = async () => {
@@ -112,21 +174,23 @@ const CreateCourseScreen =  () => {
             const response = await fetch(Config.BASE_URL+"/main/ajout-cours", {
                 method: 'POST',
                 body: formData,
-                // ❌ NE PAS ajouter Content-Type à la main
             });
 
             const data = await response.json();
             if (response.ok) {
                 Alert.alert("Succès", "Le cours a été envoyé !");
                 console.log(data);
+                return(data)
             } else {
                 console.error("Erreur serveur:", data);
                 Alert.alert("Erreur", "Échec de l'envoi");
+                return false
             }
 
         } catch (err) {
             console.error("Erreur réseau:", err);
             Alert.alert("Erreur", "Impossible de contacter le serveur");
+            return false
         }
     };
 
@@ -145,6 +209,14 @@ const CreateCourseScreen =  () => {
                 updatedItems.splice(fromIndex + change, 0, movedItem);
                 return updatedItems;
             });
+
+            setCardsListByChapter(prevItems => {
+                const updatedItems = [...prevItems];
+                const [movedItem]=updatedItems.splice(fromIndex, 1);
+                updatedItems.splice(fromIndex + change, 0, movedItem);
+                return updatedItems;
+            })
+            
         }else{
 
         }
@@ -188,7 +260,7 @@ const CreateCourseScreen =  () => {
             </ScreenWrapper>
 
             <View style={styles.btnView}>
-                <Btn_Fill title={"Sauvegarder"} onPress={()=>postData()}/>
+                <Btn_Fill title={"Sauvegarder"} onPress={()=>saveCourse()}/>
                 <Btn_Fill title={"Supprimer"}/>
             </View>
         </View>
