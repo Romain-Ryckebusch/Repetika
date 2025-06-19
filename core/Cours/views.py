@@ -105,7 +105,7 @@ class GetChapter(APIView):
 class GetCourseChapters(APIView):
     """ GET /api/LireCours/getCourseChapters
     Takes user_id, id_course
-    Returns List of chapters (id_chapitre, nom_chapitre, date_creation)
+    Returns List of chapters (id_chapitre, nom_chapitre, date_creation, is_unlocked)
     """
     def get(self, request):
         user_id = request.GET.get('user_id')
@@ -130,15 +130,27 @@ class GetCourseChapters(APIView):
             query={"id_cours": ObjectId(id_course)},
             fields=["_id", "nom_chapitre", "position"]
         )
+        id_deck = find_documents_fields(
+            "DB_Cours",
+            "Cours",
+            query={"_id": ObjectId(id_course)},
+            fields=["id_deck"]
+        )[0]["id_deck"]
         print("chapters : ", chapters)
+        print("id_deck : ", id_deck)
 
         # Prepare the response data
         response_data = []
         for chapter in chapters:
+            id_chapter= str(chapter["_id"])
+            is_unlocked = requests.get(QUIZ_BASE_URL + "/doesQuizExist", params={"user_id":user_id, "id_chapitre":id_chapter, "id_deck":id_deck}).json().get("isQuizExisting", False)
+            if chapter["position"] == 0:
+                is_unlocked = True # The first chapter of a course is always unlocked
             response_data.append({
-                "id_chapitre": str(chapter["_id"]),
+                "id_chapitre": id_chapter,
                 "nom_chapitre": chapter["nom_chapitre"],
-                "position": chapter["position"]
+                "position": chapter["position"],
+                "is_unlocked": is_unlocked
             })
 
         return Response(response_data, status=status.HTTP_200_OK)

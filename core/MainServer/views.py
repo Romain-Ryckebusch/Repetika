@@ -144,7 +144,7 @@ class GetCourseChapters(APIView):
     """
     GET /GetCourseChapters
     Takes user_id, id_course
-    Returns list of chapters in the course (id_chapitre, nom_chapitre, date_creation)
+    Returns list of chapters in the course (id_chapitre, nom_chapitre, date_creation, is_unlocked)
     """
     def get(self, request):
         user_id = request.GET.get('user_id')
