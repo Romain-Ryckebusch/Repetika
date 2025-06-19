@@ -30,22 +30,7 @@ export default function HomeScreen() {
 
     const [lessons, setLessons] = useState([]);
     const [showNetworkError, setShowNetworkError] = useState(false);
-/*
-    useEffect(() => {
-        const loadCours = async () => {
-            try {
-                console.log("effect")
-                const response = await getCoursOfUser();
-                console.log(response); // Affiche les données des cours
-                setLessons(response.data);
-            } catch (error) {
-                setShowNetworkError(true)
-            }
-        };
 
-        loadCours(); // Appel au montage
-    }, []);
-*/
 
     const {userId}=useContext(AuthContext);
 
