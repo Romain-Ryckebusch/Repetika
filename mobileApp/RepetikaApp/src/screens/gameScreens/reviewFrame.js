@@ -5,7 +5,7 @@ import colors from '../../styles/colors';
 import styles from '../../styles/game/reviewFrame.style';
 
 import {useTranslation} from "react-i18next";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import Btn_Fill from "../../components/btn_fill";
 import Input from "../../components/frm_input";
 import backIcon from "../../assets/icons/back.png";
@@ -14,6 +14,9 @@ import ConfettiCannon from 'react-native-confetti-cannon';
 import {navigate} from "../../navigation/NavigationService";
 import {useRoute} from "@react-navigation/native";
 import Markdown from 'react-native-markdown-display';
+import config from "../../config/config";
+import {saveSession} from "../../utils/session";
+import {AuthContext} from "../../utils/AuthContext";
 
 
 
@@ -22,9 +25,12 @@ export default function ReviewFrame() {
     const route = useRoute();
     const courseId = route.params?.courseId;
     const deck = route.params?.deck;
-    if(courseId===undefined || deck===undefined) {
-        navigate("MainApp");
-    }
+    const {userId}= useContext(AuthContext);
+    useEffect(() => {
+        if (!courseId || !deck) {
+            navigate("MainApp");
+        }
+    }, [courseId, deck]);
 
     const totalCardsCount=deck.length
     const [cardFace,setCardFace]=useState("front");
@@ -35,6 +41,7 @@ export default function ReviewFrame() {
     const [cardsToReviewRemaining,setCardsToReviewRemaining] = useState(totalCardsCount);
     const [cardToShow, setCardToShow] = useState(0);
     const [shoot, setShoot] = useState(false);
+    const [falseCards,setFalseCards]=useState([]);
 
     //Fin de la session
     useEffect(() => {
@@ -44,6 +51,48 @@ export default function ReviewFrame() {
         }
     }, [cardsToReviewRemaining]);
 
+
+    async function updateCard(cardId,userId,value){
+        try {
+            console.log(JSON.stringify({
+                metadata:{
+                    user_id:userId,
+                    results:{cardId,value}
+                }
+            }))
+            const response = await fetch(config.BASE_URL + '/main/update-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    metadata:{
+                        user_id:userId,
+                        results:{cardId,value}
+                    }
+                })
+            });
+
+            const data = await response.json();
+
+            // Tu peux ici vérifier et utiliser les données reçues
+            console.log('Données reçues:', data);
+
+            if(data.error){
+                console.error(data.error);
+            }else{
+                console.log(data);
+
+            }
+
+
+
+
+
+        } catch (err) {
+            console.error(err)
+        }
+    }
 
 
     function nextCard() {
@@ -65,14 +114,24 @@ export default function ReviewFrame() {
 
     function falseAnswer(){
         setIsAnswerCorrect(false);
+        setFalseCards(prev=>[...prev,deck[cardToShow]._id]);
         nextQuestion()
     }
 
     function goodAnswer(){
         setIsAnswerCorrect(true);
-        const card = deck.find(item => item.id === deck[cardToShow].id);
+        const card = deck.find(item => item._id === deck[cardToShow]._id);
         if (card) {
             console.log("correct");
+            console.log(falseCards);
+            console.log(card)
+            if(falseCards.includes(card._id)){
+                updateCard(card._id,userId,2)
+                console.log("Tu as déja eu faux a cette question!")
+            }else{
+                updateCard(card._id,userId,0)
+                console.log("Vrai du premier coup!")
+            }
 
             card.correct = true;
             setCorrectCards(prev=>prev+1);
