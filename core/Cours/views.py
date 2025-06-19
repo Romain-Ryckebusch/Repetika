@@ -177,12 +177,6 @@ class GetPDF(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        chapters = find_documents_fields(
-            "DB_Cours",
-            "Cours",
-            query={"id_cours": ObjectId(id_course)},
-            fields=["chemin_dossier", "nom_chapitre", "position"]
-        )
         response = requests.get(COURS_BASE_URL + "/getCourseChapters", params={
                 "user_id": user_id,
                 "id_course":id_course
@@ -193,7 +187,6 @@ class GetPDF(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        writer = PdfWriter()
         list_chapter=response.json()
         merger = PdfMerger()
         missing_files = []
