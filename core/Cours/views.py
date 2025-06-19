@@ -158,7 +158,7 @@ class GetCourseChapters(APIView):
 
 class GetPDF(APIView):
     """
-    GET /api/LireCours/getPDF
+    GET /api/cours/getPDF
     Takes user_id, course_name
     Returns pdf combined course
     """

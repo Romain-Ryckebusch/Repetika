@@ -4,8 +4,9 @@ import json
 import requests
 import os
 from core.settings import *
+from io import BytesIO
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, FileResponse
 from django.utils import timezone
 
 from rest_framework import status
@@ -520,7 +521,49 @@ class UploadPDF(APIView):
             return Response(
             {"error": "Failed to UploadPDF"},
             status=status.HTTP_400_BAD_REQUEST
-            )           
+            )
+        
+class GetPDF(APIView):
+    """
+    GET /api/main/getPDF
+    Takes user_id, course_name
+    Returns pdf combined course
+    """
+    def get(self, request):
+        user_id = request.GET.get("user_id")
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        id_course = request.GET.get("id_course")
+        if not id_course:
+            return Response(
+                {"error": "id_course parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        response = requests.get(COURS_BASE_URL + "/getPDF", params={
+                "user_id": user_id,
+                "id_course":id_course
+            })
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to getPDF"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        file_buffer = BytesIO(response.content)
+
+        file_response = FileResponse(
+            file_buffer,
+            as_attachment=True,
+            filename="HistoriqueGetPDF.pdf",
+            content_type="application/pdf"
+        )
+        if "pdf_manquants" in response.headers:
+            file_response["pdf_manquants"] = response.headers["pdf_manquants"]
+        return file_response
 
        
 class ShowAllSharedCourses(APIView):
