@@ -7,6 +7,7 @@ import Btn_Fill from "../../components/btn_fill";
 import {useRoute} from "@react-navigation/native";
 import useFetch from "../../utils/useFetch";
 import {AuthContext} from "../../utils/AuthContext";
+import Config from "../../config/config";
 
 export default function CourseFrame() {
     const { userId } = useContext(AuthContext); // <- une seule fois
@@ -17,9 +18,9 @@ export default function CourseFrame() {
 
     const finishChapter = async () => {
         const idChapitre = route.params?.chapterId;
-        const idDeck = "68386a41ac5083de66afd675";
+        const idDeck = route.params?.deckId;
 
-        const url = `http://192.168.1.180:8000/api/main/completeQuiz?user_id=${userId}&id_chapitre=${idChapitre}&id_deck=${idDeck}`;
+        const url = Config.BASE_URL+`/main/completeQuiz?user_id=${userId}&id_chapitre=${idChapitre}&id_deck=${idDeck}`;
         console.log(url);
 
         try {

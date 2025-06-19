@@ -62,7 +62,7 @@ export default function CourseIndex() {
                         </View>
                         {(scopeSelected==="Review")?(
                             <Review lessonId={lessonId} deckId={deckId}/>
-                            ):(<Course/>)
+                            ):(<Course courseId={lessonId} deckId={deckId}/>)
                         }
                     </ScrollView>
                 </View>

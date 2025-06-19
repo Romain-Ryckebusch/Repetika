@@ -18,7 +18,7 @@ import config from "../config/config";
 import {CourseContext} from "../utils/CourseContext";
 
 
-export const getCoursOfUser = () => api.get('/main/getAccessibleCourses?user_id=68386a41ac5083de66afd675');
+//export const getCoursOfUser = () => api.get('/main/getAccessibleCourses?user_id=68386a41ac5083de66afd675');
 
 
 export default function HomeScreen() {
@@ -30,22 +30,7 @@ export default function HomeScreen() {
 
     const [lessons, setLessons] = useState([]);
     const [showNetworkError, setShowNetworkError] = useState(false);
-/*
-    useEffect(() => {
-        const loadCours = async () => {
-            try {
-                console.log("effect")
-                const response = await getCoursOfUser();
-                console.log(response); // Affiche les données des cours
-                setLessons(response.data);
-            } catch (error) {
-                setShowNetworkError(true)
-            }
-        };
 
-        loadCours(); // Appel au montage
-    }, []);
-*/
 
     const {userId}=useContext(AuthContext);
 
@@ -56,11 +41,13 @@ export default function HomeScreen() {
     useEffect(() => {
         if (data) {
             setLessons(data);
+            setShowNetworkError(false)
         }
     }, [data]);
 
     useEffect(() => {
         if (error) {
+            console.log(error);
             setShowNetworkError(true);
         }
     }, [error]);

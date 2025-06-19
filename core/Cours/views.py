@@ -371,7 +371,7 @@ class UploadPDF(APIView):
         nom_deck = nom_cours
         
         response = requests.get(DECK_BASE_URL + "/createDeck", params={
-                "user_id": id_user,
+                "user_id": ObjectId(id_user),
                 "nom_deck":nom_deck,
                 "tags":tags
             })
