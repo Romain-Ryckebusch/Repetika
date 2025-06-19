@@ -116,8 +116,8 @@ class SendPlanification(APIView):
         if not metadata:
             return Response({"error": "Missing metadata"}, status=status.HTTP_400_BAD_REQUEST)
         
-        metadata_json = json.loads(metadata)
-        #metadata_json=metadata
+        #metadata_json = json.loads(metadata)
+        metadata_json=metadata
         user_id=metadata_json['user_id']
         results=metadata_json['results']
         

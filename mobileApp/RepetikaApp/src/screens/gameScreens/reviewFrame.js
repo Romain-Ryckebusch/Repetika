@@ -52,47 +52,42 @@ export default function ReviewFrame() {
     }, [cardsToReviewRemaining]);
 
 
-    async function updateCard(cardId,userId,value){
+    async function updateCard(cardId, userId, value) {
         try {
-            console.log(JSON.stringify({
-                metadata:{
-                    user_id:userId,
-                    results:{cardId,value}
+            // Construction correcte de la structure JSON
+            const payload = {
+                metadata: {
+                    user_id: userId,
+                    results: {
+                        [cardId]: value  // clé dynamique => { "6853...": 0 }
+                    }
                 }
-            }))
+            };
+
+            console.log('Payload envoyé :', JSON.stringify(payload));
+
             const response = await fetch(config.BASE_URL + '/main/update-session', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    metadata:{
-                        user_id:userId,
-                        results:{cardId,value}
-                    }
-                })
+                body: JSON.stringify(payload)
             });
 
             const data = await response.json();
-
-            // Tu peux ici vérifier et utiliser les données reçues
             console.log('Données reçues:', data);
 
-            if(data.error){
-                console.error(data.error);
-            }else{
-                console.log(data);
-
+            if (data.error) {
+                console.error('Erreur côté serveur:', data.error);
+            } else {
+                console.log('Succès:', data.message || data);
             }
 
-
-
-
-
         } catch (err) {
-            console.error(err)
+            console.error('Erreur fetch:', err);
         }
     }
+
 
 
     function nextCard() {
