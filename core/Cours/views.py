@@ -4,7 +4,7 @@ import os
 from core.settings import *
 from datetime import datetime
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, FileResponse
 from django.utils import timezone
 from django.utils.timezone import make_aware
 
@@ -105,7 +105,7 @@ class GetChapter(APIView):
 class GetCourseChapters(APIView):
     """ GET /api/LireCours/getCourseChapters
     Takes user_id, id_course
-    Returns List of chapters (id_chapitre, nom_chapitre, date_creation, is_unlocked)
+    Returns List of chapters (id_chapitre, nom_chapitre, date_creation, is_unlocked, chemin_pdf)
     """
     def get(self, request):
         user_id = request.GET.get('user_id')
@@ -128,7 +128,7 @@ class GetCourseChapters(APIView):
             "DB_Cours",
             "Chapitres",
             query={"id_cours": ObjectId(id_course)},
-            fields=["_id", "nom_chapitre", "position"]
+            fields=["_id", "nom_chapitre", "position","chemin_pdf"]
         )
         id_deck = find_documents_fields(
             "DB_Cours",
@@ -150,7 +150,8 @@ class GetCourseChapters(APIView):
                 "id_chapitre": id_chapter,
                 "nom_chapitre": chapter["nom_chapitre"],
                 "position": chapter["position"],
-                "is_unlocked": is_unlocked
+                "is_unlocked": is_unlocked,
+                "chemin_pdf":chapter["chemin_pdf"]
             })
 
         return Response(response_data, status=status.HTTP_200_OK)
@@ -169,53 +170,59 @@ class GetPDF(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        course_name = request.GET.get('course_name')
-        if not course_name:
+        id_course = request.GET.get('id_course')
+        if not id_course:
             return Response(
-                {"error": "course_name parameter is required."},
+                {"error": "id_course parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        chapters = find_documents_fields(
+            "DB_Cours",
+            "Cours",
+            query={"id_cours": ObjectId(id_course)},
+            fields=["chemin_dossier", "nom_chapitre", "position"]
+        )
+        response = requests.get(COURS_BASE_URL + "/getCourseChapters", params={
+                "user_id": user_id,
+                "id_course":id_course
+            })
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to get-cartes"},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Call the Quiz API endpoint to determine which chapters are unlocked; 
-        # Use course_name ! For now we will assume the course name is "Mathématiques"
-        # Basically, a chapter is a pair (course name; chapter name)
-        unlocked_chapters = [{"Mathématiques" : "Complexes"}, {"Mathématiques" : "Fonctions de transfert"}]
-
-        # Using the DB, identify the paths of the pdfs concerned (and their order). 
-        pdf_paths = []
-        for chapter in unlocked_chapters:
-            course_name = list(chapter.keys())[0]
-            chapter_name = chapter[course_name]
-            pdf_paths.append(f"files/{course_name}/{chapter_name}.pdf")
-
-            #pdf_paths.append(f"./local_tests/{course_name}/{chapter_name}.pdf")
-
+        writer = PdfWriter()
+        list_chapter=response.json()
         merger = PdfMerger()
+        missing_files = []
+        list_chapter.sort(key=lambda c: c['position']) #on trie la liste des chapitres
         
-        # Get the pdfs from the paths;
-        for pdf_path in pdf_paths:
-            # merge the pdfs in the indicated order; 
-            merger.append(pdf_path)
+        for chapter in list_chapter:
+            if chapter["is_unlocked"]:
 
-        # Save the merged pdf to a temporary file
-        # merged_pdf_path = "./local_tests/merged_course.pdf"  # <-- working local test 🥳
-        merged_pdf_path = "path/to/merged_course.pdf"
-        merger.write(merged_pdf_path)
+                path = os.path.join(chapter["chemin_pdf"])
+                if os.path.exists(path):
+                    merger.append(path)
+                else:
+                    missing_files.append(chapter["nom_chapitre"])
+
+        if not merger.pages:
+            return Response({"error": "Aucun PDF valide à assembler."}, status=status.HTTP_404_NOT_FOUND)
+        
+        os.makedirs("cours_pdf", exist_ok=True)
+        output_path = os.path.join("cours_pdf", "HistoriqueGetPDF.pdf")
+        with open(output_path, "wb") as f_out:
+            merger.write(f_out)
+
         merger.close()
 
-        # @todo download the file and send it directly (instead of the path)
-        remote_response = requests.get(merged_pdf_path, stream=True)
+        response = FileResponse(open(output_path, "rb"), as_attachment=True, filename="HistoriqueGetPDF.pdf")
 
-        # Check if the download was successful
-        if remote_response.status_code != 200:
-            return Response({"error": "Unable to get PDF file."}, status=400)
-        
-        # Read PDF content
-        pdf_content = remote_response.content
-        
-        # Prepare the HTTP response with the PDF content
-        response = HttpResponse(pdf_content, content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="document.pdf"'
+        if missing_files:
+            response["pdf_manquants"] = ",".join(missing_files)
+
         return response
 
 
