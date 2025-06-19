@@ -143,7 +143,7 @@ class GetCourseChapters(APIView):
         response_data = []
         for chapter in chapters:
             id_chapter= str(chapter["_id"])
-            is_unlocked = requests.get(QUIZ_BASE_URL + "/doesQuizExist", params={"user_id":user_id, "id_chapitre":id_chapter, "id_deck":id_deck}).json().get("isQuizExisting", False)
+            is_unlocked = not (requests.get(QUIZ_BASE_URL + "/doesQuizExist", params={"user_id":user_id, "id_chapitre":id_chapter, "id_deck":id_deck}).json().get("isQuizExisting", False))
             if chapter["position"] == 0:
                 is_unlocked = True # The first chapter of a course is always unlocked
             response_data.append({

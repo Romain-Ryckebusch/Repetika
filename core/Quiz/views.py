@@ -89,7 +89,7 @@ class CompleteQuiz(APIView):
         })
         if response.status_code != 200:
             return Response(
-                {"error": "Failed to schedule cards for the chapter. Status code: " + str(response.status_code)},
+                {"error": "Failed to schedule cards for the chapter. Status code: " + str(response.status_code)+ " message : " + response.text},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
         else:
