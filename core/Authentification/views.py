@@ -12,13 +12,19 @@ from rest_framework.response import Response
 from .models import CustomUser
 
 #aller sur: "http://127.0.0.1:8000/api/auth/admin/Authentification/customuser/" pour la base de donné, mot de passe de quentin: 123
+#aller sur: "http://192.168.49.2:30741/api/authentification/admin/Authentification/customuser/" pour la base de donné, mot de passe de quentin: RepatikaISEN2025
 
 class Register(APIView):
+    """
+    POST /api/auth/register
+    Takes username, password
+    Returns success message
+    """
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
         # maybe the password should be hashed before coming here... maybe.
-        email = request.data.get('email', '')
+        email = request.data.get('email')
         avatar_url = request.data.get('avatar_url', '')
         preferences_json = request.data.get('preferences_json', '{}')
 
@@ -34,16 +40,19 @@ class Register(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        if CustomUser.objects.filter(email=email).exists():
+        if email and CustomUser.objects.filter(email=email).exists():
             return Response(
                 {"error": "Email already taken."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        user = CustomUser.objects.create_user(username=username, password=password, email=email)
+        user = CustomUser.objects.create_user(username=username, 
+                                              password=password, 
+                                              email=email or None
+                                              )
         user.avatar_url = avatar_url
         user.preferences_json = preferences_json
-        user.save() # God bless django
+        user.save() 
 
         # Automatically log in the user after registration
         tokens = get_tokens_for_user(user)

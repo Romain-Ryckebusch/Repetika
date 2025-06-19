@@ -17,13 +17,6 @@ from rest_framework.views import APIView
 
 from core.shared_modules.mongodb_utils import *
 
-from fsrs import Scheduler, Card, Rating, ReviewLog
-from PyPDF2 import PdfMerger
-from PyPDF2 import PdfReader, PdfWriter
-
-#from .models import UploadedFile
-#from .serializers import UploadedFileSerializer
-
 from bson import ObjectId
 
 COURS_BASE_URL="http://localhost:8000/api/cours" 
@@ -718,8 +711,20 @@ class UserRegister(APIView):
                 "preferences_json": preferences_json
             }
         )
+        if response.status_code != 200:
+            return Response(
+                response.json(),#{"error": "Failed to register"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            data = response.json()
+        except ValueError:
+            return Response(
+                {"error": "Failed to load json"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        return Response(response.json(), status=response.status_code)
+        return Response(data, status=response.status_code)
     
 class UserDelete(APIView):
     """
