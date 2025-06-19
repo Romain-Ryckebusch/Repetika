@@ -25,8 +25,10 @@ export default function CourseIndex() {
     const lessonId= currentCoursId
     const deckId = currentDeckId
 
+    const initialScope = route.params?.initialScope ?? "Review";
 
-    const [scopeSelected, setScopeSelected] = useState("Review");
+
+    const [scopeSelected, setScopeSelected] = useState(initialScope);
 
 
     function switchScopeSelected(newScope) {

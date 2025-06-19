@@ -66,12 +66,6 @@ export default function RegisterScreen() {
         }
 
         if (valid) {
-            console.log("Valide!")
-            console.log(JSON.stringify({
-                "username":userName,
-                "email":Mail,
-                "password":password
-            }))
             fetch(config.BASE_URL+'/main/register', {
                 method: 'POST',
                 headers: {
@@ -84,7 +78,6 @@ export default function RegisterScreen() {
                 })
             })
                 .then(res => res.json())
-                .then(data => console.log(data))
                 .catch(err => console.error('Erreur :', err));
           //  navigation.navigate("UserPreferences");
         }

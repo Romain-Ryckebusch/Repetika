@@ -1,5 +1,5 @@
-import React, {useContext} from 'react';
-import { View, StyleSheet,Pressable,Image,Text } from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {View, StyleSheet, Pressable, Image, Text, ActivityIndicator} from 'react-native';
 import { WebView } from 'react-native-webview';
 import backIcon from "../../assets/icons/back.png";
 import {navigate} from "../../navigation/NavigationService";
@@ -8,29 +8,40 @@ import {useRoute} from "@react-navigation/native";
 import useFetch from "../../utils/useFetch";
 import {AuthContext} from "../../utils/AuthContext";
 import Config from "../../config/config";
+import colors from "../../styles/colors";
 
 export default function CourseFrame() {
-    const { userId } = useContext(AuthContext); // <- une seule fois
-    console.log(userId);
+    const { userId } = useContext(AuthContext);
     const pdfUrl = "https://aymeric-droulers.github.io/ISEN3_24-25_Lancement-PFA3.pdf"
     const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=`+pdfUrl;
     const route = useRoute();
 
+    const[loading,setLoading]=useState(false);
+
+
     const finishChapter = async () => {
+        setLoading(true);
         const idChapitre = route.params?.chapterId;
         const idDeck = route.params?.deckId;
 
-        const url = Config.BASE_URL+`/main/completeQuiz?user_id=${userId}&id_chapitre=${idChapitre}&id_deck=${idDeck}`;
+        const url = Config.BASE_URL + `/main/completeQuiz?user_id=${userId}&id_chapitre=${idChapitre}&id_deck=${idDeck}`;
         console.log(url);
 
         try {
             const response = await fetch(url);
-            const data = await response.json();
-            console.log('Réponse :', data);
+            const json = await response.json();
+            console.log(json);
+            navigate("CourseIndex",{
+                initialScope:"Cours"
+            })
         } catch (error) {
             console.error('Erreur lors de la complétion du chapitre :', error);
+        } finally {
+            setLoading(false);
+
         }
-    }
+    };
+
 
 
 
@@ -38,12 +49,17 @@ export default function CourseFrame() {
         <>
             <View style={styles.header.questionHeaderContainer}>
                 <View style={[styles.header.container,{justifyContent:"start"},{height: 60},{alignItems:"flex-end"}]}>
-                    <Pressable style={[styles.header.backArrowBtn]} onPress={() =>navigate("CourseIndex")}>
+                    <Pressable style={[styles.header.backArrowBtn]} onPress={() =>navigate("CourseIndex",{
+                        initialScope:"Cours"
+                    })}>
                         <Image style={styles.header.backArrowImg} source={backIcon}></Image>
                     </Pressable>
                     <Text style={[styles.header.headerTitle,{paddingBottom:2}]}>Pays du monde</Text>
                 </View>
             </View>
+            {loading?(
+                <ActivityIndicator size="large" color={colors.primary} />
+            ):(
             <View style={styles.container}>
                 <WebView
                     source={{ uri: viewerUrl}}
@@ -51,6 +67,7 @@ export default function CourseFrame() {
                 />
                 <Btn_Fill style={{marginBottom:'10%',width:'80%',marginLeft:'10%',marginTop:'5%'}} title={"Terminer le chapitre"} onPress={()=>finishChapter()}/>
             </View>
+            )}
         </>
     );
 }

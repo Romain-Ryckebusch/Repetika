@@ -45,7 +45,6 @@ const ChapterBox = ({id,name,onUp,onDown})=>{
 
 
 function createNewChapter(){
-    console.log("Create New Chapter");
     navigate("CreateChapterScreen")
 }
 
@@ -73,7 +72,6 @@ const CreateCourseScreen =  () => {
                 copyToCacheDirectory: true,
             });
             if (result.canceled === false) {
-                console.log('PDF sélectionné :', result);
                 setPdfFile(result); // Sauvegarde le fichier sélectionné
             } else {
                 console.log('Sélection annulée');
@@ -109,7 +107,7 @@ const CreateCourseScreen =  () => {
                 })
 
 
-                console.log(finalList);
+
                 try {
                     const response = await fetch(config.BASE_URL + '/main/createCards', {
                         method: 'POST',
@@ -123,14 +121,10 @@ const CreateCourseScreen =  () => {
 
                     const data = await response.json();
 
-                    // Tu peux ici vérifier et utiliser les données reçues
-                    console.log('Données reçues:', data);
+
 
                     if (data.error) {
-                        console.log(data.error);
-
-                    } else {
-                        console.log("Succes")
+                        console.error(data.error);
 
                     }
 
@@ -166,7 +160,6 @@ const CreateCourseScreen =  () => {
         };
 
         formData.append('metadata', JSON.stringify(metadata));
-        console.log(formData)
         try {
             const response = await fetch(Config.BASE_URL+"/main/ajout-cours", {
                 method: 'POST',
@@ -176,7 +169,6 @@ const CreateCourseScreen =  () => {
             const data = await response.json();
             if (response.ok) {
                 Alert.alert("Succès", t("CreateCoursePage.SendSuccess"));
-                console.log(data);
                 return(data)
             } else {
                 console.error("Erreur serveur:", data);
