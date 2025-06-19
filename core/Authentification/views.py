@@ -40,11 +40,6 @@ class Register(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        if email and CustomUser.objects.filter(email=email).exists():
-            return Response(
-                {"error": "Email already taken."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
 
         user = CustomUser.objects.create_user(username=username, 
                                               password=password, 
@@ -52,7 +47,7 @@ class Register(APIView):
                                               )
         user.avatar_url = avatar_url
         user.preferences_json = preferences_json
-        user.save() 
+        user.save() # God bless django
 
         # Automatically log in the user after registration
         tokens = get_tokens_for_user(user)
