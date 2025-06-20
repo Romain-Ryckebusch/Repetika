@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import *
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('start-session', DébutSéanceRévision.as_view()),
@@ -11,6 +12,8 @@ urlpatterns = [
     path('getAccessibleCourses', GetAccessibleCourses.as_view()),
     path('getCourseChapters', GetCourseChapters.as_view()),
     path('ajout-cours', UploadPDF.as_view()),
+    path('getFullPDF_url', GetFullPDF_url.as_view()),
+    path('getFullPDF_file', GetFullPDF_file.as_view()),
     path('getPDF', GetPDF.as_view()),
     path('completeQuiz', CompleteQuiz.as_view()),
     path('doesQuizExist', DoesQuizExist.as_view()),
@@ -26,4 +29,5 @@ urlpatterns = [
     path('logout', UserLogout.as_view()),
     path('updateProfile', UserUpdateProfile.as_view()),
 ]
+urlpatterns += static('/pdfs/', document_root='/tmp/')
 

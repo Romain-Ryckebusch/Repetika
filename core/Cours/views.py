@@ -162,6 +162,68 @@ class GetCourseChapters(APIView):
 
         return Response(response_data, status=status.HTTP_200_OK)
 
+class GetFullPDF(APIView):
+    """
+    GET /api/cours/getPDF
+    Takes user_id, course_name
+    Returns pdf combined course
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        id_course = request.GET.get('id_course')
+        if not id_course:
+            return Response(
+                {"error": "id_course parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        response = requests.get(COURS_BASE_URL + "/getCourseChapters", params={
+                "user_id": user_id,
+                "id_course":id_course
+            })
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to get-cartes"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        list_chapter=response.json()
+        merger = PdfMerger()
+        missing_files = []
+        list_chapter.sort(key=lambda c: c['position']) #on trie la liste des chapitres
+        
+        for chapter in list_chapter:
+            if chapter["is_unlocked"]:
+
+                path = os.path.join(chapter["chemin_pdf"])
+                if os.path.exists(path):
+                    merger.append(path)
+                else:
+                    missing_files.append(chapter["nom_chapitre"])
+
+        if not merger.pages:
+            return Response({"error": "Aucun PDF valide à assembler."}, status=status.HTTP_404_NOT_FOUND)
+        
+        os.makedirs("cours_pdf", exist_ok=True)
+        output_path = os.path.join("cours_pdf", "HistoriqueGetPDF.pdf")
+        with open(output_path, "wb") as f_out:
+            merger.write(f_out)
+
+        merger.close()
+
+        response = FileResponse(open(output_path, "rb"), as_attachment=True, filename="HistoriqueGetPDF.pdf")
+
+        if missing_files:
+            response["pdf_manquants"] = ",".join(missing_files)
+
+        return response
+    
 class GetPDF(APIView):
     """
     GET /api/cours/getPDF

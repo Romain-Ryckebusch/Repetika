@@ -516,7 +516,7 @@ class UploadPDF(APIView):
             status=status.HTTP_400_BAD_REQUEST
             )
         
-class GetPDF(APIView):
+class GetFullPDF_file(APIView):
     """
     GET /api/main/getPDF
     Takes user_id, course_name
@@ -777,3 +777,102 @@ class UserUpdateProfile(APIView):
         )
 
         return Response(response.json(), status=response.status_code)
+    
+
+import tempfile
+class GetFullPDF_url(APIView):
+    """
+    GET /api/main/getPDF
+    Takes user_id, course_name
+    Returns pdf combined course
+    """
+    def get(self, request):
+        user_id = request.GET.get("user_id")
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        id_course = request.GET.get("id_course")
+        if not id_course:
+            return Response(
+                {"error": "id_course parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        response = requests.get(COURS_BASE_URL + "/getPDF", params={
+                "user_id": user_id,
+                "id_course":id_course
+            })
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to getPDF"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf", dir="/tmp") as tmp_file:
+            tmp_file.write(response.content)
+            tmp_file_path = tmp_file.name
+        
+        filename = os.path.basename(tmp_file_path)
+        pdf_url = request.build_absolute_uri(f"/pdfs/{filename}")
+        
+        url_response={"pdf_url": pdf_url}
+        if "pdf_manquants" in response.headers:
+            url_response["pdf_manquants"] = response.headers["pdf_manquants"]
+        
+        return Response(url_response)
+    
+
+class GetPDF(APIView):
+    """
+    GET /api/main/getPDF
+    Takes user_id, course_name
+    Returns pdf combined course
+    """
+    def get(self, request):
+        user_id = request.GET.get("user_id")
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        id_course = request.GET.get("id_course")
+        if not id_course:
+            return Response(
+                {"error": "id_course parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        response = requests.get(COURS_BASE_URL + "/getPDF", params={
+                "user_id": user_id,
+                "id_course":id_course
+            })
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to getPDF"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf", dir="/tmp") as tmp_file:
+            tmp_file.write(response.content)
+            tmp_file_path = tmp_file.name
+        
+        filename = os.path.basename(tmp_file_path)
+        pdf_url = request.build_absolute_uri(f"/pdfs/{filename}")
+        
+        url_response={"pdf_url": pdf_url}
+        if "pdf_manquants" in response.headers:
+            url_response["pdf_manquants"] = response.headers["pdf_manquants"]
+        
+        return Response(url_response)
+        
+        
+        
+        
+        
+    
+        
+        
