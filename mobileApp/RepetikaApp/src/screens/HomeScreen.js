@@ -10,7 +10,6 @@ import Crd_lesson from '../components/crd_lesson';
 import ScreenWrapper from "../components/navigation/screenWrapper";
 import {useTranslation} from "react-i18next";
 import {navigate} from "../navigation/NavigationService";
-import api from "../config/apiService";
 import ErrorView from "../components/error";
 import useFetch from "../utils/useFetch";
 import {AuthContext} from "../utils/AuthContext";
@@ -18,8 +17,6 @@ import {checkAchievements} from "../utils/achievements/checkAchievements";
 import config from "../config/config";
 import {CourseContext} from "../utils/CourseContext";
 
-
-//export const getCoursOfUser = () => api.get('/main/getAccessibleCourses?user_id=68386a41ac5083de66afd675');
 
 
 export default function HomeScreen() {

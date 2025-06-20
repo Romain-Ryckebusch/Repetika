@@ -56,12 +56,12 @@ export default function LoginScreen() {
                 setNetworkError("");
                 setWrongPasswordError("");
                 await saveSession(data.tokens.access, data.tokens.refresh, "68386a41ac5083de66afd675")
-
+                console.log(data);
 
                 // Met à jour le contexte
                 setTokenAccess(data.tokens.access);
                 setTokenRefresh(data.tokens.refresh);
-                setUserId("68386a41ac5083de66afd675");
+                setUserId(data.user_id);
 
 // Tu peux reconstruire les stats comme tu le fais dans saveSession
                 const userStats = {

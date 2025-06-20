@@ -27,9 +27,9 @@ import Config from "../../../config/config";
  */
 function ChapterButton({chapter, onPress, style, widthCircle, colors}) {
     const backgroundColor = useMemo(() =>
-            chapter.isSrarted && !chapter.isFinished
+            chapter.is_unlocked && !chapter.is_finished
                 ? colors.currentChapter
-                : !chapter.isAvailable
+                : !chapter.is_unlocked
                     ? colors.lockedChapter
                     : colors.primary
         , [chapter, colors]);

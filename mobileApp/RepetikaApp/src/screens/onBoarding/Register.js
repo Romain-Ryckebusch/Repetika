@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
+import {View, Text, ScrollView, Image, TouchableOpacity, Alert} from "react-native";
 import globalStyles from '../../styles/global';
 
 import styles from '../../styles/Register.style';
@@ -78,6 +78,21 @@ export default function RegisterScreen() {
                 })
             })
                 .then(res => res.json())
+                .then(res=>{
+                    console.log(res)
+                    if (res.message="User created successfully") {
+                        Alert.alert(t("Register.success"));
+                        navigation.navigate("Login");
+                    } else {
+                        if (res.detail.error === "Username already taken.") {
+                            setUsernameError(t("Register.errors.usernameExists"));
+                        } else if (res.error === "email_exists") {
+                            setMailError(t("Register.errors.mailExists"));
+                        } else {
+                            console.error('Erreur lors de l\'inscription :', res.error);
+                        }
+                    }
+                })
                 .catch(err => console.error('Erreur :', err));
           //  navigation.navigate("UserPreferences");
         }

@@ -9,14 +9,17 @@ import useFetch from "../../utils/useFetch";
 import {AuthContext} from "../../utils/AuthContext";
 import Config from "../../config/config";
 import colors from "../../styles/colors";
+import {CourseContext} from "../../utils/CourseContext";
 
 export default function CourseFrame() {
     const { userId } = useContext(AuthContext);
-    const pdfUrl = "https://aymeric-droulers.github.io/ISEN3_24-25_Lancement-PFA3.pdf"
-    const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=`+pdfUrl;
+    const {currentCoursId,currentCoursName}= useContext(CourseContext)
+    const pdfUrl = Config.BASE_URL+`/main/getPDF?user_id=${userId}&id_course=${currentCoursId}`;
+    const googleViewerUrl = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(pdfUrl)}`;
     const route = useRoute();
 
     const[loading,setLoading]=useState(false);
+    const [pdfLoaded, setPdfLoaded] = useState(false);
 
 
     const finishChapter = async () => {
@@ -54,19 +57,27 @@ export default function CourseFrame() {
                     })}>
                         <Image style={styles.header.backArrowImg} source={backIcon}></Image>
                     </Pressable>
-                    <Text style={[styles.header.headerTitle,{paddingBottom:2}]}>Pays du monde</Text>
+                    <Text style={[styles.header.headerTitle,{paddingBottom:2}]}>{currentCoursName}</Text>
                 </View>
             </View>
-            {loading?(
+            {loading ? (
                 <ActivityIndicator size="large" color={colors.primary} />
-            ):(
-            <View style={styles.container}>
-                <WebView
-                    source={{ uri: viewerUrl}}
-                    style={{ flex: 1 }}
-                />
-                <Btn_Fill style={{marginBottom:'10%',width:'80%',marginLeft:'10%',marginTop:'5%'}} title={"Terminer le chapitre"} onPress={()=>finishChapter()}/>
-            </View>
+            ) : (
+                <View style={styles.container}>
+                    {!pdfLoaded && (
+                        <View style={{position:'absolute',top:0,left:0,right:0,bottom:0,backgroundColor:'rgba(255,255,255,0.7)',zIndex:10,justifyContent:'center',alignItems:'center'}}>
+                            <ActivityIndicator size="large" color={colors.primary} />
+                            <Text style={{marginTop:10}}>Chargement du PDF...</Text>
+                        </View>
+                    )}
+                    <WebView
+                        source={{ uri: googleViewerUrl }}
+                        style={{ flex: 1 }}
+                        onLoadEnd={() => setPdfLoaded(true)}
+                        onLoadStart={() => setPdfLoaded(false)}
+                    />
+                    <Btn_Fill style={{marginBottom:'10%',width:'80%',marginLeft:'10%',marginTop:'5%'}} title={"Terminer le chapitre"} onPress={()=>finishChapter()}/>
+                </View>
             )}
         </>
     );

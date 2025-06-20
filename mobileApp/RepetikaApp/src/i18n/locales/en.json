@@ -87,7 +87,14 @@
       "signUpBtn":"S'inscrire",
       "logInBtn":"Log in",
       "text":"Already have an account? "
-      }
+      },
+    "errors": {
+      "password": "Password must be between 6 and 128 characters.",
+      "confirmPassword": "Passwords do not match.",
+      "usernameExists": "This username already exists.",
+      "mailExists": "This email already exists."
+    },
+    "success": "Registration successful!"
   },
   "courseIndexScreen": {
     "coursLabel": "Courses",
