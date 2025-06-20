@@ -15,8 +15,6 @@ export default function Review({lessonId, deckId}) {
     const {t} = useTranslation();
     const {userId} = useContext(AuthContext);
     const url = config.BASE_URL + `/main/start-session?user_id=${userId}&deck_id=${deckId}`;
-    console.log(url);
-
 
 
     const defaultDeck = [

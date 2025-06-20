@@ -48,8 +48,7 @@ const CreateChapter = ()=>{
 
     const [cardsList,setCardsList] = useState([]);
 
-     //si l'id exist, on récuperera les infos depuis la bdd
-    console.log("ChapterId"+chapterId)
+
 
 
     useEffect(() => {

@@ -10,6 +10,7 @@ import {PlatformPressable} from "@react-navigation/elements";
 import {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../../../utils/AuthContext";
 import useFetch from "../../../utils/useFetch";
+import Config from "../../../config/config";
 
 /*
 const course=[
@@ -46,9 +47,9 @@ const course=[
 export default function Course ({courseId,deckId}){
 
     const {userId} = useContext(AuthContext);
-    console.log(courseId);
-    const url = `http://192.168.198.203:8000/api/main/getCourseChapters?user_id=${userId}&id_course=${courseId}`;
-    console.log(url);
+
+    const url = Config.BASE_URL+`/main/getCourseChapters?user_id=${userId}&id_course=${courseId}`;
+
 
     const [course, setCourse] = useState([]);
     const [lineList,setLineList] = useState([]);
@@ -99,9 +100,9 @@ export default function Course ({courseId,deckId}){
         <View style={styles.coursePage.view}>
             <View style={[styles.coursePage.view.sideColumn,{alignItems:"flex-end"}]}>
                 {leftChapters.map(chapter => (
-                    <PlatformPressable onPress={()=>navigateCourseFrame(chapter.id_chapitre)} key={chapter.id} style={[{marginBottom:heightCourse}]} /*disabled={!chapter.isAvailable}*/ disabled={false}>
+                    <PlatformPressable onPress={()=>navigateCourseFrame(chapter.id_chapitre)} key={chapter.id} style={[{marginBottom:heightCourse}]} disabled={!chapter.is_unlocked}>
                         <View  style={[styles.coursePage.chapterView,{width:widthCircle,height:widthCircle,borderRadius:0.5*widthCircle},{backgroundColor:chapter.isSrarted&&!chapter.isFinished?colors.currentChapter:!chapter.isAvailable?colors.lockedChapter:colors.primary}]}>
-                            {!chapter.isAvailable?<Image style={[styles.coursePage.chapterView.icon]} source={require("../../../assets/icons/lock.png")}/>:null}
+                            {!chapter.is_unlocked?<Image style={[styles.coursePage.chapterView.icon]} source={require("../../../assets/icons/lock.png")}/>:null}
                         </View>
                         <Text style={styles.coursePage.chapterView.title}>{chapter.title}</Text>
                     </PlatformPressable>
@@ -115,9 +116,9 @@ export default function Course ({courseId,deckId}){
             </View>
             <View style={[styles.coursePage.view.sideColumn,{alignItems:"flex-end"}]}>
                 {rightChapters.map(chapter => (
-                    <PlatformPressable onPress={()=>navigateCourseFrame(chapter.id_chapitre)} key={chapter.id} style={[{marginTop:heightCourse}]} disabled={!chapter.isAvailable}>
+                    <PlatformPressable onPress={()=>navigateCourseFrame(chapter.id_chapitre)} key={chapter.id} style={[{marginTop:heightCourse}]} disabled={!chapter.is_unlocked}>
                         <View  style={[styles.coursePage.chapterView,{width:widthCircle,height:widthCircle,borderRadius:0.5*widthCircle},{backgroundColor:chapter.isSrarted&&!chapter.isFinished?colors.currentChapter:!chapter.isAvailable?colors.lockedChapter:colors.primary}]}>
-                            {!chapter.isAvailable?<Image style={[styles.coursePage.chapterView.icon]} source={require("../../../assets/icons/lock.png")}/>:null}
+                            {!chapter.is_unlocked?<Image style={[styles.coursePage.chapterView.icon]} source={require("../../../assets/icons/lock.png")}/>:null}
                         </View>
                         <Text style={styles.coursePage.chapterView.title}>{chapter.title}</Text>
                     </PlatformPressable>

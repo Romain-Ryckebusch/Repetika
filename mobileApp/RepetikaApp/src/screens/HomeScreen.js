@@ -35,7 +35,6 @@ export default function HomeScreen() {
     const {userId}=useContext(AuthContext);
 
     const url = config.BASE_URL+`/main/getAccessibleCourses?user_id=${userId}`;
-    console.log(url);
     const { data, loading, error } = useFetch(url);
 
     useEffect(() => {
@@ -47,7 +46,6 @@ export default function HomeScreen() {
 
     useEffect(() => {
         if (error) {
-            console.log(error);
             setShowNetworkError(true);
         }
     }, [error]);
@@ -56,7 +54,6 @@ export default function HomeScreen() {
     const {setCurrentDeckId,setCurrentCoursId} = useContext(CourseContext);
 
     useEffect(() => {
-        console.log("start of check")
         checkAchievements(userStats, (achievement) => {
 
             // Ajoute aux succès débloqués
@@ -84,7 +81,7 @@ export default function HomeScreen() {
     }
 
 
-    console.log(lessons);
+
 
 
 
