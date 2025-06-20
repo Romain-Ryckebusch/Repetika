@@ -4,8 +4,9 @@ import json
 import requests
 import os
 from core.settings import *
+from io import BytesIO
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, FileResponse
 from django.utils import timezone
 
 from rest_framework import status
@@ -16,18 +17,11 @@ from rest_framework.views import APIView
 
 from core.shared_modules.mongodb_utils import *
 
-from fsrs import Scheduler, Card, Rating, ReviewLog
-from PyPDF2 import PdfMerger
-from PyPDF2 import PdfReader, PdfWriter
-
-#from .models import UploadedFile
-#from .serializers import UploadedFileSerializer
-
 from bson import ObjectId
 
-COURS_BASE_URL="http://localhost:8000/api/cours" 
-PLANNING_BASE_URL="http://localhost:8000/api/planning"
-DECK_BASE_URL="http://localhost:8000/api/decks"
+
+
+
 
 
 class DébutSéanceRévision(APIView):
@@ -520,7 +514,49 @@ class UploadPDF(APIView):
             return Response(
             {"error": "Failed to UploadPDF"},
             status=status.HTTP_400_BAD_REQUEST
-            )           
+            )
+        
+class GetPDF(APIView):
+    """
+    GET /api/main/getPDF
+    Takes user_id, course_name
+    Returns pdf combined course
+    """
+    def get(self, request):
+        user_id = request.GET.get("user_id")
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        id_course = request.GET.get("id_course")
+        if not id_course:
+            return Response(
+                {"error": "id_course parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        response = requests.get(COURS_BASE_URL + "/getPDF", params={
+                "user_id": user_id,
+                "id_course":id_course
+            })
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to getPDF"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        file_buffer = BytesIO(response.content)
+
+        file_response = FileResponse(
+            file_buffer,
+            as_attachment=True,
+            filename="HistoriqueGetPDF.pdf",
+            content_type="application/pdf"
+        )
+        if "pdf_manquants" in response.headers:
+            file_response["pdf_manquants"] = response.headers["pdf_manquants"]
+        return file_response
 
        
 class ShowAllSharedCourses(APIView):
@@ -658,7 +694,7 @@ class UserRegister(APIView):
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
-        email = request.data.get('email', '')
+        email = request.data.get('email', None)
         avatar_url = request.data.get('avatar_url', '')
         preferences_json = request.data.get('preferences_json', '{}')
 
@@ -675,8 +711,24 @@ class UserRegister(APIView):
                 "preferences_json": preferences_json
             }
         )
+        if response.status_code != 200 and response.status_code != 201:
+            try:
+                error_detail = response.json()
+            except Exception:
+                error_detail = response.text
+            return Response(
+                {"error": "Failed to register", "detail": error_detail},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            data = response.json()
+        except ValueError:
+            return Response(
+                {"error": "Failed to load json"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        return Response(response.json(), status=response.status_code)
+        return Response(data, status=response.status_code)
     
 class UserDelete(APIView):
     """

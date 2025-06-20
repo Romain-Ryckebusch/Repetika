@@ -45,7 +45,6 @@ const ChapterBox = ({id,name,onUp,onDown})=>{
 
 
 function createNewChapter(){
-    console.log("Create New Chapter");
     navigate("CreateChapterScreen")
 }
 
@@ -61,10 +60,8 @@ function editChapter(id){
 const CreateCourseScreen =  () => {
     const navigation = useNavigation();
     const {t}=useTranslation();
-    const [courseTitle,setCourseTitle] = useState("");
-    const [courseDescription,setCourseDescription] = useState("");
-    const [pdfFile, setPdfFile] = useState(null);
-    const {chapterList,setChapterList,cardsListByChapter,setCardsListByChapter} = useContext(CreateCourseContext)
+    const {chapterList,setChapterList,cardsListByChapter,setCardsListByChapter, courseTitle, setCourseTitle, courseDescription, setCourseDescription, pdfFile, setPdfFile} = useContext(CreateCourseContext);
+    const [loading, setLoading] = useState(false); // Ajout de l'état de chargement
 
     const getPdf = async () => {
         try {
@@ -73,7 +70,6 @@ const CreateCourseScreen =  () => {
                 copyToCacheDirectory: true,
             });
             if (result.canceled === false) {
-                console.log('PDF sélectionné :', result);
                 setPdfFile(result); // Sauvegarde le fichier sélectionné
             } else {
                 console.log('Sélection annulée');
@@ -86,13 +82,12 @@ const CreateCourseScreen =  () => {
 
 
     function saveCourse(){
+        setLoading(true); // Début du chargement
         postData().then(async r => {
             if (r !== false) {
                 const deckId = r.id_deck;
                 const chaptersIdsList = r.id_chapitres
                 const coursId = r.id_cours;
-
-
                 let finalList = []
                 let i =0;
                 cardsListByChapter.map(chapterCards => {
@@ -107,9 +102,6 @@ const CreateCourseScreen =  () => {
                     })
                     i++;
                 })
-
-
-                console.log(finalList);
                 try {
                     const response = await fetch(config.BASE_URL + '/main/createCards', {
                         method: 'POST',
@@ -120,23 +112,23 @@ const CreateCourseScreen =  () => {
                             "cartes":finalList
                         })
                     });
-
                     const data = await response.json();
-
-                    // Tu peux ici vérifier et utiliser les données reçues
-                    console.log('Données reçues:', data);
-
                     if (data.error) {
-                        console.log(data.error);
-
+                        console.error(data.error);
+                        alert(data.error)
+                        setLoading(false);
+                        navigation.navigate("MainApp", { screen: "Home" });
                     } else {
-                        console.log("Succes")
-
+                        setLoading(false);
+                        Alert.alert("Succès", t("CreateCoursePage.SendSuccess"));
+                        navigation.navigate("MainApp", { screen: "Home" }); // Redirection si succès
                     }
-
                 } catch (err) {
                     console.log(err.message);
+                    setLoading(false);
                 }
+            } else {
+                setLoading(false);
             }
         })
     }
@@ -166,7 +158,6 @@ const CreateCourseScreen =  () => {
         };
 
         formData.append('metadata', JSON.stringify(metadata));
-        console.log(formData)
         try {
             const response = await fetch(Config.BASE_URL+"/main/ajout-cours", {
                 method: 'POST',
@@ -175,8 +166,7 @@ const CreateCourseScreen =  () => {
 
             const data = await response.json();
             if (response.ok) {
-                Alert.alert("Succès", t("CreateCoursePage.SendSuccess"));
-                console.log(data);
+
                 return(data)
             } else {
                 console.error("Erreur serveur:", data);
@@ -245,6 +235,12 @@ const CreateCourseScreen =  () => {
 
     return(
         <View style={styles.container}>
+            {/* Affichage du loader si loading est true */}
+            {loading && (
+                <View style={{position:'absolute',top:0,left:0,right:0,bottom:0,backgroundColor:'rgba(255,255,255,0.7)',zIndex:10,justifyContent:'center',alignItems:'center'}}>
+                    <Text style={{fontSize:20}}>{t('CreateCoursePage.Loading')}</Text>
+                </View>
+            )}
             <PlatformPressable onPress={()=>{confirmerAction()}}>
                 <Image style={styles.backArrow} source={require("../../assets/icons/back.png")}></Image>
             </PlatformPressable>

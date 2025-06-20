@@ -165,7 +165,8 @@
     "BackTitle": "Confirmation",
     "BackContent": "Veux tu vraiment revenir a la page d'accueil? Toutes les modifications non sauvegardées seront perdues.",
     "BackConfirm": "CONFIRMER",
-    "BackCancel": "ANNULER"
+    "BackCancel": "ANNULER",
+    "Loading": "Sauvegarde en cours..."
   },
   "CreateChapterPage": {
     "ChapterNameLabel": "Nom du chapitre",

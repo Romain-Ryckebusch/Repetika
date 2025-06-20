@@ -164,7 +164,8 @@
     "BackTitle": "Confirmation",
     "BackContent": "Do you really want to go back to the home page? All unsaved changes will be lost.",
     "BackConfirm": "CONFIRM",
-    "BackCancel": "CANCEL"
+    "BackCancel": "CANCEL",
+    "Loading": "Saving in progress..."
   },
   "CreateChapterPage": {
     "ChapterNameLabel": "Chapter name",

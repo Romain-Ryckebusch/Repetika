@@ -66,9 +66,9 @@ const XpView = ({ oldXp, addXp,nextAction }) => {
         ]).start();
     }, []);
 
-    // Animation barre de progression (niveau ou non)
+
     useEffect(() => {
-        console.log(numberOfNewLevels);
+
         if (newLevelReached) {
             const timeouts = [];
 

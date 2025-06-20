@@ -64,7 +64,6 @@ export default function ReviewFrame() {
                 }
             };
 
-            console.log('Payload envoyé :', JSON.stringify(payload));
 
             const response = await fetch(config.BASE_URL + '/main/update-session', {
                 method: 'POST',
@@ -75,12 +74,11 @@ export default function ReviewFrame() {
             });
 
             const data = await response.json();
-            console.log('Données reçues:', data);
 
             if (data.error) {
                 console.error('Erreur côté serveur:', data.error);
             } else {
-                console.log('Succès:', data.message || data);
+
             }
 
         } catch (err) {
@@ -117,15 +115,14 @@ export default function ReviewFrame() {
         setIsAnswerCorrect(true);
         const card = deck.find(item => item._id === deck[cardToShow]._id);
         if (card) {
-            console.log("correct");
-            console.log(falseCards);
-            console.log(card)
+
+
             if(falseCards.includes(card._id)){
                 updateCard(card._id,userId,2)
-                console.log("Tu as déja eu faux a cette question!")
+
             }else{
                 updateCard(card._id,userId,0)
-                console.log("Vrai du premier coup!")
+
             }
 
             card.correct = true;

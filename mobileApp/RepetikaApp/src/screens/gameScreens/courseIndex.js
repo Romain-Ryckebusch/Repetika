@@ -21,12 +21,14 @@ export default function CourseIndex() {
     const {t}=useTranslation();
     const navigation = useNavigation();
     const route = useRoute();
-    const {currentDeckId,currentCoursId} = useContext(CourseContext);
+    const {currentDeckId,currentCoursId,currentCoursName} = useContext(CourseContext);
     const lessonId= currentCoursId
     const deckId = currentDeckId
 
+    const initialScope = route.params?.initialScope ?? "Review";
 
-    const [scopeSelected, setScopeSelected] = useState("Review");
+
+    const [scopeSelected, setScopeSelected] = useState(initialScope);
 
 
     function switchScopeSelected(newScope) {
@@ -45,7 +47,7 @@ export default function CourseIndex() {
                     })}>
                         <Image style={styles.header.backArrowImg} source={backIcon}></Image>
                     </Pressable>
-                    <Text style={[styles.header.headerTitle,{paddingBottom:2}]}>European capitals</Text>
+                    <Text style={[styles.header.headerTitle,{paddingBottom:2}]}>{currentCoursName}</Text>
                 </View>
             </View>
 

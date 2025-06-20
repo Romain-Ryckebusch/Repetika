@@ -1,4 +1,6 @@
+import React, {useContext, useEffect, useState, useCallback} from "react";
 import {ActivityIndicator, ScrollView, Text, TouchableOpacity, View} from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 
 import globalStyles from '../styles/global';
 import colors from '../styles/colors';
@@ -9,7 +11,6 @@ import ScreenWrapper from "../components/navigation/screenWrapper";
 import {useTranslation} from "react-i18next";
 import {navigate} from "../navigation/NavigationService";
 import api from "../config/apiService";
-import {useContext, useEffect, useState} from "react";
 import ErrorView from "../components/error";
 import useFetch from "../utils/useFetch";
 import {AuthContext} from "../utils/AuthContext";
@@ -26,17 +27,20 @@ export default function HomeScreen() {
 
 
     const {t}=useTranslation();
-
-
     const [lessons, setLessons] = useState([]);
     const [showNetworkError, setShowNetworkError] = useState(false);
-
-
     const {userId}=useContext(AuthContext);
-
     const url = config.BASE_URL+`/main/getAccessibleCourses?user_id=${userId}`;
-    console.log(url);
-    const { data, loading, error } = useFetch(url);
+    const { data, loading, error, refetch } = useFetch(url);
+
+    // Rafraîchir la liste des cours à chaque focus
+    useFocusEffect(
+        useCallback(() => {
+            if (typeof refetch === 'function') {
+                refetch();
+            }
+        }, [refetch])
+    );
 
     useEffect(() => {
         if (data) {
@@ -47,16 +51,14 @@ export default function HomeScreen() {
 
     useEffect(() => {
         if (error) {
-            console.log(error);
             setShowNetworkError(true);
         }
     }, [error]);
 
     const {userStats,setUserStats} = useContext(AuthContext);
-    const {setCurrentDeckId,setCurrentCoursId} = useContext(CourseContext);
+    const {setCurrentDeckId,setCurrentCoursId,setCurrentCoursName} = useContext(CourseContext);
 
     useEffect(() => {
-        console.log("start of check")
         checkAchievements(userStats, (achievement) => {
 
             // Ajoute aux succès débloqués
@@ -73,10 +75,11 @@ export default function HomeScreen() {
     }, [userStats]); // ou après une action spécifique
 
 
-    const navigateToCours = (idCours,idDeck)=>{
+    const navigateToCours = (idCours,idDeck,name)=>{
 
         setCurrentDeckId(idDeck);
         setCurrentCoursId(idCours);
+        setCurrentCoursName(name)
         navigate("gameScreens",{
 
             screen:"CourseIndex",
@@ -84,7 +87,7 @@ export default function HomeScreen() {
     }
 
 
-    console.log(lessons);
+
 
 
 
@@ -114,7 +117,7 @@ export default function HomeScreen() {
                                 corpus={"description"}
                                 progress={lesson.progress}
                                 crd_number={lesson.cards_today}
-                                onPress={()=>navigateToCours(lesson.id_cours,lesson.id_deck)}
+                                onPress={()=>navigateToCours(lesson.id_cours,lesson.id_deck,lesson.nom_cours)}
                             />
                         ))}
 
@@ -128,4 +131,3 @@ export default function HomeScreen() {
         </ScreenWrapper>
     )
 }
-

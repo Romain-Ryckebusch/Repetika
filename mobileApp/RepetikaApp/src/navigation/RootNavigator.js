@@ -22,7 +22,6 @@ export default function RootNavigator() {
         const checkSession = async () => {
             const session = await getSession();
             if (session.tokenAccess) {
-                console.log(session);
                 setTokenAccess(session.tokenAccess);
                 setTokenRefresh(session.tokenRefresh);
                 setUserId(session.userId)

@@ -20,7 +20,6 @@ from PyPDF2 import PdfMerger
 from PyPDF2 import PdfReader, PdfWriter
 
 from bson import ObjectId
-DECK_BASE_URL="http://localhost:8000/api/decks"
 
 
 class GetChapter(APIView):
@@ -165,7 +164,7 @@ class GetCourseChapters(APIView):
 
 class GetPDF(APIView):
     """
-    GET /api/LireCours/getPDF
+    GET /api/cours/getPDF
     Takes user_id, course_name
     Returns pdf combined course
     """
@@ -377,7 +376,7 @@ class UploadPDF(APIView):
         id_user = id_auteur
         nom_deck = nom_cours
         
-        response = requests.get(DECK_BASE_URL + "/createDeck", params={
+        response = requests.get(DECKS_BASE_URL + "/createDeck", params={
                 "user_id": ObjectId(id_user),
                 "nom_deck":nom_deck,
                 "tags":tags
