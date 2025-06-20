@@ -9,19 +9,16 @@ class CustomUser(AbstractUser):
         return str(ObjectId())
         
 
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=False, null=True, blank=True)
     avatar_url = models.URLField(blank=True, null=True)
     préférences_json = models.JSONField(default=dict, blank=True)
     id = models.CharField(
         max_length=24,
         unique=True,
         editable=False,
-        default=generate_mongo_id(),
+        default=generate_mongo_id,
         primary_key=True
     )
-    
 
-    # AbstractUser a déjà : password (hashé), last_login, date_joined, etc.
-    
     def __str__(self):
         return self.username

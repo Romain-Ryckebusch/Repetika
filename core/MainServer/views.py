@@ -17,18 +17,11 @@ from rest_framework.views import APIView
 
 from core.shared_modules.mongodb_utils import *
 
-from fsrs import Scheduler, Card, Rating, ReviewLog
-from PyPDF2 import PdfMerger
-from PyPDF2 import PdfReader, PdfWriter
-
-#from .models import UploadedFile
-#from .serializers import UploadedFileSerializer
-
 from bson import ObjectId
 
-COURS_BASE_URL="http://localhost:8000/api/cours" 
-PLANNING_BASE_URL="http://localhost:8000/api/planning"
-DECK_BASE_URL="http://localhost:8000/api/decks"
+
+
+
 
 
 class DébutSéanceRévision(APIView):
@@ -701,7 +694,7 @@ class UserRegister(APIView):
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
-        email = request.data.get('email', '')
+        email = request.data.get('email', None)
         avatar_url = request.data.get('avatar_url', '')
         preferences_json = request.data.get('preferences_json', '{}')
 
@@ -718,8 +711,24 @@ class UserRegister(APIView):
                 "preferences_json": preferences_json
             }
         )
+        if response.status_code != 200 and response.status_code != 201:
+            try:
+                error_detail = response.json()
+            except Exception:
+                error_detail = response.text
+            return Response(
+                {"error": "Failed to register", "detail": error_detail},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            data = response.json()
+        except ValueError:
+            return Response(
+                {"error": "Failed to load json"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        return Response(response.json(), status=response.status_code)
+        return Response(data, status=response.status_code)
     
 class UserDelete(APIView):
     """

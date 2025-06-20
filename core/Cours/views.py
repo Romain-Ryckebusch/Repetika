@@ -20,7 +20,6 @@ from PyPDF2 import PdfMerger
 from PyPDF2 import PdfReader, PdfWriter
 
 from bson import ObjectId
-DECK_BASE_URL="http://localhost:8000/api/decks"
 
 
 class GetChapter(APIView):
