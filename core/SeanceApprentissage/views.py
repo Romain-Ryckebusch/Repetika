@@ -3,7 +3,7 @@ import requests
 
 from django.http import HttpResponse, JsonResponse
 
-from core.core.settings import DECKS_BASE_URL, PLANNING_BASE_URL
+from core.settings import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
