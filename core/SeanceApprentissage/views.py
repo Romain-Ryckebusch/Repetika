@@ -3,6 +3,7 @@ import requests
 
 from django.http import HttpResponse, JsonResponse
 
+from core.core.settings import DECKS_BASE_URL, PLANNING_BASE_URL
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -32,9 +33,7 @@ class GetCartes(APIView):
             )
 
         response = requests.get(
-            #"http://planification:8000/api/sauvegarder-revision/",  #à modifier avec docker
-            "http://localhost:8000/api/planning/cardsToday",
-            
+            PLANNING_BASE_URL + "/cardsToday",
             params={"user_id": user_id})
         
         if response.status_code != 200:
@@ -67,7 +66,7 @@ class GetCartes(APIView):
 
         
         response2 = requests.get(
-            "http://localhost:8000/api/decks/getCardsFromID",
+            DECKS_BASE_URL+"getCardsFromID",
             params={"card_ids": [card["id_card"] for card in cardsID_json]}
         )
         
@@ -152,15 +151,12 @@ class SendPlanification(APIView):
 
 
         response = requests.get(
-            #"http://planification:8000/api/Planning/scheduleNextReviews/",
-            "http://localhost:8000/api/planning/scheduleNextReviews",
+            PLANNING_BASE_URL + "/scheduleNextReviews",
             params={
                 "user_id": user_id,
                 "results": json.dumps(results)
             }
         )
-        
-
         
         if response.status_code == 200:
             return Response({"message": "Ok"}, status=status.HTTP_200_OK)

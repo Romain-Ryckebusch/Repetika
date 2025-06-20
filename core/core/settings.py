@@ -139,6 +139,7 @@ QUIZ_BASE_URL = 'http://localhost:8000/api/quiz'
 PLANNING_BASE_URL = 'http://localhost:8000/api/planning'
 DECKS_BASE_URL = 'http://localhost:8000/api/decks'
 AUTH_BASE_URL = 'http://localhost:8000/api/auth'
+SESSION_BASE_URL= 'http://localhost:8000/api/learning-session'
 
 
 REST_FRAMEWORK = {

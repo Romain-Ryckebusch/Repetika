@@ -45,8 +45,7 @@ class DébutSéanceRévision(APIView):
             )
 
         response = requests.get(
-            #"http://planification:8000/api/sauvegarder-revision/",  #à modifier avec docker
-            "http://localhost:8000/api/learning-session/get-cartes/",
+            SESSION_BASE_URL + "/get-cartes/",
             params={"user_id": user_id, "deck_id": deck_id})
         
         if response.status_code != 200:
@@ -90,7 +89,7 @@ class updateSéanceRévision(APIView):
         results=metadata_json['results']
 
         response = requests.post(
-            "http://localhost:8000/api/learning-session/send-planification/",
+            SESSION_BASE_URL + "/learning-session/send-planification/",
             json={
                 "metadata": {
                     "user_id": user_id,
@@ -498,7 +497,7 @@ class UploadPDF(APIView):
                 return Response({"error": "Invalid JSON in metadata"}, status=status.HTTP_400_BAD_REQUEST)
         
         response = requests.post(
-            "http://localhost:8000/api/cours/ajout-cours", 
+            COURS_BASE_URL + "ajout-cours", 
             files={'pdf': pdf_file,}, 
             data={'metadata': json.dumps(metadata_json)}
         )
