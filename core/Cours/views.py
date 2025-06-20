@@ -105,7 +105,7 @@ class GetChapter(APIView):
 class GetCourseChapters(APIView):
     """ GET /api/LireCours/getCourseChapters
     Takes user_id, id_course
-    Returns List of chapters (id_chapitre, nom_chapitre, date_creation, is_unlocked, chemin_pdf)
+    Returns List of chapters (id_chapitre, nom_chapitre, date_creation, is_unlocked, is_finished, chemin_pdf)
     """
     def get(self, request):
         user_id = request.GET.get('user_id')
@@ -137,22 +137,29 @@ class GetCourseChapters(APIView):
             fields=["id_deck"]
         )[0]["id_deck"]
         print("chapters : ", chapters)
-        print("id_deck : ", id_deck)
+        chapters.sort(key=lambda x: x.get("position", float("inf")))
+        print("sorted chapters : ", chapters)
 
         # Prepare the response data
         response_data = []
         for chapter in chapters:
             id_chapter= str(chapter["_id"])
-            is_unlocked = not (requests.get(QUIZ_BASE_URL + "/doesQuizExist", params={"user_id":user_id, "id_chapitre":id_chapter, "id_deck":id_deck}).json().get("isQuizExisting", False))
+            is_finished = not (requests.get(QUIZ_BASE_URL + "/doesQuizExist", params={"user_id":user_id, "id_chapitre":id_chapter, "id_deck":id_deck}).json().get("isQuizExisting", False))
             if chapter["position"] == 0:
                 is_unlocked = True # The first chapter of a course is always unlocked
+            else: 
+                is_unlocked = response_data[-1]["is_finished"]
             response_data.append({
                 "id_chapitre": id_chapter,
                 "nom_chapitre": chapter["nom_chapitre"],
                 "position": chapter["position"],
                 "is_unlocked": is_unlocked,
+                "is_finished": is_finished,
                 "chemin_pdf":chapter["chemin_pdf"]
             })
+        
+        last_element = response_data[-1]
+        last_element["is_finished"] = not (requests.get(QUIZ_BASE_URL + "/doesQuizExist", params={"user_id":user_id, "id_chapitre":last_element["id_chapitre"], "id_deck":id_deck}).json().get("isQuizExisting", False))
 
         return Response(response_data, status=status.HTTP_200_OK)
 
