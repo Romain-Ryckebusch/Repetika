@@ -19,7 +19,11 @@ from core.shared_modules.mongodb_utils import *
 from PyPDF2 import PdfMerger
 from PyPDF2 import PdfReader, PdfWriter
 
+from io import BytesIO
+from zipfile import ZipFile, ZIP_DEFLATED
+
 from bson import ObjectId
+
 
 
 class GetChapter(APIView):
@@ -224,6 +228,8 @@ class GetFullPDF(APIView):
 
         return response
     
+
+    
 class GetPDF(APIView):
     """
     GET /api/cours/getPDF
@@ -257,34 +263,33 @@ class GetPDF(APIView):
         
         list_chapter=response.json()
         merger = PdfMerger()
-        missing_files = []
+        pdfs_manquants = []
         list_chapter.sort(key=lambda c: c['position']) #on trie la liste des chapitres
+        zip_buffer = BytesIO()
         
-        for chapter in list_chapter:
-            if chapter["is_unlocked"]:
+        with ZipFile(zip_buffer, "w", compression=ZIP_DEFLATED) as zf:
+            for chapter in list_chapter:
+                if chapter["is_unlocked"]:
+                    chapter_path = os.path.join(chapter["chemin_pdf"])
+                    if os.path.exists(chapter_path):
+                        nom = f"{chapter['position']:02d}-{chapter['nom_chapitre']}.pdf"  #on ajoute le numéro du chapitre sur 2 chiffre(01,02,..)
+                        zf.write(chapter_path, arcname=nom)
+                    else:
+                        pdfs_manquants.append(chapter["nom_chapitre"])
 
-                path = os.path.join(chapter["chemin_pdf"])
-                if os.path.exists(path):
-                    merger.append(path)
-                else:
-                    missing_files.append(chapter["nom_chapitre"])
-
-        if not merger.pages:
-            return Response({"error": "Aucun PDF valide à assembler."}, status=status.HTTP_404_NOT_FOUND)
+        if zip_buffer.tell() == 0:
+            return Response({"error": "Aucun chapitre PDF trouvé"}, status=status.HTTP_404_NOT_FOUND)
         
-        os.makedirs("cours_pdf", exist_ok=True)
-        output_path = os.path.join("cours_pdf", "HistoriqueGetPDF.pdf")
-        with open(output_path, "wb") as f_out:
-            merger.write(f_out)
-
-        merger.close()
-
-        response = FileResponse(open(output_path, "rb"), as_attachment=True, filename="HistoriqueGetPDF.pdf")
-
-        if missing_files:
-            response["pdf_manquants"] = ",".join(missing_files)
-
-        return response
+        zip_buffer.seek(0)
+        resp = FileResponse(
+            zip_buffer,
+            as_attachment=True,
+            filename=f"cours_{id_course}.zip",
+            content_type="application/zip"
+        )
+        if pdfs_manquants:
+            resp["pdfs_manquants"] = ",".join(pdfs_manquants)
+        return resp
 
 
 class UploadPDF(APIView):
