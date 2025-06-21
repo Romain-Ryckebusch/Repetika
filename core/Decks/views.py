@@ -26,7 +26,7 @@ class GetCardsChapter(APIView):
     Returns list all cards in the chapter
     """
     def get(self, request):
-        user_id = request.GET.get('user_id') # TODO : Check whether to use this data, we could do the confirmation check before in another function (to see whether the user can indeed see the cards in that deck)
+        user_id = request.GET.get('user_id')
         id_chapitre = request.GET.get('id_chapitre')
         id_deck = request.GET.get('id_deck')
 

@@ -623,7 +623,6 @@ class DeleteChapter(APIView):
             return Response({"error": "Failed to delete cards associated with the chapter. details: " + response.text}, status=response.status_code)
 
         # Delete the quiz associated with the chapter (if not done yet)
-        print("id_deck : ", id_deck, "id_chapter : ", id_chapter, "user_id : ", user_id) # TODO : correct this part, quiz deletion doesn't seem to work as expected
         response = requests.get(
             QUIZ_BASE_URL + "/removeQuiz",
             params={
@@ -875,7 +874,7 @@ class ShowAllSharedCourses(APIView):
             # Get the author's name
             author = find_documents_fields(
                 "DB_Users",
-                "Users", #TODO
+                "Users",
                 query={"_id": ObjectId(author_id)},
                 fields=["username"]
             )
@@ -894,7 +893,7 @@ class ShowAllSharedCourses(APIView):
                 "course_id": str(course_id),
                 "course_name": course_name,
                 "author_id": str(author_id),
-                "author_name": author_name if author_name else "#TODO",
+                "author_name": author_name if author_name else "none",
                 "date_publication": metadata.get("date_publication", None).isoformat() if metadata.get("date_publication") else None,
                 "tags": metadata.get("tags", None),
                 "description": metadata.get("description", None),
@@ -968,8 +967,6 @@ class AddToSubscribers(APIView):
                 "id_user": ObjectId(id_user)
             }
         )
-
-        # TODO : Update the number of members in the course metadata?
         
         return Response(
             status=status.HTTP_200_OK

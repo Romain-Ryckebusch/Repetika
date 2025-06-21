@@ -236,8 +236,6 @@ class CreateCards(APIView):
             if not all(field in carte for field in required_fields):
                 return Response({"error": f"Card {carte} is missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
         
-         # TODO Check if id_deck and id_chapitre are valid ObjectId
-
         response = requests.post(DECKS_BASE_URL + "/addCards", json={"cartes": cartes})
 
         return Response(
