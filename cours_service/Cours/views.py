@@ -19,7 +19,11 @@ from core.shared_modules.mongodb_utils import *
 from PyPDF2 import PdfMerger
 from PyPDF2 import PdfReader, PdfWriter
 
+from io import BytesIO
+from zipfile import ZipFile, ZIP_DEFLATED
+
 from bson import ObjectId
+
 
 
 class GetChapter(APIView):
@@ -104,7 +108,7 @@ class GetChapter(APIView):
 class GetCourseChapters(APIView):
     """ GET /api/LireCours/getCourseChapters
     Takes user_id, id_course
-    Returns List of chapters (id_chapitre, nom_chapitre, date_creation, is_unlocked, chemin_pdf)
+    Returns List of chapters (id_chapitre, nom_chapitre, date_creation, is_unlocked, is_finished, chemin_pdf)
     """
     def get(self, request):
         user_id = request.GET.get('user_id')
@@ -136,26 +140,33 @@ class GetCourseChapters(APIView):
             fields=["id_deck"]
         )[0]["id_deck"]
         print("chapters : ", chapters)
-        print("id_deck : ", id_deck)
+        chapters.sort(key=lambda x: x.get("position", float("inf")))
+        print("sorted chapters : ", chapters)
 
         # Prepare the response data
         response_data = []
         for chapter in chapters:
             id_chapter= str(chapter["_id"])
-            is_unlocked = not (requests.get(QUIZ_BASE_URL + "/doesQuizExist", params={"user_id":user_id, "id_chapitre":id_chapter, "id_deck":id_deck}).json().get("isQuizExisting", False))
+            is_finished = not (requests.get(QUIZ_BASE_URL + "/doesQuizExist", params={"user_id":user_id, "id_chapitre":id_chapter, "id_deck":id_deck}).json().get("isQuizExisting", False))
             if chapter["position"] == 0:
                 is_unlocked = True # The first chapter of a course is always unlocked
+            else: 
+                is_unlocked = response_data[-1]["is_finished"]
             response_data.append({
                 "id_chapitre": id_chapter,
                 "nom_chapitre": chapter["nom_chapitre"],
                 "position": chapter["position"],
                 "is_unlocked": is_unlocked,
+                "is_finished": is_finished,
                 "chemin_pdf":chapter["chemin_pdf"]
             })
+        
+        last_element = response_data[-1]
+        last_element["is_finished"] = not (requests.get(QUIZ_BASE_URL + "/doesQuizExist", params={"user_id":user_id, "id_chapitre":last_element["id_chapitre"], "id_deck":id_deck}).json().get("isQuizExisting", False))
 
         return Response(response_data, status=status.HTTP_200_OK)
 
-class GetPDF(APIView):
+class GetFullPDF(APIView):
     """
     GET /api/cours/getPDF
     Takes user_id, course_name
@@ -216,6 +227,69 @@ class GetPDF(APIView):
             response["pdf_manquants"] = ",".join(missing_files)
 
         return response
+    
+
+    
+class GetPDF(APIView):
+    """
+    GET /api/cours/getPDF
+    Takes user_id, course_name
+    Returns pdf combined course
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        id_course = request.GET.get('id_course')
+        if not id_course:
+            return Response(
+                {"error": "id_course parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        response = requests.get(COURS_BASE_URL + "/getCourseChapters", params={
+                "user_id": user_id,
+                "id_course":id_course
+            })
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to get-cartes"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        list_chapter=response.json()
+        merger = PdfMerger()
+        pdfs_manquants = []
+        list_chapter.sort(key=lambda c: c['position']) #on trie la liste des chapitres
+        zip_buffer = BytesIO()
+        
+        with ZipFile(zip_buffer, "w", compression=ZIP_DEFLATED) as zf:
+            for chapter in list_chapter:
+                if chapter["is_unlocked"]:
+                    chapter_path = os.path.join(chapter["chemin_pdf"])
+                    if os.path.exists(chapter_path):
+                        nom = f"{chapter['position']:02d}-{chapter['nom_chapitre']}.pdf"  #on ajoute le numéro du chapitre sur 2 chiffre(01,02,..)
+                        zf.write(chapter_path, arcname=nom)
+                    else:
+                        pdfs_manquants.append(chapter["nom_chapitre"])
+
+        if zip_buffer.tell() == 0:
+            return Response({"error": "Aucun chapitre PDF trouvé"}, status=status.HTTP_404_NOT_FOUND)
+        
+        zip_buffer.seek(0)
+        resp = FileResponse(
+            zip_buffer,
+            as_attachment=True,
+            filename=f"cours_{id_course}.zip",
+            content_type="application/zip"
+        )
+        if pdfs_manquants:
+            resp["pdfs_manquants"] = ",".join(pdfs_manquants)
+        return resp
 
 
 class UploadPDF(APIView):
@@ -369,7 +443,7 @@ class UploadPDF(APIView):
         id_user = id_auteur
         nom_deck = nom_cours
         
-        response = requests.get(DECK_BASE_URL + "/createDeck", params={
+        response = requests.get(DECKS_BASE_URL + "/createDeck", params={
                 "user_id": ObjectId(id_user),
                 "nom_deck":nom_deck,
                 "tags":tags

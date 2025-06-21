@@ -129,13 +129,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #AUTH_USER_MODEL = 'Authentification.CustomUser'
 
-COURS_BASE_URL = 'http://cours-service:8000/api/cours/' # URLs of the services, currently all are localhost but they will be set to their actual values once in production
+COURS_BASE_URL = 'http://cours-service:8000/api/cours/' 
 QUIZ_BASE_URL = 'http://quiz-service:8000/api/quiz'
 PLANNING_BASE_URL = 'http://planning-service:8000/api/planning'
 DECKS_BASE_URL = 'http://decks-service:8000/api/decks'
 AUTH_BASE_URL = 'http://authentification-service:8000/api/auth'
-PLANNING_BASE_URL="http://session-service:8000/api/planning"
-
+SESSION_BASE_URL = 'http://session-service:8000/api/learning-session'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
