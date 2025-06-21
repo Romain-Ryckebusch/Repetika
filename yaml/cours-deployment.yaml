@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cours-service
+  labels:
+    app: cours
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cours
+  template:
+    metadata:
+      labels:
+        app: cours
+    spec:
+      containers:
+      - name: cours-service
+        image: cours-service:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MONGO_URI
+          value: "mongodb://mongodb-service:27017/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cours-service
+spec:
+  selector:
+    app: cours
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: NodePort
+

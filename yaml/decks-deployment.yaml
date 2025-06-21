@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: decks-service
+  labels:
+    app: decks
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: decks
+  template:
+    metadata:
+      labels:
+        app: decks
+    spec:
+      containers:
+      - name: decks-service
+        image: decks-service:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MONGO_URI
+          value: "mongodb://mongodb-service:27017/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: decks-service
+spec:
+  selector:
+    app: decks
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: NodePort
+
