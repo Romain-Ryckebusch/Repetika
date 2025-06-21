@@ -4,6 +4,7 @@ import styles from '../../styles/LoginScreen.style';
 
 
 import Decoration from "../../components/decoration";
+import {TouchableOpacity} from "react-native";
 
 import Input from "../../components/frm_input";
 import Btn_Fill from "../../components/btn_fill";
@@ -56,12 +57,12 @@ export default function LoginScreen() {
                 setNetworkError("");
                 setWrongPasswordError("");
                 await saveSession(data.tokens.access, data.tokens.refresh, "68386a41ac5083de66afd675")
-                console.log(data);
+
 
                 // Met à jour le contexte
                 setTokenAccess(data.tokens.access);
                 setTokenRefresh(data.tokens.refresh);
-                setUserId(data.user_id);
+                setUserId("68386a41ac5083de66afd675");
 
 // Tu peux reconstruire les stats comme tu le fais dans saveSession
                 const userStats = {
@@ -124,6 +125,9 @@ export default function LoginScreen() {
                         title={t('LoginScreen.loginBtn')}
                         onPress={() =>loginFunction()}
                         />
+                        <TouchableOpacity onPress={() => navigation.navigate('ChooseCourses')}>
+                                                    <Text>Aller à ChooseCoursesScreen</Text>
+                                                </TouchableOpacity>
                     </View>
                 </View>
 

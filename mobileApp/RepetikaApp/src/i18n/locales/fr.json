@@ -87,14 +87,7 @@
       "signUpBtn":"S'inscrire",
       "logInBtn":"Me connecter",
       "text":"Vous avez déjà un compte ? "
-    },
-    "errors": {
-      "password": "Le mot de passe doit contenir entre 6 et 128 caractères.",
-      "confirmPassword": "Les mots de passe ne correspondent pas.",
-      "usernameExists": "Ce nom d'utilisateur existe déjà.",
-      "mailExists": "Cet e-mail existe déjà."
-    },
-    "success": "Inscription réussie !"
+    }
   },
   "courseIndexScreen": {
     "coursLabel": "Cours",
@@ -186,5 +179,11 @@
     "Edit": "Modifier",
     "ChapterCards": "Cartes du chapitre",
     "Save": "Sauvegarder"
+  },
+  "chooseCoursesScreen": {
+    "title": "Choisis les cours que tu veux suivre",
+    "validateButton": "Valider",
+    "createButton": "Créer mon propre cours",
+    "laterButton": "Choisir plus tard"
   }
 }
