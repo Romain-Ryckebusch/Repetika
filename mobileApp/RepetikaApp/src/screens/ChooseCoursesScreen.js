@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import styles from '../styles/ChooseCoursesScreen.style';
 import Fuse from 'fuse.js';
@@ -8,6 +8,15 @@ import { useTranslation } from 'react-i18next';
 import useFetch from '../utils/useFetch';
 import Config from "../config/config";
 import { AuthContext } from '../utils/AuthContext';
+import config from "../config/config";
+import { CommonActions } from '@react-navigation/native';
+import { useContext } from 'react';
+import { AuthContext } from '../utils/AuthContext';
+import { useMemo } from 'react';
+
+
+  
+  
 
 const ChooseCoursesScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -16,20 +25,64 @@ const ChooseCoursesScreen = ({ navigation }) => {
   const { t } = useTranslation();
   const { userId } = React.useContext(AuthContext); // récupération de l'utilisateur courant
 
-  // Utilisation de useFetch pour récupérer les cours partagés
-  const { data: apiCourses, loading, error, refetch } = useFetch(Config.BASE_URL+'/main/showAllSharedCourses');
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  console.log('User ID:', userId);
 
-  // Recherche floue sur les cours reçus de l'API
-  const fuse = new Fuse(apiCourses || [], {
-    keys: ['course_name', 'description', 'tags'],
-    threshold: 0.3,
-  });
+  /*
+   courses = [
+    {
+      id: 1,
+      title: "Histoire de 1945 à nos jours",
+      description: "De la fin de la seconde guerre mondiale aux tensions actuelles...",
+      tags: ['Histoire', 'Géo', 'Actualité']
+    },
+    {
+      id: 2,
+      title: "Numéros des départements Français",
+      description: "Apprends les numéros de tous les départements Français",
+      tags: ['Géographie']
+    }
+  ];
+  */
+  
+  
+
+
+    // Permet de filtrer les cours en fonction du titre
+  // Ici, on utilise Fuse.js pour une recherche floue
+  const fuse = useMemo( () => new Fuse(courses, {
+    keys: ['title'], // ou ['title', 'description', 'tags']
+    threshold: 0.3,  // entre 0 (strict) et 1 (très tolérant)
+  }), 
+  [courses]
+  );
 
   useEffect(() => {
-    if (apiCourses) {
-      setFilteredCourses(apiCourses);
-    }
-  }, [apiCourses]);
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch(config.BASE_URL + '/api/cours/showAllSharedCourses'); // remplace par ton URL réelle
+        const data = await response.json();
+
+        const formatted = data.map(c => ({
+          id:          c.course_id,
+          title:       c.course_name,
+          authorId:    c.author_id,
+          description: c.description,
+          tags:        c.tags || []
+        }));
+
+        setCourses(formatted);
+        setFilteredCourses(formatted);
+      } catch (error) {
+        console.error('Erreur lors du fetch des cours :', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
 
   const normalizeText = (text) => {
     return text
@@ -55,51 +108,61 @@ const ChooseCoursesScreen = ({ navigation }) => {
     );
   };
 
-  const subscribeToCourses = async (selectedCourses) => {
-    if (!userId) {
-      console.error('Utilisateur non connecté.');
-      return;
-    }
+
+
+
+  const Validate =async () => {
+    console.log('Cours sélectionnés :', selectedCourses)
+    
+
+
+    if (selectedCourses.length === 0) return;      // nothing to send
+
     try {
+      // fire all requests in parallel – each returns a simple 200/400
       await Promise.all(
-        selectedCourses.map(async (courseId) => {
-          const course = (apiCourses || []).find(c => c.course_id === courseId);
+        selectedCourses.map(async courseId => {
+          // find the course object we kept
+          const course = courses.find(c => c.id === courseId);
           if (!course) return;
-          console.log(encodeURIComponent(course));
-          const url = `${Config.BASE_URL}/main/addToSubscribers?id_user=${encodeURIComponent(userId)}&course_name=${encodeURIComponent(course.course_name)}&author_id=${encodeURIComponent(course.author_id)}`;
-          console.log(url);
-          await fetch(url, { method: 'GET' });
+  
+          const qs = new URLSearchParams({
+            id_user:     userId,
+            course_name: course.title,
+            author_id:   course.authorId
+          }).toString();
+  
+          const res = await fetch(
+            `${config.BASE_URL}/addToSubscribers?${qs}`
+          );
+  
+          if (!res.ok) {
+            console.warn('AddToSubscribers failed for', course.title);
+          }
         })
       );
+  
+      
+     /* //  when everything is done, go back to Home/AppTabs
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'AppTabs' }]
+        })
+      );*/
+      navigation.navigate('MainApp', { screen: 'Home' });
     } catch (err) {
-      console.error('Erreur lors de l\'abonnement aux cours :', err);
+      console.error('Validate error', err);
     }
-  };
-
-  const Validate = async (selectedCourses) => {
-    await subscribeToCourses(selectedCourses);
-    navigation.navigate('MainApp');
+  
   };
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
-        <Text style={styles.title}>{t('chooseCoursesScreen.title')}</Text>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text>Chargement des cours...</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  if (error) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <Text style={styles.title}>{t('chooseCoursesScreen.title')}</Text>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text>Erreur lors du chargement des cours.</Text>
-        </View>
-      </SafeAreaView>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#A259FF" />
+        <Text>{t('loading')}...</Text>
+      </View>
     );
   }
 
@@ -116,24 +179,24 @@ const ChooseCoursesScreen = ({ navigation }) => {
         <Ionicons name="search" size={20} color="#999" />
       </View>
       <ScrollView contentContainerStyle={styles.courseList}>
-        {filteredCourses && filteredCourses.length > 0 ? (
-          filteredCourses.map(course => (
-            <CourseCard
-              key={course.course_id}
-              title={course.course_name}
-              description={course.description}
-              tags={course.tags || []}
-              selected={selectedCourses.includes(course.course_id)}
-              onPress={() => toggleCourseSelection(course.course_id)}
-            />
-          ))
-        ) : (
-          <Text style={{ textAlign: 'center', marginTop: 20 }}>Aucun cours trouvé.</Text>
+        {filteredCourses.map(course => (
+          <CourseCard
+            key={course.id}
+            title={course.title}
+            description={course.description}
+            tags={course.tags}
+            selected={selectedCourses.includes(course.id)}
+            onPress={() => toggleCourseSelection(course.id)}
+          />
+        ))}
+        {filteredCourses.length === 0 && (
+          <Text style={styles.empty}>{t('courseSelectionScreen.noResults')}</Text>
         )}
       </ScrollView>
-      <TouchableOpacity
-        style={styles.validateButton}
-        onPress={() => Validate(selectedCourses)}
+
+      <TouchableOpacity 
+      style={styles.validateButton}
+      onPress={Validate}
       >
         <Text style={styles.validateText}>{t('chooseCoursesScreen.validateButton')}</Text>
       </TouchableOpacity>

@@ -182,7 +182,7 @@
     "title": "Choisis les cours que tu veux suivre",
     "validateButton": "Valider",
     "createButton": "Créer mon propre cours",
-    "laterButton": "Choisir plus tard"
-  },
-
+    "laterButton": "Choisir plus tard",
+    "noResults": "Aucun cours ne correspond à votre recherche"
+  }
 }

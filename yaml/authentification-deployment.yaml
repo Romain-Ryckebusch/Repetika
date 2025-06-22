@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentification-service
+  labels:
+    app: authentification
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authentification
+  template:
+    metadata:
+      labels:
+        app: authentification
+    spec:
+      containers:
+      - name: authentification-service
+        image: authentification-service:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MONGO_URI
+          value: "mongodb://mongodb-service:27017/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authentification-service
+spec:
+  selector:
+    app: authentification
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: NodePort
+
