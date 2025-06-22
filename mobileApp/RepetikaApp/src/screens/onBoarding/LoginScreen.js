@@ -62,7 +62,7 @@ export default function LoginScreen() {
                 // Met à jour le contexte
                 setTokenAccess(data.tokens.access);
                 setTokenRefresh(data.tokens.refresh);
-                setUserId("68386a41ac5083de66afd675");
+                setUserId(data.user_id);
 
 // Tu peux reconstruire les stats comme tu le fais dans saveSession
                 const userStats = {
@@ -125,9 +125,6 @@ export default function LoginScreen() {
                         title={t('LoginScreen.loginBtn')}
                         onPress={() =>loginFunction()}
                         />
-                        <TouchableOpacity onPress={() => navigation.navigate('ChooseCourses')}>
-                                                    <Text>Aller à ChooseCoursesScreen</Text>
-                                                </TouchableOpacity>
                     </View>
                 </View>
 

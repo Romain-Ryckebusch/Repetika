@@ -222,7 +222,7 @@ const CreateCourseScreen =  () => {
                 {
                     text: t("CreateCoursePage.BackConfirm"),
                     onPress: () => {
-                        navigation.navigate("MainApp", { screen: "Home" });
+                        navigation.navigate("ChooseCourses");
                     }
                 }
             ],

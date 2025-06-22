@@ -84,10 +84,17 @@
       "mail": "Mail",
       "password": "New password",
       "passwordConfirm": "Confirm new password",
-      "signUpBtn":"S'inscrire",
+      "signUpBtn":"Sign up",
       "logInBtn":"Log in",
       "text":"Already have an account? "
-      }
+      },
+    "errors": {
+      "password": "Password must be between 6 and 128 characters.",
+      "confirmPassword": "Passwords do not match.",
+      "usernameExists": "This username already exists.",
+      "mailExists": "This email already exists."
+    },
+    "success": "Registration successful!"
   },
   "courseIndexScreen": {
     "coursLabel": "Courses",
@@ -184,5 +191,6 @@
     "validateButton": "Validate",
     "createButton": "Create my own course",
     "laterButton": "Choose later"
-  }
+  },
+
 }
