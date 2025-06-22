@@ -25,7 +25,7 @@ const ChooseCoursesScreen = ({ navigation }) => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const userId = useContext(AuthContext);  // get user id
+  const {userId} = useContext(AuthContext);  // get user id
   console.log('User ID:', userId);
 
   /*
