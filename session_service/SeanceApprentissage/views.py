@@ -135,10 +135,11 @@ class SendPlanification(APIView):
 
             if result==0:#on verifie si la carte est déjà dans "IncompleteReviews" 
                 carte = find_documents_fields(
-                    "DB_Planning",
-                    "Planning",
+                    "DB_Session",
+                    "IncompleteReviews",
                     query={
                         "id_user": ObjectId(user_id),
+                        "id_card": ObjectId(id_card)
                     },
                     fields=["id_card"]
                 )
