@@ -69,6 +69,11 @@ dans **/mobileApp/RepetikaApp**
 - ``npx expo start --tunnel ``
 - Scan QR code avec phone
 
+
+### Lancer mongodb
+
+
+
 ---
 
 # En MicroServices :

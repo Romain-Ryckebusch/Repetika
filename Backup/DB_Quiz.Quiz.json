@@ -1,0 +1,42 @@
+[{
+  "_id": {
+    "$oid": "683acc9148bed3e43b775c6a"
+  },
+  "id_user": {
+    "$oid": "68386a41ac5083de66afd675"
+  },
+  "id_chapitre": {
+    "$oid": "68386cd9ac5083de66afd67e"
+  },
+  "id_deck": {
+    "$oid": "683b838d48bed3e43b775ca2"
+  }
+},
+{
+  "_id": {
+    "$oid": "683acd8348bed3e43b775c78"
+  },
+  "id_user": {
+    "$oid": "68386a41ac5083de66afd675"
+  },
+  "id_chapitre": {
+    "$oid": "68386cc3ac5083de66afd67d"
+  },
+  "id_deck": {
+    "$oid": "683b838d48bed3e43b775ca2"
+  }
+},
+{
+  "_id": {
+    "$oid": "685523dbc3544e68a1247a26"
+  },
+  "id_user": {
+    "$oid": "68386a41ac5083de66afd675"
+  },
+  "id_chapitre": {
+    "$oid": "68386b4cac5083de66afd67a"
+  },
+  "id_deck": {
+    "$oid": "683b838d48bed3e43b775ca2"
+  }
+}]

@@ -1,0 +1,34 @@
+[{
+  "_id": {
+    "$oid": "6838678eac5083de66afd673"
+  },
+  "id_auteur": {
+    "$oid": "68386a41ac5083de66afd675"
+  },
+  "id_deck": {
+    "$oid": "683b838d48bed3e43b775ca2"
+  },
+  "chemin_dossier": "Romain/Informatique",
+  "public": false,
+  "date_creation": {
+    "$date": "2025-05-29T13:00:00.000Z"
+  },
+  "nom_cours": "Informatique"
+},
+{
+  "_id": {
+    "$oid": "68386b2bac5083de66afd678"
+  },
+  "id_auteur": {
+    "$oid": "68386a41ac5083de66afd675"
+  },
+  "id_deck": {
+    "$oid": "68386a45ac5083de66afd4af"
+  },
+  "chemin_dossier": "Romain/Mathematiques",
+  "public": false,
+  "date_creation": {
+    "$date": "2025-05-29T13:00:00.000Z"
+  },
+  "nom_cours": "Mathematiques"
+}]
