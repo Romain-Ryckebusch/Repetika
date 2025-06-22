@@ -603,7 +603,7 @@ class GetFullPDF_url(APIView):
 class GetPDF(APIView):
     """
     GET /api/main/getPDF
-    Takes user_id, course_name
+    Takes user_id, id_course
     Returns pdf combined course
     """
     def get(self, request):
