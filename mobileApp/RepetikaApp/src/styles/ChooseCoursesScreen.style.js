@@ -122,5 +122,7 @@ export default StyleSheet.create({
     backgroundColor: '#f3e8ff', // léger violet de sélection
     borderColor: '#a855f7',
     borderWidth: 2,
-  },  
+  },
+  empty: { textAlign:'center', color:'#666', marginTop:30 },
+
 });
