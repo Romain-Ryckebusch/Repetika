@@ -105,7 +105,7 @@ class GetChapter(APIView):
 class GetCourseChapters(APIView):
     """ GET /api/LireCours/getCourseChapters
     Takes user_id, id_course
-    Returns List of chapters (id_chapitre, nom_chapitre, date_creation)
+    Returns List of chapters (id_chapitre, nom_chapitre, date_creation, is_unlocked)
     """
     def get(self, request):
         user_id = request.GET.get('user_id')

@@ -62,7 +62,7 @@ class FirstPlanChapter(APIView):
             relearning_steps=(),
         )
         scheduled_card = Card()
-        scheduled_card, review_log = scheduler.review_card(scheduled_card, Rating.Good)
+        scheduled_card, review_log = scheduler.review_card(scheduled_card, Rating.Again)
 
 
         for card_id in cards_id:
