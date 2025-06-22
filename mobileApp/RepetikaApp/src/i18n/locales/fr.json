@@ -31,7 +31,7 @@
     "section_removeFriend": "Supprimer cet ami"
   },
   "homeScreen": {
-    "splashMessage": "Qu'est ce qu'on apprend aujourd'hui, {{prenom}} ?"
+    "splashMessage": "Qu'est ce qu'on apprend aujourd'hui {{prenom}} ?"
   },
   "socialScreen": {
     "title": "Social",

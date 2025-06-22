@@ -34,7 +34,7 @@
   },
 
   "homeScreen": {
-    "splashMessage": "What are we learning today, {{prenom}}?"
+    "splashMessage": "What are we learning today {{prenom}}?"
   },
   "socialScreen": {
     "title": "Social",

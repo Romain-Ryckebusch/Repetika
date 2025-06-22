@@ -94,7 +94,7 @@ export default function HomeScreen() {
             <View style={{ flex: 1 }}>
 
                 <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={true} keyboardShouldPersistTaps="always">
-                    <Text style={[globalStyles.title, styles.title]}>{t("homeScreen.splashMessage",{prenom:"Louis"})}</Text>
+                    <Text style={[globalStyles.title, styles.title]}>{t("homeScreen.splashMessage",{prenom:""})}</Text>
 
                     <ErrorView visibility={showNetworkError} text={"Nous n'avons pas pu vous connecter à la base de donnéees. Vérifiez votre connexion internet."}/>
 
