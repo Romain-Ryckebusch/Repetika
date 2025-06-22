@@ -46,6 +46,12 @@ class GetCardsChapter(APIView):
             }
         )
 
+        if not cards:
+            return Response(
+                {"message": "No cards found for the given chapter and deck."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
         return Response(
             cards,
             status=status.HTTP_200_OK
