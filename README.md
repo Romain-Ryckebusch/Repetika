@@ -40,19 +40,12 @@ docker build -t authentification-service:latest ./authentification_service
 
 # Restauration de la base de données MongoDB
 
-## 1ere méthode: à partir de la sauvegarde fournie
-
-## 2ere méthode: à partir d'une base existante  
-
-### Sauvegarde de la base
-``mongodump --uri="mongodb://localhost:27017" --out=~/Documents/save_mongo``
 
 ### Trouver le nom du pod MongoDB (exemple: mongodb-xxxxxxxxxx-xxxxx)
 ``minikube kubectl get pods``
 
-
 ### Copier la sauvegarde dans le pod
-``minikube kubectl cp ~/Documents/save_mongo mongodb-xxxxxxxxxx-xxxxx:/tmp/save_mongo``
+``minikube kubectl cp ./k8s/Default-Repetika-mongodump mongodb-xxxxxxxxxx-xxxxx:/tmp/save_mongo``
 
 ### Ouvrir un shell dans le pod
 ``minikube kubectl -- exec -it mongodb-xxxxxxxxxx-xxxxx -- bash``
@@ -63,7 +56,7 @@ docker build -t authentification-service:latest ./authentification_service
 ## Accès à la base MongoDB via Compass (port forwarding)
 ``minikube kubectl port-forward svc/mongodb-service 27017:27017``
 
-## Afficher l'ip de Minikube
+## Afficher l'ip de Minikube (appelée par la suite *IP_MINIKUBE*)
 ``minikube ip``
 
 ### On peut afficher les services (pour connaître leur port)
@@ -77,22 +70,14 @@ docker build -t authentification-service:latest ./authentification_service
 ### création d'une IP locale (ex : 127.0.0.1 ou 192.168.49.2) pour exposer les services de type LoadBalancer utilisés par l'Ingress Controller
 ``minikube tunnel``
 
-## Ouvrir le fichier /etc/hosts
-``sudo nano /etc/hosts``
-
-## ajouter cette ligne en remplaceant 127.0.0.1 par l'ip de Minikube
-``127.0.0.1 main.local``
-
-### Cette ligne indique à ton système que lorsque tu tapes main.local dans un navigateur ou une requête réseau, il doit contacter l’adresse ip correspondant à Minikube
-
 # On peux maintenant interagir avec le cluster Minkube
 
 ## Avec React
 
-``fetch('http://main.local/api/main/GetChapter')``
+``fetch('http://IP_MINIKUBE/api/main/GetChapter')``
 
 ## Directement dans le navigateur
 
-``http://main.local/api/main/ajout-cours``
+``http://IP_MINIKUBE/api/main/ajout-cours``
 
 
