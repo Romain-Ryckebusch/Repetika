@@ -74,6 +74,8 @@ dans **/mobileApp/RepetikaApp**
 
 ### Lancer mongodb
 
+Exécuter `./Backup/restore-mongo.sh`
+
 
 
 ---
