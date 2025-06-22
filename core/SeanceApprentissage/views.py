@@ -139,6 +139,7 @@ class SendPlanification(APIView):
                     "IncompleteReviews",
                     query={
                         "id_user": ObjectId(user_id),
+                        "id_card": ObjectId(id_card),
                     },
                     fields=["id_card"]
                 )
