@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import globalStyles from '../styles/global';
 import styles from '../styles/ProfileScreen.style';
@@ -16,6 +16,9 @@ import { useTranslation } from "react-i18next";
 import * as XPF from "../utils/ProgressFunctions";
 import {clearSession} from "../utils/session";
 import * as navigation from "../navigation/NavigationService";
+import useFetch from '../utils/useFetch';
+import {AuthContext} from "../utils/AuthContext";
+import Config from "../config/config";
 
 
 /**
@@ -91,10 +94,10 @@ export default function ProfileScreen() {
     const streakIcon = require('../assets/icons/streakIcon.png');
 
     const profileData={
-        "userName":"aymericD59",
+        "userName":"...",
         "firstName":"Aymeric",
         "name":"Droulers",
-        "mail":"aymeric.droulers@gmail.com",
+        "mail":"...",
         "profilePicture":require('../assets/Profile.png'),
         "accountCreationDate":"19/02/2025",
         "streaks":10,
@@ -113,12 +116,27 @@ export default function ProfileScreen() {
     const progress = xpData.progress;
     const lvl = xpData.level
 
+    const {userId}=useContext(AuthContext);
+    console.log(userId);
+
+    // Appel API pour récupérer username et mail
+    const { data: userInfo, loading: userLoading, error: userError } = useFetch(Config.BASE_URL+'/main/getInfos/?id_user='+userId);
+
+    console.log(Config.BASE_URL+'/api/auth/getInfos/?id_user='+userId)
+
+    useEffect(() => {
+        if(userInfo){
+            console.log("User Info:", userInfo);
+            setUserName(userInfo.username || profileData.userName);
+            setEmail(userInfo.email || profileData.mail);
+        }
+    }, [userInfo]);
+
     return (
-        <ScreenWrapper scrollable style={styles.container}>
-    
+        <ScreenWrapper>
             <Text style={globalStyles.title}>{t("profileScreen.title")}</Text>
 
-            <Text style={globalStyles.subtitle}>{t("profileScreen.section_trophies_title")}</Text>
+            { /*  <Text style={globalStyles.subtitle}>{t("profileScreen.section_trophies_title")}</Text>
             <View style={styles.trophy_container}>
                 {trophyRows.map((row, rowIndex) => (
                     <React.Fragment key={rowIndex}>
@@ -139,54 +157,24 @@ export default function ProfileScreen() {
                     </React.Fragment>
                 ))}
             </View>
-
+*/}
 
             <Text style={[globalStyles.subtitle, {padding:30}]}>{t("profileScreen.section_info_title")}</Text>
             <View style={styles.generalInfo_container}>
-
-                <Image source={profileData.profilePicture} style={styles.profilePicture} />
-
-                <View style={styles.generalInfo_Right}>
-                    <Text style={styles.generalInfo_name}>{profileData.firstName}</Text>
-                    <Text style={styles.generalInfo_accountCreation}>{t("profileScreen.section_info_accountDate",{date:profileData.accountCreationDate})}</Text>
-                    
-                    <View style={styles.streakSection}>
-                        <Text>{profileData.streaks}</Text>
-                        <Image style={styles.streakIcon} source={streakIcon}></Image>
-                    </View>
-
-                    <View style={styles.levelSection}>
-                        <Progress.Bar
-                            style={[globalStyles.card_progressbar, styles.progressBar]}
-                            height={16}
-                            color="#F1C40F"
-                            unfilledColor="#d9d9d9"
-                            borderWidth={0}
-                            progress={progress}
-                        />
-                        <View style={styles.circle}>
-                            <Text>{lvl}</Text>
-                        </View>
-                    </View>
-
-                    <TouchableOpacity style={styles.editPictureBtn} onPress={() => getNewProfilePicture()}>
-                        <Text style={styles.editPictureBtnText}>{t("profileScreen.section_info_editBtn")}</Text>
-                    </TouchableOpacity>
-
-                    </View>
-
+                {userLoading && <Text>Chargement...</Text>}
+                {userError && <Text>Erreur lors du chargement</Text>}
             </View>
 
 
             <View style={styles.editableInfos_Form}>
-                <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.username")}</Text>
-                <Input
+                <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.username")} : {userName}</Text>
+                {/* <Input
                     value={userName}
                     onChangeText={setUserName}
                     style={styles.input}>
                 </Input>
 
-                <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.name")}</Text>
+                 <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.name")}</Text>
                 <Input
                     value={firstName}
                     onChangeText={setFirstName}
@@ -199,9 +187,9 @@ export default function ProfileScreen() {
                     onChangeText={setLastName}
                     style={styles.input}>
                 </Input>
-
-                <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.mail")}</Text>
-                <Input
+*/}
+                <Text style={styles.generalInfo_name}>{t("profileScreen.section_info.mail")} : {email}</Text>
+                {/*<Input
                     value={email}
                     onChangeText={setEmail}
                     style={styles.input}>
@@ -220,16 +208,16 @@ export default function ProfileScreen() {
                     placeholder={t("profileScreen.section_info.password")}
                     onChangeText={setPassword}
                     secureTextEntry={true}
-                />
+                />*/}
             </View>
 
-            <Btn_Fill 
+            {/* <Btn_Fill
                 title={t("profileScreen.section_info.editBtn")} 
                 onPress={() => {
                     saveUserChanges();
                 }} 
                 style={styles.saveBtn}/>
-
+*/}
             <Btn_Fill
                 title={t("profileScreen.section_info.disconnectBtn")}
                 onPress={() => {
@@ -240,4 +228,3 @@ export default function ProfileScreen() {
         </ScreenWrapper>
     )
 }
-
