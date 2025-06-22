@@ -183,6 +183,8 @@
     "title": "Choose the courses you want to follow",
     "validateButton": "Validate",
     "createButton": "Create my own course",
-    "laterButton": "Choose later"
+    "laterButton": "Choose later",
+    "noResults": "No course matches your search"
+
   }
 }

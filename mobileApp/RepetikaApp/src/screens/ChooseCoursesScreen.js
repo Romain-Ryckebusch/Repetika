@@ -9,6 +9,7 @@ import config from "../config/config";
 import { CommonActions } from '@react-navigation/native';
 import { useContext } from 'react';
 import { AuthContext } from '../utils/AuthContext';
+import { useMemo } from 'react';
 
 
   
@@ -49,10 +50,12 @@ const ChooseCoursesScreen = ({ navigation }) => {
 
     // Permet de filtrer les cours en fonction du titre
   // Ici, on utilise Fuse.js pour une recherche floue
-  const fuse = new Fuse(courses, {
+  const fuse = useMemo( () => new Fuse(courses, {
     keys: ['title'], // ou ['title', 'description', 'tags']
     threshold: 0.3,  // entre 0 (strict) et 1 (très tolérant)
-  });
+  }), 
+  [courses]
+  );
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -193,6 +196,9 @@ const normalizeText = (text) => {
             onPress={() => toggleCourseSelection(course.id)}
           />
         ))}
+        {filteredCourses.length === 0 && (
+          <Text style={styles.empty}>{t('courseSelectionScreen.noResults')}</Text>
+        )}
       </ScrollView>
 
       <TouchableOpacity 
