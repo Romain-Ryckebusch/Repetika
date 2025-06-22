@@ -21,7 +21,7 @@ Installez les dépendances (uniquement la première fois)
 ```npx expo install```
 
 Lancez expo:
-```npx expo start --tunel```
+```npx expo start --tunnel```
 
 ### Serveur
 Dans ``` Repetika\core ```
