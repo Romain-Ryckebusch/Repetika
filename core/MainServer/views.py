@@ -685,6 +685,7 @@ class AddToSubscribers(APIView):
     Returns: nothing
     """
     def get(self, request):
+        
         id_user = request.GET.get('id_user')
         if not id_user:
             return Response({"error": "id_user parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
@@ -702,16 +703,8 @@ class AddToSubscribers(APIView):
                 "course_name": course_name,
                 "author_id": author_id
             })
-        if response.status_code == 200:
-            return Response(
-                {"message": "Success AddToSubscribers"},
-                status=status.HTTP_200_OK
-            )
-        else:
-            return Response(
-                {"message": "Failed AddToSubscribers"},
-                status=status.HTTP_400_BAD_REQUEST
-        )
+        
+        return Response(response.json(), status=response.status_code)
 
 class CardsReviewedToday(APIView):
     """
@@ -730,17 +723,8 @@ class CardsReviewedToday(APIView):
         response = requests.get(PLANNING_BASE_URL + "/cardsReviewedToday", params={
                 "user_id": user_id
             })
-        if response.status_code == 200:
-            return Response(
-                response.json(),
-                status=status.HTTP_200_OK
-            )
-        else:
-            return Response(
-                response.json(),
-                status=status.HTTP_400_BAD_REQUEST
-        )
         
+        return Response(response.json(), status=response.status_code)
 
 
 # AUTHENTIFICATION ROUTES
