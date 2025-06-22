@@ -53,11 +53,16 @@ Suivez les instructions correspondant à votre système d'exploitation sur [le s
 
 ## Minikube
 ### Téléchargement de Minikube
+Linux :
 ```bash 
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
 rm minikube-linux-amd64
 ```
+
+Windows : 
+- (installer) https://github.com/kubernetes/minikube/releases/download/v1.36.0/minikube-installer.exe
+- (Github) https://github.com/kubernetes/minikube/releases/tag/v1.36.0
 
 ### Lancement de Minikube
 ``minikube start``
@@ -70,7 +75,9 @@ rm minikube-linux-amd64
 # Création des conteneurs et leur déploiment
 
 ### On veut pointer vers le Docker interne de Minikube
-``eval $(minikube docker-env)``
+Linux : ``eval $(minikube docker-env)`` 
+
+Windows (Powershell ): ``minikube -p minikube docker-env --shell powershell | Invoke-Expression``
 
 ### Construction des images Docker
 
