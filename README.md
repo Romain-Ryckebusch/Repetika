@@ -56,7 +56,7 @@ docker build -t authentification-service:latest ./authentification_service
 ## Accès à la base MongoDB via Compass (port forwarding)
 ``minikube kubectl port-forward svc/mongodb-service 27017:27017``
 
-## Afficher l'ip de Minikube (appelée par la suite *IP_MINIKUBE*)
+## Afficher l'ip de Minikube
 ``minikube ip``
 
 ### On peut afficher les services (pour connaître leur port)
@@ -70,14 +70,20 @@ docker build -t authentification-service:latest ./authentification_service
 ### création d'une IP locale (ex : 127.0.0.1 ou 192.168.49.2) pour exposer les services de type LoadBalancer utilisés par l'Ingress Controller
 ``minikube tunnel``
 
+## Ouvrir le fichier /etc/hosts
+``sudo nano /etc/hosts``
+
+## ajouter cette ligne en remplaceant IP_MINIKUBE par l'ip de Minikube
+``IP_MINIKUBE main.local``
+
+### Cette ligne indique au système que lorsqu'on entre main.local dans un navigateur ou une requête réseau, il doit contacter l’adresse ip correspondant à Minikube
+
 # On peux maintenant interagir avec le cluster Minkube
 
 ## Avec React
 
-``fetch('http://IP_MINIKUBE/api/main/GetChapter')``
+``fetch('http://main.local/api/main/GetChapter')``
 
 ## Directement dans le navigateur
 
-``http://IP_MINIKUBE/api/main/ajout-cours``
-
-
+``http://main.local/api/main/ajout-cours``
