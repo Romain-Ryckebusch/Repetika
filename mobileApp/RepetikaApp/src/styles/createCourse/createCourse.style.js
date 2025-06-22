@@ -7,6 +7,19 @@ const styles = StyleSheet.create({
       width:40,
       height:40,
     },
+    editPictureBtn:{
+        backgroundColor: colors.primary,
+        paddingVertical: 8,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginTop: 8,
+        width: '100%',
+    },
+    editPictureBtnText:{
+        color: colors.white,
+        fontSize: 14,
+        fontFamily: 'OpenSans_Regular',
+    },
     chapterBox:{
         borderWidth:1,
         borderColor:colors.primary,

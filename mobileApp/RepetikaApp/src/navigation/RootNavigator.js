@@ -10,6 +10,8 @@ import CreateCourseScreens from './createCourseScreen';
 import { ActivityIndicator, View } from 'react-native';
 import { AuthContext } from '../utils/AuthContext';
 import { getSession } from '../utils/session';
+import ChooseCoursesScreen from '../screens/ChooseCoursesScreen';
+
 
 const Stack = createNativeStackNavigator();
 const userProfilePicture = require('../assets/Profile.png');
@@ -22,7 +24,6 @@ export default function RootNavigator() {
         const checkSession = async () => {
             const session = await getSession();
             if (session.tokenAccess) {
-                console.log(session);
                 setTokenAccess(session.tokenAccess);
                 setTokenRefresh(session.tokenRefresh);
                 setUserId(session.userId)
@@ -94,6 +95,12 @@ export default function RootNavigator() {
                         name="createCourseScreens"
                         component={CreateCourseScreens}
                         options={{ headerShown: false }}
+                    />
+
+                    <Stack.Screen
+                    name="ChooseCourses"
+                    component={ChooseCoursesScreen}
+                    options={{ headerShown: false }}
                     />
 
 

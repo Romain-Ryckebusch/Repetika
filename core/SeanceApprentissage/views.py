@@ -3,6 +3,7 @@ import requests
 
 from django.http import HttpResponse, JsonResponse
 
+from core.settings import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -32,9 +33,7 @@ class GetCartes(APIView):
             )
 
         response = requests.get(
-            #"http://planification:8000/api/sauvegarder-revision/",  #à modifier avec docker
-            "http://localhost:8000/api/planning/cardsToday",
-            
+            PLANNING_BASE_URL + "/cardsToday",
             params={"user_id": user_id})
         
         if response.status_code != 200:
@@ -67,7 +66,7 @@ class GetCartes(APIView):
 
         
         response2 = requests.get(
-            "http://localhost:8000/api/decks/getCardsFromID",
+            DECKS_BASE_URL+"getCardsFromID",
             params={"card_ids": [card["id_card"] for card in cardsID_json]}
         )
         
@@ -116,8 +115,8 @@ class SendPlanification(APIView):
         if not metadata:
             return Response({"error": "Missing metadata"}, status=status.HTTP_400_BAD_REQUEST)
         
-        metadata_json = json.loads(metadata)
-        #metadata_json=metadata
+        #metadata_json = json.loads(metadata)
+        metadata_json=metadata
         user_id=metadata_json['user_id']
         results=metadata_json['results']
         
@@ -136,10 +135,11 @@ class SendPlanification(APIView):
 
             if result==0:#on verifie si la carte est déjà dans "IncompleteReviews" 
                 carte = find_documents_fields(
-                    "DB_Planning",
-                    "Planning",
+                    "DB_Session",
+                    "IncompleteReviews",
                     query={
                         "id_user": ObjectId(user_id),
+                        "id_card": ObjectId(id_card),
                     },
                     fields=["id_card"]
                 )
@@ -152,15 +152,12 @@ class SendPlanification(APIView):
 
 
         response = requests.get(
-            #"http://planification:8000/api/Planning/scheduleNextReviews/",
-            "http://localhost:8000/api/planning/scheduleNextReviews",
+            PLANNING_BASE_URL + "/scheduleNextReviews",
             params={
                 "user_id": user_id,
                 "results": json.dumps(results)
             }
         )
-        
-
         
         if response.status_code == 200:
             return Response({"message": "Ok"}, status=status.HTTP_200_OK)

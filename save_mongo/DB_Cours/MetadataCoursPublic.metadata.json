@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"6b241b5afcd949fd9521811352e2449e","collectionName":"MetadataCoursPublic","type":"collection"}

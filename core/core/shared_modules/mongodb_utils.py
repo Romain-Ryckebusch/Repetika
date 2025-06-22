@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 from bson import ObjectId
 
-MONGO_URI = "mongodb://localhost:27017/" # TODO : Set these values with Django settings later
+MONGO_URI = "mongodb://localhost:27017/"
 _client = MongoClient(MONGO_URI)
 
 def get_db(database_name):

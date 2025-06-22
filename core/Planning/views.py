@@ -62,7 +62,8 @@ class FirstPlanChapter(APIView):
             relearning_steps=(),
         )
         scheduled_card = Card()
-        scheduled_card, review_log = scheduler.review_card(scheduled_card, Rating.Again)
+        scheduled_card, review_log = scheduler.review_card(scheduled_card, Rating.Good)
+        scheduled_card.due = make_aware(datetime.now())
 
 
         for card_id in cards_id:
@@ -248,7 +249,7 @@ class CardsReviewedToday(APIView):
 
         #on a les id des cartes et on cherche le chapitre associé à chaque carte
         response = requests.get(
-            "http://localhost:8000/api/decks/getCardsFromID",
+            DECKS_BASE_URL + "/getCardsFromID",
             params={"card_ids": [card["id_card"] for card in cards]}
         )
         
@@ -261,7 +262,7 @@ class CardsReviewedToday(APIView):
 
         #on a les id des cartes et des chapitres et on cherche le cours associé à chaque carte
         response2 = requests.get(
-            "http://localhost:8000/api/cours/getCourseIDFromChapterID",
+            COURS_BASE_URL+"getCourseIDFromChapterID",
             params={"chapter_ids": [card["id_chapitre"] for card in cards]}
         )
 

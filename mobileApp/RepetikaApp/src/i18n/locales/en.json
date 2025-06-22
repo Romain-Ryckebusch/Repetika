@@ -84,10 +84,17 @@
       "mail": "Mail",
       "password": "New password",
       "passwordConfirm": "Confirm new password",
-      "signUpBtn":"S'inscrire",
+      "signUpBtn":"Sign up",
       "logInBtn":"Log in",
       "text":"Already have an account? "
-      }
+      },
+    "errors": {
+      "password": "Password must be between 6 and 128 characters.",
+      "confirmPassword": "Passwords do not match.",
+      "usernameExists": "This username already exists.",
+      "mailExists": "This email already exists."
+    },
+    "success": "Registration successful!"
   },
   "courseIndexScreen": {
     "coursLabel": "Courses",
@@ -144,5 +151,47 @@
   },
   "TropheyPage": {
     "CongrateMessage": "Congratulations!\n\n You've owned the trophy:\n"
+  },
+  "CreateCoursePage": {
+    "Title": "Create a course",
+    "SubtitleInfo": "General informations",
+    "SubtitleChapters": "Chapters",
+    "NameCourseLabel": "Course name",
+    "DescCourseLabel": "Course description",
+    "AddPdfLabel": "Add a PDF",
+    "EditPdfLabel": "Edit PDF",
+    "edit": "Edit",
+    "Save": "Save",
+    "Delete": "Delete",
+    "PdfSelectError": "Unable to select a PDF file.",
+    "PdfNotSelected": "Please select a PDF file.",
+    "SendSuccess": "The course has been saved",
+    "SendError": "An error occurred while saving the course",
+    "ServerError": "We were unable to contact the server",
+    "BackTitle": "Confirmation",
+    "BackContent": "Do you really want to go back to the home page? All unsaved changes will be lost.",
+    "BackConfirm": "CONFIRM",
+    "BackCancel": "CANCEL",
+    "Loading": "Saving in progress..."
+  },
+  "CreateChapterPage": {
+    "ChapterNameLabel": "Chapter name",
+    "Subtitle": "Add a card",
+    "Recto": "Recto :",
+    "Verso": "Verso :",
+    "Question": "Question",
+    "Reponse": "Response",
+    "Add": "Add",
+    "Edit": "Edit",
+    "ChapterCards": "Chapter cards",
+    "Save": "Save"
+  },
+  "chooseCoursesScreen": {
+    "title": "Choose the courses you want to follow",
+    "validateButton": "Validate",
+    "createButton": "Create my own course",
+    "laterButton": "Choose later",
+    "noResults": "No course matches your search"
+
   }
 }

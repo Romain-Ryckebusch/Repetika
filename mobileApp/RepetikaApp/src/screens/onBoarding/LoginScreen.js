@@ -4,6 +4,7 @@ import styles from '../../styles/LoginScreen.style';
 
 
 import Decoration from "../../components/decoration";
+import {TouchableOpacity} from "react-native";
 
 import Input from "../../components/frm_input";
 import Btn_Fill from "../../components/btn_fill";
@@ -49,8 +50,6 @@ export default function LoginScreen() {
 
             const data = await response.json();
 
-            // Tu peux ici vérifier et utiliser les données reçues
-            console.log('Données reçues:', data);
 
             if(data.error){
                 setWrongPasswordError(t('LoginScreen.passError'))
@@ -63,7 +62,7 @@ export default function LoginScreen() {
                 // Met à jour le contexte
                 setTokenAccess(data.tokens.access);
                 setTokenRefresh(data.tokens.refresh);
-                setUserId("68386a41ac5083de66afd675");
+                setUserId(data.user_id);
 
 // Tu peux reconstruire les stats comme tu le fais dans saveSession
                 const userStats = {

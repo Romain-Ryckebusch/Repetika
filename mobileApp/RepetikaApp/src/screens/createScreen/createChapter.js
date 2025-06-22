@@ -1,12 +1,15 @@
 import globalStyles from "../../styles/global";
 import {View, Text, TextInput,Image} from "react-native";
 import {useNavigation, useRoute} from "@react-navigation/native";
-import {useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import styles from "../../styles/createCourse/createChapter.style";
 import Input from "../../components/frm_input";
 import {PlatformPressable} from "@react-navigation/elements";
 import Btn_Fill from "../../components/btn_fill";
 import ScreenWrapper from "../../components/navigation/screenWrapper";
+import {CreateCourseContext} from "../../utils/CreateCourseContext";
+import {useEvent} from "expo";
+import {useTranslation} from "react-i18next";
 
 
 
@@ -31,6 +34,8 @@ const JoinedInput = ({label,placeholder,value,onChangeText}) => {
 const CreateChapter = ()=>{
     const route = useRoute();
     const navigation = useNavigation();
+    const {t}=useTranslation();
+
     const chapterId = route.params?.chapterId ?? null;
 
     const [chapterName,setChapterName] = useState("");
@@ -39,10 +44,20 @@ const CreateChapter = ()=>{
     const [inputModeEdit,setInputModeEdit] = useState(false);
     const [idCardToEdit,setIdCardToEdit] = useState(null);
 
+    const {chapterList,setChapterList,cardsListByChapter,setCardsListByChapter} = useContext(CreateCourseContext)
+
     const [cardsList,setCardsList] = useState([]);
 
-     //si l'id exist, on récuperera les infos depuis la bdd
-    console.log("ChapterId"+chapterId)
+
+
+
+    useEffect(() => {
+        if(chapterId){
+            setChapterName(chapterList.find(item=>item.id === chapterId).title);
+            setCardsList(cardsListByChapter.find(item => item.chapterId === chapterId).cards)
+        }
+    }, []);
+
 
     const generateFakeObjectId = () => {
         const timestamp = Math.floor(Date.now() / 1000).toString(16);
@@ -85,6 +100,34 @@ const CreateChapter = ()=>{
         setCardsList(prevState => prevState.filter(card => card.id !== id));
     }
 
+    const saveChapter=()=>{
+        if(chapterId){
+            let chapterCards = cardsListByChapter.find(item => item.chapterId === chapterId);
+            let chapterData = chapterList.find(item=>item.id === chapterId);
+            chapterData.title=chapterName;
+            chapterCards.cards=cardsList
+            setCardsListByChapter(prev =>
+                prev.map(item =>
+                    item.chapterId === chapterId
+                        ? { ...item, cards: cardsList }
+                        : item
+                )
+            );
+
+            setChapterList(prev =>
+                prev.map(item =>
+                    item.id === chapterId
+                        ? { ...item, title: chapterName }
+                        : item
+                )
+            );
+        }else {
+            const id = Date.now()
+            setChapterList(prev => [...prev, {"id": id, "title": chapterName}]);
+            setCardsListByChapter(prev => [...prev, {"chapterId": id, "cards": cardsList}]);
+        }
+        navigation.navigate("CreateCourseScreen");
+    }
 
     return(
         <View style={styles.container}>
@@ -92,18 +135,18 @@ const CreateChapter = ()=>{
                 <Image style={styles.backArrow} source={require("../../assets/icons/back.png")}></Image>
             </PlatformPressable>
             <Text style={globalStyles.title}>{chapterName}</Text>
-            <Text style={styles.inputContainer}>Nom du chapitre</Text>
+            <Text style={styles.inputContainer}>{t("CreateChapterPage.ChapterNameLabel")}</Text>
             <Input maxLength={64} value={chapterName} onChangeText={setChapterName} />
 
 
             <View style={styles.formView}>
-                <Text style={globalStyles.title}>Ajouter une carte</Text>
-                <JoinedInput label={"Recto :"} placeholder={"Question"} value={rectoInput} onChangeText={setRectoInput} />
-                <JoinedInput label={"Verso :"} placeholder={"Réponse"} value={versoInput} onChangeText={setVersoInput} />
-                <Btn_Fill title={inputModeEdit?"Modifier":"Ajouter"} style={{marginTop:16}} onPress={!inputModeEdit?()=>addCard(rectoInput,versoInput):()=>saveEditedCard(idCardToEdit)} />
+                <Text style={globalStyles.title}>{t("CreateChapterPage.Subtitle")}</Text>
+                <JoinedInput label={t("CreateChapterPage.Recto")} placeholder={t("CreateChapterPage.Question")} value={rectoInput} onChangeText={setRectoInput} />
+                <JoinedInput label={t("CreateChapterPage.Verso")} placeholder={t("CreateChapterPage.Reponse")} value={versoInput} onChangeText={setVersoInput} />
+                <Btn_Fill title={inputModeEdit?t("CreateChapterPage.Edit"):t("CreateChapterPage.Add")} style={{marginTop:16}} onPress={!inputModeEdit?()=>addCard(rectoInput,versoInput):()=>saveEditedCard(idCardToEdit)} />
             </View>
 
-                <Text style={globalStyles.title}>Cartes du chapitre</Text>
+                <Text style={globalStyles.title}>{t("CreateChapterPage.ChapterCards")}</Text>
                 <ScreenWrapper scrollable style={styles.chapterList}>
                 {
                     cardsList.map((card,i)=>{
@@ -122,7 +165,7 @@ const CreateChapter = ()=>{
                 }
                 </ScreenWrapper>
 
-            <Btn_Fill title={"Sauvegarder"} style={{marginBottom:32, marginTop:16}}/>
+            <Btn_Fill title={t("CreateChapterPage.Save")} style={{marginBottom:32, marginTop:16}} onPress={()=>saveChapter()}/>
 
         </View>
     )

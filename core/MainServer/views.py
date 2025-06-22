@@ -1,11 +1,12 @@
 from django.utils.timezone import make_aware
 
 import json
-import requests
-import os
+import requests, tempfile, zipfile, os, uuid
 from core.settings import *
+from io import BytesIO
+import tempfile
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, FileResponse
 from django.utils import timezone
 
 from rest_framework import status
@@ -16,18 +17,10 @@ from rest_framework.views import APIView
 
 from core.shared_modules.mongodb_utils import *
 
-from fsrs import Scheduler, Card, Rating, ReviewLog
-from PyPDF2 import PdfMerger
-from PyPDF2 import PdfReader, PdfWriter
-
-#from .models import UploadedFile
-#from .serializers import UploadedFileSerializer
-
 from bson import ObjectId
 
-COURS_BASE_URL="http://localhost:8000/api/cours" 
-PLANNING_BASE_URL="http://localhost:8000/api/planning"
-DECK_BASE_URL="http://localhost:8000/api/decks"
+
+
 
 
 class DébutSéanceRévision(APIView):
@@ -52,8 +45,7 @@ class DébutSéanceRévision(APIView):
             )
 
         response = requests.get(
-            #"http://planification:8000/api/sauvegarder-revision/",  #à modifier avec docker
-            "http://localhost:8000/api/learning-session/get-cartes/",
+            SESSION_BASE_URL + "/get-cartes/",
             params={"user_id": user_id, "deck_id": deck_id})
         
         if response.status_code != 200:
@@ -92,9 +84,18 @@ class updateSéanceRévision(APIView):
         if not metadata:
             return Response({"error": "Missing user_id or results"}, status=status.HTTP_400_BAD_REQUEST)
         
+        metadata_json=metadata
+        user_id=metadata_json['user_id']
+        results=metadata_json['results']
+
         response = requests.post(
-            "http://localhost:8000/api/learning-session/send-planification/",
-            data={'metadata': metadata}
+            SESSION_BASE_URL + "/learning-session/send-planification/",
+            json={
+                "metadata": {
+                    "user_id": user_id,
+                    "results": results
+                }
+            }
         )
         
         if response.status_code == 200:
@@ -144,7 +145,7 @@ class GetCourseChapters(APIView):
     """
     GET /GetCourseChapters
     Takes user_id, id_course
-    Returns list of chapters in the course (id_chapitre, nom_chapitre, date_creation)
+    Returns list of chapters in the course (id_chapitre, nom_chapitre, date_creation, is_unlocked)
     """
     def get(self, request):
         user_id = request.GET.get('user_id')
@@ -235,8 +236,6 @@ class CreateCards(APIView):
             if not all(field in carte for field in required_fields):
                 return Response({"error": f"Card {carte} is missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
         
-         # TODO Check if id_deck and id_chapitre are valid ObjectId
-
         response = requests.post(DECKS_BASE_URL + "/addCards", json={"cartes": cartes})
 
         return Response(
@@ -496,7 +495,7 @@ class UploadPDF(APIView):
                 return Response({"error": "Invalid JSON in metadata"}, status=status.HTTP_400_BAD_REQUEST)
         
         response = requests.post(
-            "http://localhost:8000/api/cours/ajout-cours", 
+            COURS_BASE_URL + "ajout-cours", 
             files={'pdf': pdf_file,}, 
             data={'metadata': json.dumps(metadata_json)}
         )
@@ -511,7 +510,153 @@ class UploadPDF(APIView):
             return Response(
             {"error": "Failed to UploadPDF"},
             status=status.HTTP_400_BAD_REQUEST
-            )           
+            )
+        
+class GetFullPDF_file(APIView):
+    """
+    GET /api/main/getPDF
+    Takes user_id, course_name
+    Returns pdf combined course
+    """
+    def get(self, request):
+        user_id = request.GET.get("user_id")
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        id_course = request.GET.get("id_course")
+        if not id_course:
+            return Response(
+                {"error": "id_course parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        response = requests.get(COURS_BASE_URL + "/getFullPDF", params={
+                "user_id": user_id,
+                "id_course":id_course
+            })
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to getPDF"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        file_buffer = BytesIO(response.content)
+
+        file_response = FileResponse(
+            file_buffer,
+            as_attachment=True,
+            filename="HistoriqueGetPDF.pdf",
+            content_type="application/pdf"
+        )
+        if "pdf_manquants" in response.headers:
+            file_response["pdf_manquants"] = response.headers["pdf_manquants"]
+        return file_response
+
+class GetFullPDF_url(APIView):
+    """
+    GET /api/main/getPDF
+    Takes user_id, course_name
+    Returns pdf combined course
+    """
+    def get(self, request):
+        user_id = request.GET.get("user_id")
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        id_course = request.GET.get("id_course")
+        if not id_course:
+            return Response(
+                {"error": "id_course parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        response = requests.get(COURS_BASE_URL + "/getFullPDF", params={
+                "user_id": user_id,
+                "id_course":id_course
+            })
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to getPDF"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf", dir="/tmp") as tmp_file:
+            tmp_file.write(response.content)
+            tmp_file_path = tmp_file.name
+        
+        filename = os.path.basename(tmp_file_path)
+        pdf_url = request.build_absolute_uri(f"/pdfs/{filename}")
+        
+        url_response={"pdf_url": pdf_url}
+        if "pdf_manquants" in response.headers:
+            url_response["pdf_manquants"] = response.headers["pdf_manquants"]
+        
+        return Response(url_response)
+    
+class GetPDF(APIView):
+    """
+    GET /api/main/getPDF
+    Takes user_id, course_name
+    Returns pdf combined course
+    """
+    def get(self, request):
+        user_id = request.GET.get("user_id")
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        id_course = request.GET.get("id_course")
+        if not id_course:
+            return Response(
+                {"error": "id_course parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        response = requests.get(COURS_BASE_URL + "/getPDF", params={
+                "user_id": user_id,
+                "id_course":id_course
+            })
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to getPDF"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        #on crée un dossier dans /tmp pour y extraire le zip
+        folder_name = f"pdfs_{uuid.uuid4().hex[:10]}"  
+        extract_dir = os.path.join("/tmp", folder_name)
+        os.makedirs(extract_dir, exist_ok=True)
+
+        #on stocke le zip dans /tmp
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".zip", dir="/tmp") as tmp_file:
+            tmp_file.write(response.content)
+            zip_path = tmp_file.name
+
+        #on extrait le zip
+        pdf_urls = []
+        try:
+            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                zip_ref.extractall(extract_dir)
+                for member in zip_ref.namelist():
+                    if member.endswith(".pdf"):
+                        public_url = request.build_absolute_uri(f"/pdfs/{folder_name}/{member}")
+                        pdf_urls.append(public_url)
+        except zipfile.BadZipFile:
+            return Response({"error": "Invalid ZIP file received from cours-service."},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        url_response = {"pdf_urls": pdf_urls}
+        if "pdfs_manquants" in response.headers:
+            url_response["pdfs_manquants"] = url_response.headers["pdfs_manquants"]
+
+        return Response(url_response)
 
        
 class ShowAllSharedCourses(APIView):
@@ -649,7 +794,7 @@ class UserRegister(APIView):
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
-        email = request.data.get('email', '')
+        email = request.data.get('email', None)
         avatar_url = request.data.get('avatar_url', '')
         preferences_json = request.data.get('preferences_json', '{}')
 
@@ -666,8 +811,24 @@ class UserRegister(APIView):
                 "preferences_json": preferences_json
             }
         )
+        if response.status_code != 200 and response.status_code != 201:
+            try:
+                error_detail = response.json()
+            except Exception:
+                error_detail = response.text
+            return Response(
+                {"error": "Failed to register", "detail": error_detail},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            data = response.json()
+        except ValueError:
+            return Response(
+                {"error": "Failed to load json"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        return Response(response.json(), status=response.status_code)
+        return Response(data, status=response.status_code)
     
 class UserDelete(APIView):
     """
@@ -716,3 +877,17 @@ class UserUpdateProfile(APIView):
         )
 
         return Response(response.json(), status=response.status_code)
+    
+
+
+    
+
+
+            
+            
+            
+            
+            
+        
+            
+            

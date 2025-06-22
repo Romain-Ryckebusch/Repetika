@@ -4,7 +4,7 @@ import os
 from core.settings import *
 from datetime import datetime
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, FileResponse
 from django.utils import timezone
 from django.utils.timezone import make_aware
 
@@ -19,8 +19,11 @@ from core.shared_modules.mongodb_utils import *
 from PyPDF2 import PdfMerger
 from PyPDF2 import PdfReader, PdfWriter
 
+from io import BytesIO
+from zipfile import ZipFile, ZIP_DEFLATED
+
 from bson import ObjectId
-DECK_BASE_URL="http://localhost:8000/api/decks"
+
 
 
 class GetChapter(APIView):
@@ -105,7 +108,7 @@ class GetChapter(APIView):
 class GetCourseChapters(APIView):
     """ GET /api/LireCours/getCourseChapters
     Takes user_id, id_course
-    Returns List of chapters (id_chapitre, nom_chapitre, date_creation, is_unlocked)
+    Returns List of chapters (id_chapitre, nom_chapitre, date_creation, is_unlocked, is_finished, chemin_pdf)
     """
     def get(self, request):
         user_id = request.GET.get('user_id')
@@ -128,24 +131,44 @@ class GetCourseChapters(APIView):
             "DB_Cours",
             "Chapitres",
             query={"id_cours": ObjectId(id_course)},
-            fields=["_id", "nom_chapitre", "position"]
+            fields=["_id", "nom_chapitre", "position","chemin_pdf"]
         )
+        id_deck = find_documents_fields(
+            "DB_Cours",
+            "Cours",
+            query={"_id": ObjectId(id_course)},
+            fields=["id_deck"]
+        )[0]["id_deck"]
         print("chapters : ", chapters)
+        chapters.sort(key=lambda x: x.get("position", float("inf")))
+        print("sorted chapters : ", chapters)
 
         # Prepare the response data
         response_data = []
         for chapter in chapters:
+            id_chapter= str(chapter["_id"])
+            is_finished = not (requests.get(QUIZ_BASE_URL + "/doesQuizExist", params={"user_id":user_id, "id_chapitre":id_chapter, "id_deck":id_deck}).json().get("isQuizExisting", False))
+            if chapter["position"] == 0:
+                is_unlocked = True # The first chapter of a course is always unlocked
+            else: 
+                is_unlocked = response_data[-1]["is_finished"]
             response_data.append({
-                "id_chapitre": str(chapter["_id"]),
+                "id_chapitre": id_chapter,
                 "nom_chapitre": chapter["nom_chapitre"],
-                "position": chapter["position"]
+                "position": chapter["position"],
+                "is_unlocked": is_unlocked,
+                "is_finished": is_finished,
+                "chemin_pdf":chapter["chemin_pdf"]
             })
+        
+        last_element = response_data[-1]
+        last_element["is_finished"] = not (requests.get(QUIZ_BASE_URL + "/doesQuizExist", params={"user_id":user_id, "id_chapitre":last_element["id_chapitre"], "id_deck":id_deck}).json().get("isQuizExisting", False))
 
         return Response(response_data, status=status.HTTP_200_OK)
 
-class GetPDF(APIView):
+class GetFullPDF(APIView):
     """
-    GET /api/LireCours/getPDF
+    GET /api/cours/getPDF
     Takes user_id, course_name
     Returns pdf combined course
     """
@@ -157,54 +180,116 @@ class GetPDF(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        course_name = request.GET.get('course_name')
-        if not course_name:
+        id_course = request.GET.get('id_course')
+        if not id_course:
             return Response(
-                {"error": "course_name parameter is required."},
+                {"error": "id_course parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        response = requests.get(COURS_BASE_URL + "/getCourseChapters", params={
+                "user_id": user_id,
+                "id_course":id_course
+            })
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to get-cartes"},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Call the Quiz API endpoint to determine which chapters are unlocked; 
-        # Use course_name ! For now we will assume the course name is "Mathématiques"
-        # Basically, a chapter is a pair (course name; chapter name)
-        unlocked_chapters = [{"Mathématiques" : "Complexes"}, {"Mathématiques" : "Fonctions de transfert"}]
-
-        # Using the DB, identify the paths of the pdfs concerned (and their order). 
-        pdf_paths = []
-        for chapter in unlocked_chapters:
-            course_name = list(chapter.keys())[0]
-            chapter_name = chapter[course_name]
-            pdf_paths.append(f"files/{course_name}/{chapter_name}.pdf")
-
-            #pdf_paths.append(f"./local_tests/{course_name}/{chapter_name}.pdf")
-
+        list_chapter=response.json()
         merger = PdfMerger()
+        missing_files = []
+        list_chapter.sort(key=lambda c: c['position']) #on trie la liste des chapitres
         
-        # Get the pdfs from the paths;
-        for pdf_path in pdf_paths:
-            # merge the pdfs in the indicated order; 
-            merger.append(pdf_path)
+        for chapter in list_chapter:
+            if chapter["is_unlocked"]:
 
-        # Save the merged pdf to a temporary file
-        # merged_pdf_path = "./local_tests/merged_course.pdf"  # <-- working local test 🥳
-        merged_pdf_path = "path/to/merged_course.pdf"
-        merger.write(merged_pdf_path)
+                path = os.path.join(chapter["chemin_pdf"])
+                if os.path.exists(path):
+                    merger.append(path)
+                else:
+                    missing_files.append(chapter["nom_chapitre"])
+
+        if not merger.pages:
+            return Response({"error": "Aucun PDF valide à assembler."}, status=status.HTTP_404_NOT_FOUND)
+        
+        os.makedirs("cours_pdf", exist_ok=True)
+        output_path = os.path.join("cours_pdf", "HistoriqueGetPDF.pdf")
+        with open(output_path, "wb") as f_out:
+            merger.write(f_out)
+
         merger.close()
 
-        # @todo download the file and send it directly (instead of the path)
-        remote_response = requests.get(merged_pdf_path, stream=True)
+        response = FileResponse(open(output_path, "rb"), as_attachment=True, filename="HistoriqueGetPDF.pdf")
 
-        # Check if the download was successful
-        if remote_response.status_code != 200:
-            return Response({"error": "Unable to get PDF file."}, status=400)
-        
-        # Read PDF content
-        pdf_content = remote_response.content
-        
-        # Prepare the HTTP response with the PDF content
-        response = HttpResponse(pdf_content, content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="document.pdf"'
+        if missing_files:
+            response["pdf_manquants"] = ",".join(missing_files)
+
         return response
+    
+
+    
+class GetPDF(APIView):
+    """
+    GET /api/cours/getPDF
+    Takes user_id, course_name
+    Returns pdf combined course
+    """
+    def get(self, request):
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return Response(
+                {"error": "user_id parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        id_course = request.GET.get('id_course')
+        if not id_course:
+            return Response(
+                {"error": "id_course parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        response = requests.get(COURS_BASE_URL + "/getCourseChapters", params={
+                "user_id": user_id,
+                "id_course":id_course
+            })
+        if response.status_code != 200:
+            return Response(
+                {"error": "Failed to get-cartes"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        list_chapter=response.json()
+        merger = PdfMerger()
+        pdfs_manquants = []
+        list_chapter.sort(key=lambda c: c['position']) #on trie la liste des chapitres
+        zip_buffer = BytesIO()
+        
+        with ZipFile(zip_buffer, "w", compression=ZIP_DEFLATED) as zf:
+            for chapter in list_chapter:
+                if chapter["is_unlocked"]:
+                    chapter_path = os.path.join(chapter["chemin_pdf"])
+                    if os.path.exists(chapter_path):
+                        nom = f"{chapter['position']:02d}-{chapter['nom_chapitre']}.pdf"  #on ajoute le numéro du chapitre sur 2 chiffre(01,02,..)
+                        zf.write(chapter_path, arcname=nom)
+                    else:
+                        pdfs_manquants.append(chapter["nom_chapitre"])
+
+        if zip_buffer.tell() == 0:
+            return Response({"error": "Aucun chapitre PDF trouvé"}, status=status.HTTP_404_NOT_FOUND)
+        
+        zip_buffer.seek(0)
+        resp = FileResponse(
+            zip_buffer,
+            as_attachment=True,
+            filename=f"cours_{id_course}.zip",
+            content_type="application/zip"
+        )
+        if pdfs_manquants:
+            resp["pdfs_manquants"] = ",".join(pdfs_manquants)
+        return resp
 
 
 class UploadPDF(APIView):
@@ -358,8 +443,8 @@ class UploadPDF(APIView):
         id_user = id_auteur
         nom_deck = nom_cours
         
-        response = requests.get(DECK_BASE_URL + "/createDeck", params={
-                "user_id": id_user,
+        response = requests.get(DECKS_BASE_URL + "/createDeck", params={
+                "user_id": ObjectId(id_user),
                 "nom_deck":nom_deck,
                 "tags":tags
             })
@@ -538,7 +623,6 @@ class DeleteChapter(APIView):
             return Response({"error": "Failed to delete cards associated with the chapter. details: " + response.text}, status=response.status_code)
 
         # Delete the quiz associated with the chapter (if not done yet)
-        print("id_deck : ", id_deck, "id_chapter : ", id_chapter, "user_id : ", user_id) # TODO : correct this part, quiz deletion doesn't seem to work as expected
         response = requests.get(
             QUIZ_BASE_URL + "/removeQuiz",
             params={
@@ -790,7 +874,7 @@ class ShowAllSharedCourses(APIView):
             # Get the author's name
             author = find_documents_fields(
                 "DB_Users",
-                "Users", #TODO
+                "Users",
                 query={"_id": ObjectId(author_id)},
                 fields=["username"]
             )
@@ -809,7 +893,7 @@ class ShowAllSharedCourses(APIView):
                 "course_id": str(course_id),
                 "course_name": course_name,
                 "author_id": str(author_id),
-                "author_name": author_name if author_name else "#TODO",
+                "author_name": author_name if author_name else "none",
                 "date_publication": metadata.get("date_publication", None).isoformat() if metadata.get("date_publication") else None,
                 "tags": metadata.get("tags", None),
                 "description": metadata.get("description", None),
@@ -883,8 +967,6 @@ class AddToSubscribers(APIView):
                 "id_user": ObjectId(id_user)
             }
         )
-
-        # TODO : Update the number of members in the course metadata?
         
         return Response(
             status=status.HTTP_200_OK

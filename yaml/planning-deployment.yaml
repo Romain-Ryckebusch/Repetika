@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: planning-service
+  labels:
+    app: planning
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: planning
+  template:
+    metadata:
+      labels:
+        app: planning
+    spec:
+      containers:
+      - name: planning-service
+        image: planning-service:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MONGO_URI
+          value: "mongodb://mongodb-service:27017/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: planning-service
+spec:
+  selector:
+    app: planning
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: NodePort
+
