@@ -767,7 +767,7 @@ class GetInfos(APIView):
             AUTH_BASE_URL + "/getInfos/",
             params={"id_user": id_user}
         )
-        return Response({"error": "erreur GetInfos"}, status=response.status_code)
+        return Response(response.json(), status=response.status_code)
 
 
 
