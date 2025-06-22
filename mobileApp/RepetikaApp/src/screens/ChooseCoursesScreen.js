@@ -11,7 +11,6 @@ import { AuthContext } from '../utils/AuthContext';
 import config from "../config/config";
 import { CommonActions } from '@react-navigation/native';
 import { useContext } from 'react';
-import { AuthContext } from '../utils/AuthContext';
 import { useMemo } from 'react';
 
 

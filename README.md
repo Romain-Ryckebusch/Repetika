@@ -19,6 +19,7 @@ en remplacant BASE_URL par l'ip de votre odinateur (ne pas oublier :8000/api a l
 Dans ``` Reptika/mobileApp/RepetikaApp/ ```:
 Installez les dépendances (uniquement la première fois)
 ```npm install```
+```npx expo install```
 
 Lancez expo:
 ```npx expo start```
