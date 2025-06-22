@@ -9,7 +9,6 @@ Récupérez l'IP de votre ordinateur via le terminal
 ```ipconfig```
 *Linux :*
 ```ifconfig```
-
 ### Application
 
 Modifiez le fichier 
@@ -41,6 +40,9 @@ Sur votre téléphone, installez expo go.
 Scannez le qr code qui s'est affiché quand vous avez éxecuté npx expo start
 
 
+---
+
+
 # Installation de Docker et Minikube
 
 ## Docker
@@ -59,6 +61,10 @@ rm minikube-linux-amd64
 
 ### Lancement de Minikube
 ``minikube start``
+
+
+---
+
 
 
 # Création des conteneurs et leur déploiment
@@ -80,6 +86,9 @@ docker build -t authentification-service:latest ./authentification_service
 
 ### Ajout dans Kubernets avec kubectl
 ``minikube kubectl -- apply -f yaml/ ``
+
+---
+
 
 # Restauration de la base de données MongoDB
 
@@ -105,6 +114,9 @@ docker build -t authentification-service:latest ./authentification_service
 ### On peut afficher les services (pour connaître leur port)
 ``minikube kubectl get svc``
 
+---
+
+
 # Mise en place d'Contrôleur d'entrée Ingress
 
 ## Activation
@@ -120,6 +132,9 @@ docker build -t authentification-service:latest ./authentification_service
 ``IP_MINIKUBE main.local``
 
 ### Cette ligne indique au système que lorsqu'on entre main.local dans un navigateur ou une requête réseau, il doit contacter l’adresse ip correspondant à Minikube
+
+---
+
 
 # On peux maintenant interagir avec le cluster Minkube
 
