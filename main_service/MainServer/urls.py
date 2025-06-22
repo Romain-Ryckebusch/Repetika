@@ -28,6 +28,8 @@ urlpatterns = [
     path('login', UserLogin.as_view()),
     path('logout', UserLogout.as_view()),
     path('updateProfile', UserUpdateProfile.as_view()),
+    path('getInfos/', GetInfos.as_view(), name='getInfos/'),
+
 ]
 urlpatterns += static('/pdfs/', document_root='/tmp/')
 

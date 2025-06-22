@@ -766,6 +766,29 @@ class UserLogin(APIView):
         return Response(response.json(), status=response.status_code)
 
 
+
+
+class GetInfos(APIView):
+    """
+    POST /UserLogout
+    Takes: refresh token
+    Returns: success message or error message
+    """
+    def get(self, request):
+        id_user = request.GET.get('id_user')
+        if not id_user:
+            return Response({"error": "id_user is required.test"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        response = requests.get(
+            AUTH_BASE_URL + "/getInfos/",
+            params={"id_user": id_user}
+        )
+        return Response({"error": "erreur GetInfos"}, status=response.status_code)
+
+
+
+    
+    
 class UserLogout(APIView):
     """
     POST /UserLogout

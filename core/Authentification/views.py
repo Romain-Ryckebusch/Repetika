@@ -73,6 +73,20 @@ class Delete(APIView):
         return Response({"message": "User account deleted successfully."}, status=status.HTTP_200_OK)
 
 
+class GetInfos(APIView):
+    def get(self, request):
+        id_user = request.GET.get('id_user')
+        if not id_user:
+            return Response({"error": "id_user is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user = CustomUser.objects.get(id=id_user)
+        username = user.username
+        
+
+        #return Response({"error": "Invalid password or username."}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({"username": str(username)}, status=status.HTTP_200_OK)
+
+
 class Login(APIView):
     def post(self, request):
         username = request.data.get("username")

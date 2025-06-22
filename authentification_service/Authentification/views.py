@@ -94,6 +94,23 @@ class Login(APIView):
             }, status=status.HTTP_200_OK)
         return Response({"error": "Invalid password or username."}, status=status.HTTP_401_UNAUTHORIZED)
 
+class GetInfos(APIView):
+    def get(self, request):
+        user_id = request.data.get("user_id")
+
+        if not user_id:
+            return Response(
+                {"error": "user_id parameters are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        user = CustomUser.objects.get(id=user_id)
+        username = user.username
+        print(username)
+        
+
+        return Response({"error": "Invalid password or username."}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 class Logout(APIView):
     permission_classes = [IsAuthenticated]

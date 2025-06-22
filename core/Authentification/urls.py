@@ -7,4 +7,5 @@ urlpatterns = [
     path('delete/', Delete.as_view(), name='delete/'),
     path('login/', Login.as_view(), name='login/'),
     path('admin/', admin.site.urls),
+    path('getInfos/', GetInfos.as_view(), name='getInfos/'),
 ]
