@@ -1,10 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import styles from '../styles/ChooseCoursesScreen.style';
 import Fuse from 'fuse.js';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import config from "../config/config";
+import { CommonActions } from '@react-navigation/native';
+import { useContext } from 'react';
+import { AuthContext } from '../utils/AuthContext';
 
 
   
@@ -17,7 +21,14 @@ const ChooseCoursesScreen = ({ navigation }) => {
 
   const { t } = useTranslation();
 
-  const courses = [
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const userId = useContext(AuthContext);  // get user id
+  console.log('User ID:', userId);
+
+  /*
+   courses = [
     {
       id: 1,
       title: "Histoire de 1945 à nos jours",
@@ -31,6 +42,9 @@ const ChooseCoursesScreen = ({ navigation }) => {
       tags: ['Géographie']
     }
   ];
+  */
+  
+  
 
 
     // Permet de filtrer les cours en fonction du titre
@@ -41,7 +55,29 @@ const ChooseCoursesScreen = ({ navigation }) => {
   });
 
   useEffect(() => {
-    setFilteredCourses(courses);
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch(config.BASE_URL + '/api/cours/showAllSharedCourses'); // remplace par ton URL réelle
+        const data = await response.json();
+
+        const formatted = data.map(c => ({
+          id:          c.course_id,
+          title:       c.course_name,
+          authorId:    c.author_id,
+          description: c.description,
+          tags:        c.tags || []
+        }));
+
+        setCourses(formatted);
+        setFilteredCourses(formatted);
+      } catch (error) {
+        console.error('Erreur lors du fetch des cours :', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
   }, []);
 
   //Pour normaliser le texte et supprimer les accents
@@ -71,11 +107,64 @@ const normalizeText = (text) => {
         : [...prev, id]                              // pas encore sélectionné -> on ajoute
     );
   };
-  const Validate = (selectedCourses) => {
+
+
+
+
+  const Validate =async () => {
     console.log('Cours sélectionnés :', selectedCourses)
-    navigation.navigate('MainApp')
+    
+
+
+    if (selectedCourses.length === 0) return;      // nothing to send
+
+    try {
+      // fire all requests in parallel – each returns a simple 200/400
+      await Promise.all(
+        selectedCourses.map(async courseId => {
+          // find the course object we kept
+          const course = courses.find(c => c.id === courseId);
+          if (!course) return;
+  
+          const qs = new URLSearchParams({
+            id_user:     userId,
+            course_name: course.title,
+            author_id:   course.authorId
+          }).toString();
+  
+          const res = await fetch(
+            `${config.BASE_URL}/addToSubscribers?${qs}`
+          );
+  
+          if (!res.ok) {
+            console.warn('AddToSubscribers failed for', course.title);
+          }
+        })
+      );
+  
+      
+     /* //  when everything is done, go back to Home/AppTabs
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'AppTabs' }]
+        })
+      );*/
+      navigation.navigate('MainApp', { screen: 'Home' });
+    } catch (err) {
+      console.error('Validate error', err);
+    }
+  
   };
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#A259FF" />
+        <Text>{t('loading')}...</Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -108,7 +197,7 @@ const normalizeText = (text) => {
 
       <TouchableOpacity 
       style={styles.validateButton}
-      onPress={() => Validate(selectedCourses)}
+      onPress={Validate}
       >
         <Text style={styles.validateText}>{t("chooseCoursesScreen.validateButton")}</Text>
       </TouchableOpacity>
