@@ -32,7 +32,7 @@ Executez la commande:
 
 ## Téléphone
 Sur votre téléphone, installez expo go.
-
+Scannez le qr code qui s'est affiché quand vous avez éxecuté npx expo start
 
 
 # Installation de Docker et Minikube
