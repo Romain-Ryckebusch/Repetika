@@ -1,3 +1,40 @@
+# Utilisation de l'appli sur votre téléphone (Android et IOS)
+
+
+## Ordinateur
+
+Clonez le projet github ici présent.
+Récupérez l'IP de votre ordinateur via le terminal
+*Windows :*
+```ipconfig```
+*Linux :*
+```ifconfig```
+
+### Application
+
+Modifiez le fichier 
+```Repetika\mobileApp\RepetikaApp\src\config\config.js```
+en remplacant BASE_URL par l'ip de votre odinateur (ne pas oublier :8000/api a la fin).
+
+Dans ``` Reptika/mobileApp/RepetikaApp/ ```:
+Installez les dépendances (uniquement la première fois)
+```npm install```
+
+Lancez expo:
+```npx expo start```
+
+### Serveur
+Dans ``` Repetika\core\MainServer ```
+
+Executez la commande:
+``` python manage.py runserver 0.0.0.0:8000 ```
+
+
+## Téléphone
+Sur votre téléphone, installez expo go.
+
+
+
 # Installation de Docker et Minikube
 
 ## Docker
