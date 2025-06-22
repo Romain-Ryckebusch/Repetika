@@ -969,7 +969,7 @@ class AddToSubscribers(APIView):
         )
         
         return Response(
-            status=status.HTTP_200_OK
+            {'message':'success'}, status=status.HTTP_200_OK
         )
 
 class GetCourseIDFromChapterID(APIView):
