@@ -56,7 +56,7 @@ export default function LoginScreen() {
             }else{
                 setNetworkError("");
                 setWrongPasswordError("");
-                await saveSession(data.tokens.access, data.tokens.refresh, "68386a41ac5083de66afd675")
+                await saveSession(data.tokens.access, data.tokens.refresh, data.user_id);
 
 
                 // Met à jour le contexte
