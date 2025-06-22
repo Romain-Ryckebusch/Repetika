@@ -41,8 +41,37 @@ Scannez le qr code qui s'est affiché quand vous avez éxecuté npx expo start
 
 
 ---
+# En Monolithique :
 
 
+
+
+## Coté Back:
+Depuis la racine du projet :
+- ``pip install -r ./core/requirements.txt``
+
+- ``python .\core\manage.py makemigrations``
+
+- ``python .\core\manage.py migrate``
+
+- ``python .\core\manage.py runserver 0.0.0.0:8000 ``
+
+## Coté front :
+
+
+### Ajuster l'ip du front :
+
+- Dans : **/mobileApp/RepetikaApp/config/config.js** : changer l'ip par celle du serveur host.
+- Connecter le téléphone de test et le serveur au même réseau local
+dans **/mobileApp/RepetikaApp**
+- ``npm install``
+- ``npx expo install``
+- ``npx expo start --tunnel ``
+- Scan QR code avec phone
+
+---
+
+# En MicroServices :
 # Installation de Docker et Minikube
 
 ## Docker
