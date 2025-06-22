@@ -21,7 +21,7 @@ Installez les dépendances (uniquement la première fois)
 ```npx expo install```
 
 Lancez expo:
-```npx expo start --tunel```
+```npx expo start --tunnel```
 
 ### Serveur
 Dans ``` Repetika\core ```
@@ -46,7 +46,7 @@ Scannez le qr code qui s'est affiché quand vous avez éxecuté npx expo start
 # Installation de Docker et Minikube
 
 ## Docker
-### *À compléter*
+Suivez les instructions correspondant à votre système d'exploitation sur [le site officiel de Docker](https://www.docker.com/)
 
 ### ajoutez votre utilisateur à la liste des utilisateurs Docker 
 ``sudo usermod -aG docker $USER'``
