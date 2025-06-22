@@ -56,6 +56,8 @@ Depuis la racine du projet :
 
 - ``python .\core\manage.py runserver 0.0.0.0:8000 ``
 
+- ``sudo systemctl start mongod``
+
 ## Coté front :
 
 
