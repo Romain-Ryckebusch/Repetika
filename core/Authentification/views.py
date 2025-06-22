@@ -80,11 +80,13 @@ class GetInfos(APIView):
             return Response({"error": "id_user is required"}, status=status.HTTP_400_BAD_REQUEST)
         
         user = CustomUser.objects.get(id=id_user)
+        
         username = user.username
+
         
 
         #return Response({"error": "Invalid password or username."}, status=status.HTTP_401_UNAUTHORIZED)
-        return Response({"username": str(username)}, status=status.HTTP_200_OK)
+        return Response({"username": str(username),"email": user.email}, status=status.HTTP_200_OK)
 
 
 class Login(APIView):
