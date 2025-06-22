@@ -24,8 +24,13 @@ Lancez expo:
 ```npx expo start```
 
 ### Serveur
-Dans ``` Repetika\core\MainServer ```
+Dans ``` Repetika\core ```
 
+La première fois:
+Installez les dépendances python:
+````pip -r core/requirements.txt````
+
+Dans ``` Repetika\core\MainServer ```
 Executez la commande:
 ``` python manage.py runserver 0.0.0.0:8000 ```
 
