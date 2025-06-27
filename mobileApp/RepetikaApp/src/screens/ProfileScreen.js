@@ -53,16 +53,18 @@ function getNewProfilePicture() {
 }
 
 const userTrophies = [
-    { label: "Apprenant", unlocked: true, corpus: "Vous vous êtes inscrit(e) sur Repetika.", date: "19/05/2025" },
-    { label: "Jambe", unlocked: false, corpus: "Vous n'êtes pas sensé lire ça. Si vous arrivez à le lire, contactez-moi, lol.", date: "21/05/2025" },
-    { label: "Fraise", unlocked: true, corpus: "Vous vous êtes inscrit(e) sur Repetika.", date: "19/05/2025" },
-    { label: "Poulet", unlocked: false, corpus: "Vous n'êtes pas sensé lire ça. Si vous arrivez à le lire, contactez-moi, lol.", date: "21/05/2025" },
-    { label: "Requin", unlocked: true, corpus: "Vous vous êtes inscrit(e) sur Repetika.", date: "19/05/2025" },
-    { label: "Mayonnaise", unlocked: true, corpus: "On A Escalator", date: "22/05/2025" },
-    { label: "Turbo", unlocked: false, corpus: "Vous vous êtes inscrit(e) sur Repetika.", date: "19/05/2025" },
-    { label: "Russie", unlocked: false, corpus: "Vous n'êtes pas sensé lire ça. Si vous arrivez à le lire, contactez-moi, lol.", date: "21/05/2025" },
-]; // TODO : get trophies from userId
-
+    { label: "L'étudiant", unlocked: false, corpus: "Avoir importé 3 cours dans l'application" },
+    { label: "Créateur", unlocked: true, corpus: "Créer un cours" },
+    { label: "Compétiteur", unlocked: false, corpus: "Être premier parmi ses amis (XP) 10 jours de suite" },
+    { label: "Dès le matin !", unlocked: true, corpus: "Etudier entre 5h et 8h du matin" },
+    { label: "Toute la nuit", unlocked: true, corpus: "Etudier entre minuit et 3 heures" },
+    { label: "Semaine enflammée", unlocked: true, corpus: "Etudier tous les jours pendant une semaine" },
+    { label: "Mois studieux", unlocked: true, corpus: "Etudier tous les jours pendant un mois" },
+    { label: "Nouvelle ère", unlocked: false, corpus: "Etudier tous les jours pendant un an" },
+    { label: "Le savoir est une arme", unlocked: false, corpus: "Etudier tous les jours pendant 1000 jours" },
+    { label: "Multi-taches", unlocked: true, corpus: "Etudier 3 cours en même temps" },
+    { label: "Curieux", unlocked: false, corpus: "Etudier 5 cours en même temps" },
+];
 
 // Découper le tableau en sous-tableaux de 4
 function chunkArray(array, size) {
