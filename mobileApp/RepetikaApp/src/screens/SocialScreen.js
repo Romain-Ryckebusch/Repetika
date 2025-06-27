@@ -30,7 +30,7 @@ export default function SocialScreen() {
     const GlobalUsers = [
         {
             id:1,
-            profilePicture: require("../assets/Profile.png"),
+            profilePicture: require("../assets/profiles/bohlwinkel.jpg"),
             name: "Franck",
             streak: 200,
             progress: 0.74,
@@ -41,7 +41,7 @@ export default function SocialScreen() {
         },
         {
             id:2,
-            profilePicture: require("../assets/Profile.png"),
+            profilePicture: require("../assets/profiles/carreidas _C2104C2.jpg"),
             name: "Alice",
             streak: 150,
             progress: 0.62,
@@ -63,7 +63,7 @@ export default function SocialScreen() {
         },
         {
             id:4,
-            profilePicture: require("../assets/Profile.png"),
+            profilePicture: require("../assets/profiles/oliveira.jpg"),
             name: "Sofia",
             streak: 180,
             progress: 0.53,
@@ -74,7 +74,7 @@ export default function SocialScreen() {
         },
         {
             id:5,
-            profilePicture: require("../assets/Profile.png"),
+            profilePicture: require("../assets/profiles/GofficC0517A3CAD.jpg"),
             name: "Noah",
             streak: 95,
             progress: 0.34,
