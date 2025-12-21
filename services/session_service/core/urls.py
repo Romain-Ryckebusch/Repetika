@@ -4,5 +4,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path("api/learning-session/", include("SeanceApprentissage.urls")),
+    path("", include("django_prometheus.urls")),
+
 ]
 
+    

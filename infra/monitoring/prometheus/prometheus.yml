@@ -1,0 +1,29 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["prometheus:9090"]
+
+  # Django microservices
+  - job_name: "repetika-django"
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - "authentification-service:8000"
+          - "cours-service:8000"
+          - "decks-service:8000"
+          - "planning-service:8000"
+          - "sessions-service:8000"
+          - "quiz-service:8000"
+          - "main-service:8000"
+          - "gateway:8000"
+
+  - job_name: "cadvisor"
+    static_configs:
+      - targets: ["cadvisor:8070"]
+
+  - job_name: "node-exporter"
+    static_configs:
+      - targets: ["node-exporter:9100"]

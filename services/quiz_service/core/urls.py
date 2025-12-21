@@ -4,5 +4,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path("api/quiz/", include("Quiz.urls")),
+    path("", include("django_prometheus.urls")),
+
 ]
 
