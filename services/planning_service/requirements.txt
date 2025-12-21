@@ -4,5 +4,6 @@ djangorestframework-simplejwt>=5.2.2
 requests>=2.28
 PyPDF2>=3.0.0
 pymongo>=4.3
+django-prometheus>=2.4.0
 fsrs
 
