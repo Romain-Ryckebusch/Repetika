@@ -1,0 +1,99 @@
+#!/bin/bash
+set -euxo pipefail
+
+# Install Docker (Amazon Linux 2023)
+yum update -y
+yum install -y docker git
+systemctl enable --now docker
+
+# Add ec2-user to docker group
+usermod -aG docker ec2-user
+
+# Install Docker Compose plugin for ec2-user
+su - ec2-user -c 'mkdir -p ~/.docker/cli-plugins'
+su - ec2-user -c 'curl -fsSL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-$(uname -m) -o ~/.docker/cli-plugins/docker-compose'
+su - ec2-user -c 'chmod +x ~/.docker/cli-plugins/docker-compose'
+
+# Fetch Repetika and write .env
+su - ec2-user -c 'cd ~ && git clone https://github.com/Romain-Ryckebusch/Repetika.git || true'
+su - ec2-user -c 'cd ~/Repetika && git pull'
+
+cat > /home/ec2-user/Repetika/.env <<EOF
+MONGO_DB=repetika
+MONGO_URL=mongodb://mongodb:27017/repetika
+MONGO_URI=mongodb://mongodb:27017/
+SECRET_KEY=${secret_key}
+POSTGRES_DB=authdb
+POSTGRES_USER=authuser
+POSTGRES_PASSWORD=${postgres_password}
+EOF
+chown ec2-user:ec2-user /home/ec2-user/Repetika/.env
+chmod 600 /home/ec2-user/Repetika/.env
+
+
+# Install Compose system-wide
+mkdir -p /usr/local/lib/docker/cli-plugins
+curl -fsSL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-$(uname -m) \
+  -o /usr/local/lib/docker/cli-plugins/docker-compose
+chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
+# Install up-to-date Buildx system-wide
+ARCH="$(uname -m)"
+TMP="/tmp/docker-buildx"
+rm -f "$TMP"
+
+if [ "$ARCH" = "x86_64" ]; then
+  URL="https://github.com/docker/buildx/releases/download/v0.30.1/buildx-v0.30.1.linux-amd64"
+  SHA="c37114fcd034025ec68e224657c8a5a850df472ded3ddcbca75ad3a7ebb9710d"
+elif [ "$ARCH" = "aarch64" ]; then
+  URL="https://github.com/docker/buildx/releases/download/v0.30.1/buildx-v0.30.1.linux-arm64"
+  SHA="31d012d52d6df68aef4b55db62330967b562811f0de30cdfaa4505f314797c76"
+else
+  echo "Unsupported arch: $ARCH"
+  exit 1
+fi
+
+curl -fsSL "$URL" -o "$TMP"
+echo "$SHA  $TMP" | sha256sum -c -
+
+mkdir -p /usr/local/lib/docker/cli-plugins
+install -m 0755 "$TMP" /usr/local/lib/docker/cli-plugins/docker-buildx
+
+# Remove other copies to avoid ambiguity
+rm -f /usr/libexec/docker/cli-plugins/docker-buildx /usr/lib/docker/cli-plugins/docker-buildx 2>/dev/null || true
+rm -f /home/ec2-user/.docker/cli-plugins/docker-buildx 2>/dev/null || true
+
+
+# Install for ec2 user
+mkdir -p /home/ec2-user/.docker/cli-plugins
+install -m 0755 "$TMP" /home/ec2-user/.docker/cli-plugins/docker-buildx
+chown -R ec2-user:ec2-user /home/ec2-user/.docker
+
+
+
+
+# Start Repetika stack
+su - ec2-user -c 'cd ~/Repetika && docker compose up --build -d'
+
+# Make it restart on reboot (systemd)
+cat > /etc/systemd/system/repetika.service <<'UNIT'
+[Unit]
+Description=Repetika (docker compose)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=ec2-user
+WorkingDirectory=/home/ec2-user/Repetika
+ExecStart=/usr/bin/bash -lc 'docker compose up -d'
+ExecStop=/usr/bin/bash -lc 'docker compose down'
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+
+systemctl daemon-reload
+systemctl enable repetika.service

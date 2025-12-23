@@ -43,3 +43,9 @@ __pycache__/
 
 # Django migrations
 *.sqlite3
+
+# Terraform files
+*.tfvars
+.terraform/
+.terraform.lock.hcl
+*.tfstate*
