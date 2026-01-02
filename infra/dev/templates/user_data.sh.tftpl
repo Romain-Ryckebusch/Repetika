@@ -1,10 +1,35 @@
 #!/bin/bash
-set -euxo pipefail
+set -Eeuo pipefail
+
+exec > >(tee -a /var/log/user-data.log | logger -t user-data -s 2>/dev/console) 2>&1
+
+PS4='+ $${BASH_SOURCE}:$${LINENO}:$${FUNCNAME[0]:-main}(): '
+set -x
+
+trap 'rc=$?;
+  echo "ERROR: exit=$rc line=$LINENO cmd=$BASH_COMMAND" >&2
+  exit $rc
+' ERR
+
+# Create swap early
+if ! swapon --show | awk '{print $1}' | grep -qx /swapfile; then
+  fallocate -l 2G /swapfile || dd if=/dev/zero of=/swapfile bs=1M count=2048
+  chmod 600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
+  grep -q '^/swapfile ' /etc/fstab || echo '/swapfile none swap sw 0 0' >> /etc/fstab
+fi
+
+
+
+
 
 # Install Docker (Amazon Linux 2023)
 yum update -y
 yum install -y docker git
 systemctl enable --now docker
+
+yum install -y nodejs npm git # Install NodeJS
 
 # Add ec2-user to docker group
 usermod -aG docker ec2-user
@@ -75,6 +100,36 @@ chown -R ec2-user:ec2-user /home/ec2-user/.docker
 # Start Repetika stack
 su - ec2-user -c 'cd ~/Repetika && docker compose up --build -d'
 
+
+
+echo "Docker compose up completed"
+
+
+
+export NODE_OPTIONS="--max-old-space-size=768"
+
+echo "Swapfile created and NODE_OPTIONS set"
+
+# Needed for tunneling with `npx expo start --tunnel`
+sudo npm i -g @expo/ngrok  # https://docs.expo.dev/more/expo-cli/
+
+# Install mobile app dependencies
+sudo -u ec2-user bash -lc '
+  cd ~/Repetika/apps/mobile/RepetikaApp
+  npm ci --omit=dev --no-audit --no-fund
+'
+
+
+echo "npm install completed"
+
+
+
+
+
+
+
+
+
 # Make it restart on reboot (systemd)
 cat > /etc/systemd/system/repetika.service <<'UNIT'
 [Unit]
@@ -87,7 +142,7 @@ Type=oneshot
 RemainAfterExit=yes
 User=ec2-user
 WorkingDirectory=/home/ec2-user/Repetika
-ExecStart=/usr/bin/bash -lc 'docker compose up -d'
+ExecStart=/usr/bin/bash -lc 'docker compose up --quiet-pull -d'
 ExecStop=/usr/bin/bash -lc 'docker compose down'
 TimeoutStartSec=0
 
@@ -95,5 +150,31 @@ TimeoutStartSec=0
 WantedBy=multi-user.target
 UNIT
 
+
+
+
+# Create a systemd service to keep Expo running
+cat >/etc/systemd/system/repetika-expo.service <<'EOF'
+[Unit]
+Description=Repetika Expo dev server (tunnel)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ec2-user
+WorkingDirectory=/home/ec2-user/Repetika/apps/mobile/RepetikaApp
+Environment=CI=1
+ExecStart=/usr/bin/env npx expo start --tunnel
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+
+
 systemctl daemon-reload
 systemctl enable repetika.service
+systemctl enable --now repetika-expo.service

@@ -110,6 +110,14 @@ resource "aws_security_group" "web" {
     cidr_blocks = [local.allowed_http_cidr]
   }
 
+  ingress {
+    description = "Expo Metro dev server"
+    from_port   = 8081
+    to_port     = 8081
+    protocol    = "tcp"
+    cidr_blocks = [local.allowed_http_cidr]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
