@@ -1,0 +1,510 @@
+[{
+  "_id": {
+    "$oid": "683f99da665bf87a9de1cec6"
+  },
+  "id_user": {
+    "$oid": "68386a41ac5083de66afd675"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 2,
+  "date_reviewed": {
+    "$date": "2025-06-04T00:56:58.473Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "683f99e5665bf87a9de1cec8"
+  },
+  "id_user": {
+    "$oid": "68386a41ac5083de66afd675"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 2,
+  "date_reviewed": {
+    "$date": "2025-06-04T00:57:09.419Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "683f99e5665bf87a9de1ceca"
+  },
+  "id_user": {
+    "$oid": "68386a41ac5083de66afd675"
+  },
+  "id_card": {
+    "$oid": "683b853248bed3e43b775ca6"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-04T00:57:09.420Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "683f9e2b665bf87a9de1cece"
+  },
+  "id_user": {
+    "$oid": "68386a41ac5083de66afd675"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 2,
+  "date_reviewed": {
+    "$date": "2025-06-04T01:15:23.876Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "683f9e2b665bf87a9de1ced0"
+  },
+  "id_user": {
+    "$oid": "68386a41ac5083de66afd675"
+  },
+  "id_card": {
+    "$oid": "683b853248bed3e43b775ca6"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-04T01:15:23.878Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "683f9e2c665bf87a9de1ced4"
+  },
+  "id_user": {
+    "$oid": "68386a41ac5083de66afd675"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 2,
+  "date_reviewed": {
+    "$date": "2025-06-04T01:15:24.762Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "683f9e2c665bf87a9de1ced6"
+  },
+  "id_user": {
+    "$oid": "68386a41ac5083de66afd675"
+  },
+  "id_card": {
+    "$oid": "683b853248bed3e43b775ca6"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-04T01:15:24.763Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "683f9e6b665bf87a9de1ceda"
+  },
+  "id_user": {
+    "$oid": "68386a41ac5083de66afd675"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 2,
+  "date_reviewed": {
+    "$date": "2025-06-04T01:16:27.112Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "683f9e6b665bf87a9de1cedc"
+  },
+  "id_user": {
+    "$oid": "68386a41ac5083de66afd675"
+  },
+  "id_card": {
+    "$oid": "683b853248bed3e43b775ca6"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-04T01:16:27.113Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68404e6c28cd092cb498b2f4"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 2,
+  "date_reviewed": {
+    "$date": "2025-06-04T13:47:24.483Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68404ea128cd092cb498b2f8"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-04T13:48:17.950Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68404eaf28cd092cb498b2fc"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 2,
+  "date_reviewed": {
+    "$date": "2025-06-04T13:48:31.508Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684050ef28cd092cb498b300"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 2,
+  "date_reviewed": {
+    "$date": "2025-06-04T13:58:07.654Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684055212bcf473f20477129"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-04T14:16:01.365Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68420f96c95c9805f80579a0"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T21:43:50.816Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68420fb7c95c9805f80579a5"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T21:44:23.787Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6842145140e81379c015e84c"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:04:01.124Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6842145540e81379c015e851"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:04:05.887Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68421464f0ef167fd633d2d0"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:04:20.836Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684214bef0ef167fd633d2d5"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:05:50.919Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684214bef0ef167fd633d2d7"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b853248bed3e43b775ca6"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:05:50.921Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684214c5f0ef167fd633d2de"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:05:57.740Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684214c5f0ef167fd633d2e0"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b853248bed3e43b775ca6"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:05:57.741Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684214e9f0ef167fd633d2e7"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:06:33.270Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684214e9f0ef167fd633d2e9"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b853248bed3e43b775ca6"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:06:33.271Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68421544f0ef167fd633d2f0"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:08:04.451Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68421544f0ef167fd633d2f2"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b853248bed3e43b775ca6"
+  },
+  "result": 2,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:08:04.452Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68421693f0ef167fd633d2f9"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:13:39.810Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68421693f0ef167fd633d2fb"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca6"
+  },
+  "result": 2,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:13:39.812Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684216a0f0ef167fd633d303"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:13:52.615Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684216a0f0ef167fd633d305"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca6"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:13:52.617Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684216ba26209ea2c61dc06d"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:14:18.261Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684216ba26209ea2c61dc06f"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca6"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:14:18.262Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6842181c21b3c578e2cc04af"
+  },
+  "id_user": {
+    "$oid": "664e5e1234567890abcdef12"
+  },
+  "id_card": {
+    "$oid": "683b84c948bed3e43b775ca5"
+  },
+  "result": 0,
+  "date_reviewed": {
+    "$date": "2025-06-05T22:20:12.415Z"
+  }
+}]

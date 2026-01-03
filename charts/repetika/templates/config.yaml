@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "repetika.fullname" . }}-config
+  labels:
+    {{- include "repetika.labels" . | nindent 4 }}
+data:
+  MONGO_DB: {{ .Values.mongo.dbName | quote }}
+  DJANGO_ALLOWED_HOSTS: {{ .Values.app.djangoAllowedHosts | quote }}
+  POSTGRES_DB: {{ .Values.postgres.db | quote }}
+  POSTGRES_USER: {{ .Values.postgres.user | quote }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "repetika.fullname" . }}-secret
+  labels:
+    {{- include "repetika.labels" . | nindent 4 }}
+type: Opaque
+stringData:
+  SECRET_KEY: {{ .Values.app.secretKey | quote }}
+  POSTGRES_PASSWORD: {{ .Values.postgres.password | quote }}

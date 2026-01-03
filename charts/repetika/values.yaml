@@ -1,0 +1,65 @@
+imagePullPolicy: IfNotPresent
+
+mongo:
+  image: "mongo:7"
+  dbName: "repetika"
+  storage:
+    size: 2Gi
+
+postgres:
+  image: "postgres:16"
+  db: "authdb"
+  user: "authuser"
+  password: "authpass"
+  storage:
+    size: 2Gi
+
+app:
+  djangoAllowedHosts: "*"
+  secretKey: "placeholder_secret_key"
+
+gateway:
+  image: "nginx:1.25"
+  service:
+    type: NodePort
+    nodePort: 30080
+
+services:
+  - name: main-service
+    image: "repetika/main-service:local"
+    containerPort: 8000
+    command: ["./shared/entrypoint.sh"]
+    needsPostgres: false
+  - name: decks-service
+    image: "repetika/decks-service:local"
+    containerPort: 8000
+    command: ["./shared/entrypoint.sh"]
+    needsPostgres: false
+  - name: cours-service
+    image: "repetika/cours-service:local"
+    containerPort: 8000
+    command: ["./shared/entrypoint.sh"]
+    needsPostgres: false
+  - name: planning-service
+    image: "repetika/planning-service:local"
+    containerPort: 8000
+    command: ["./shared/entrypoint.sh"]
+    needsPostgres: false
+  - name: session-service
+    image: "repetika/session-service:local"
+    containerPort: 8000
+    command: ["./shared/entrypoint.sh"]
+    needsPostgres: false
+  - name: quiz-service
+    image: "repetika/quiz-service:local"
+    containerPort: 8000
+    command: ["./shared/entrypoint.sh"]
+    needsPostgres: false
+  - name: authentification-service
+    image: "repetika/authentification-service:local"
+    containerPort: 8000
+    command: ["/app/entrypoint.sh"]
+    needsPostgres: true
+
+mongoSeed:
+  enabled: true

@@ -1,0 +1,98 @@
+{{- range .Values.services }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .name }}
+spec:
+  selector:
+    app: {{ .name }}
+  ports:
+    - name: http
+      port: 8000
+      targetPort: {{ .containerPort }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      initContainers:
+        - name: wait-mongo
+          image: "mongo:7"
+          command:
+            - sh
+            - -c
+            - >
+              until mongosh "mongodb://mongodb:27017/admin" --eval "db.adminCommand('ping')" >/dev/null 2>&1;
+              do echo "waiting for mongodb"; sleep 2; done
+{{- if .needsPostgres }}
+        - name: wait-postgres
+          image: "postgres:16"
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "repetika.fullname" $ }}-config
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "repetika.fullname" $ }}-config
+                  key: POSTGRES_USER
+          command:
+            - sh
+            - -c
+            - >
+              until pg_isready -h postgres -p 5432 -U "$POSTGRES_USER" -d "$POSTGRES_DB";
+              do echo "waiting for postgres"; sleep 2; done
+{{- end }}
+      containers:
+        - name: {{ .name }}
+          image: {{ .image | quote }}
+          imagePullPolicy: {{ $.Values.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .containerPort }}
+              name: http
+          envFrom:
+            - configMapRef:
+                name: {{ include "repetika.fullname" $ }}-config
+            - secretRef:
+                name: {{ include "repetika.fullname" $ }}-secret
+          env:
+            - name: MONGO_URI
+              value: "mongodb://mongodb:27017/{{ $.Values.mongo.dbName }}"
+{{- if .needsPostgres }}
+            - name: POSTGRES_HOST
+              value: "postgres"
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "repetika.fullname" $ }}-secret
+                  key: POSTGRES_PASSWORD
+{{- end }}
+{{- if .command }}
+          command: {{ toJson .command }}
+{{- end }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .containerPort }}
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: {{ .containerPort }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+---
+{{- end }}
