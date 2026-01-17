@@ -97,12 +97,13 @@ class GetDeckNames(APIView):
         
         return Response(
             find_documents_fields( 
-                collection_name="Decks",
-                database_name="DB_Decks",
+                "DB_Decks",
+                "Decks",
                 query={"id_user": ObjectId(id_user)},
                 fields=["nom_deck"],
             ),
-            status=status.HTTP_200_OK)
+            status=status.HTTP_200_OK
+        )
     
 
 class addCards(APIView):
@@ -121,8 +122,8 @@ class addCards(APIView):
         
             # Insert the card into the database
             insert_document(
-                collection_name="Cards",
-                database_name="DB_Decks",
+                "DB_Decks",
+                "Cards",
                 document=carte
             )
         
@@ -169,11 +170,20 @@ class DeleteCards(APIView):
             }
         )
         if response.status_code != 200:
+            details = getattr(response, "text", None)
+            if details is None:
+                details = str(response)
+            else:
+                details = str(details)
+
             return Response(
-                {"error": "Failed to unschedule cards.", 
-                 "details": response},
-                status=response.status_code
-            ) 
+                {
+                    "error": "Failed to unschedule cards.",
+                    "details": details,
+                },
+                status=response.status_code,
+            )
+
 
         return Response(
             {"message": "Cards deleted successfully."},
@@ -213,10 +223,18 @@ class DeleteCardsChapter(APIView):
             }
         )
         if response.status_code != 200:
+            details = getattr(response, "text", None)
+            if details is None:
+                details = str(response)
+            else:
+                details = str(details)
+
             return Response(
-                {"error": "Failed to delete cards associated with the chapter.", 
-                 "details": response},
-                status=response.status_code
+                {
+                    "error": "Failed to delete cards associated with the chapter.",
+                    "details": details,
+                },
+                status=response.status_code,
             )
         
         return Response(
@@ -264,10 +282,18 @@ class DeleteDeck(APIView):
             }
         )
         if response.status_code != 200:
+            details = getattr(response, "text", None)
+            if details is None:
+                details = str(response)
+            else:
+                details = str(details)
+
             return Response(
-                {"error": "Failed to delete cards associated with the deck.", 
-                 "details": response},
-                status=response.status_code
+                {
+                    "error": "Failed to delete cards associated with the deck.",
+                    "details": details,
+                },
+                status=response.status_code,
             )
 
         return Response(
@@ -305,7 +331,7 @@ class CreateDeck(APIView):
                     "tags": tags,
                     "date_creation":today
                     }
-        id_deck=insert_document("DB_Decks", "Decks", document)
+        id_deck=insert_document("DB_Decks", "Decks", document=document)
 
         return Response({"id_deck": str(id_deck)}, status=status.HTTP_200_OK)
         
