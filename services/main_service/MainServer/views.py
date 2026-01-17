@@ -245,10 +245,11 @@ class CreateCards(APIView):
 
         response = requests.post(DECKS_BASE_URL + "/addCards", json={"cartes": cartes})
 
-        return Response(
-            response,
-            status=response.status_code
-        )
+        try:
+            payload = response.json()
+        except ValueError:
+            payload = {"detail": getattr(response, "text", "")}
+        return Response(payload, status=response.status_code)
 
 # design-services.md : Quiz de validation
 
