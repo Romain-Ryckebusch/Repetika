@@ -9,7 +9,7 @@ from rest_framework import status
 
 from bson import ObjectId
 
-from core.shared_modules.mongodb_utils import *
+from repetika_common.mongodb_utils import *
 
 
 

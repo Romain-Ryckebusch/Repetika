@@ -1,4 +1,5 @@
-from shared.settings import *
+from pathlib import Path
+from repetika_common.settings_base import *
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-ug*a&%=rgy2wu4o2(k+vt88+rwiauwj8c%zn(lbk^3h1#la+41'

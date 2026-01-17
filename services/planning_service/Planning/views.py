@@ -14,7 +14,7 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.shared_modules.mongodb_utils import *
+from repetika_common.mongodb_utils import *
 
 from fsrs import Scheduler, Card, Rating, ReviewLog
 

@@ -9,4 +9,5 @@ urlpatterns = [
     path('deleteCards', DeleteCards.as_view()),
     path('deleteDeck', DeleteDeck.as_view()),
     path('deleteCardsChapter', DeleteCardsChapter.as_view()),
+    path('createDeck', CreateDeck.as_view()),
 ]

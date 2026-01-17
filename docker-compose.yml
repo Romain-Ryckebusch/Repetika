@@ -76,7 +76,8 @@ services:
 
   main-service:
     build:
-      context: ./services/main_service
+      context: .
+      dockerfile: ./services/main_service/Dockerfile
     env_file: [.env]
     environment:
       MONGO_URI: ${MONGO_URI:-mongodb://mongodb:27017/${MONGO_DB:-repetika}}
@@ -88,13 +89,13 @@ services:
       - "8000:8000"
     volumes:
       - ./services/main_service:/app
-      - ./services/shared:/app/shared
-    command: ["./shared/entrypoint.sh"]
+    command: ["./entrypoint.sh"]
     restart: unless-stopped
 
   decks-service:
     build:
-      context: ./services/decks_service
+      context: .
+      dockerfile: ./services/decks_service/Dockerfile
     env_file: [.env]
     environment:
       MONGO_URI: ${MONGO_URI:-mongodb://mongodb:27017/${MONGO_DB:-repetika}}
@@ -106,13 +107,13 @@ services:
       - "8001:8000"
     volumes:
       - ./services/decks_service:/app
-      - ./services/shared:/app/shared
-    command: ["./shared/entrypoint.sh"]
+    command: ["./entrypoint.sh"]
     restart: unless-stopped
 
   cours-service:
     build:
-      context: ./services/cours_service
+      context: .
+      dockerfile: ./services/cours_service/Dockerfile
     env_file: [.env]
     environment:
       MONGO_URI: ${MONGO_URI:-mongodb://mongodb:27017/${MONGO_DB:-repetika}}
@@ -124,13 +125,13 @@ services:
       - "8002:8000"
     volumes:
       - ./services/cours_service:/app
-      - ./services/shared:/app/shared
-    command: ["./shared/entrypoint.sh"]
+    command: ["./entrypoint.sh"]
     restart: unless-stopped
 
   planning-service:
     build:
-      context: ./services/planning_service
+      context: .
+      dockerfile: ./services/planning_service/Dockerfile
     env_file: [.env]
     environment:
       MONGO_URI: ${MONGO_URI:-mongodb://mongodb:27017/${MONGO_DB:-repetika}}
@@ -142,13 +143,13 @@ services:
       - "8003:8000"
     volumes:
       - ./services/planning_service:/app
-      - ./services/shared:/app/shared
-    command: ["./shared/entrypoint.sh"]
+    command: ["./entrypoint.sh"]
     restart: unless-stopped
 
   session-service:
     build:
-      context: ./services/session_service
+      context: .
+      dockerfile: ./services/session_service/Dockerfile
     env_file: [.env]
     environment:
       MONGO_URI: ${MONGO_URI:-mongodb://mongodb:27017/${MONGO_DB:-repetika}}
@@ -160,13 +161,13 @@ services:
       - "8004:8000"
     volumes:
       - ./services/session_service:/app
-      - ./services/shared:/app/shared
-    command: ["./shared/entrypoint.sh"]
+    command: ["./entrypoint.sh"]
     restart: unless-stopped
 
   quiz-service:
     build:
-      context: ./services/quiz_service
+      context: .
+      dockerfile: ./services/quiz_service/Dockerfile
     env_file: [.env]
     environment:
       MONGO_URI: ${MONGO_URI:-mongodb://mongodb:27017/${MONGO_DB:-repetika}}
@@ -178,13 +179,13 @@ services:
       - "8005:8000"
     volumes:
       - ./services/quiz_service:/app
-      - ./services/shared:/app/shared
-    command: ["./shared/entrypoint.sh"]
+    command: ["./entrypoint.sh"]
     restart: unless-stopped
 
   authentification-service:
     build:
-      context: ./services/authentification_service
+      context: .
+      dockerfile: ./services/authentification_service/Dockerfile
     env_file: [.env]
     environment:
       MONGO_URI: ${MONGO_URI:-mongodb://mongodb:27017/${MONGO_DB:-repetika}}
@@ -203,13 +204,12 @@ services:
       - "8006:8000"
     volumes:
       - ./services/authentification_service:/app
-      - ./services/shared:/app/shared
-    command: ["/entrypoint.sh"]
+    command: ["./entrypoint.sh"]
     restart: unless-stopped
   gateway:
     image: nginx:1.25
     ports:
-      - "8080:80"
+      - "8081:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:

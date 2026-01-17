@@ -1,5 +1,5 @@
 from core.settings import *
-from core.shared_modules.mongodb_utils import *
+from repetika_common.mongodb_utils import *
 from .utils import *
 
 from django.contrib.auth import authenticate, login, logout

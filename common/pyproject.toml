@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "repetika-common"
+version = "0.1.0"
+description = "Shared code for Repetika services"
+requires-python = ">=3.11"
+dependencies = [
+    "pymongo",
+    "djangorestframework",
+    "djangorestframework-simplejwt",
+    # add anything else you know is common across services, if needed
+]

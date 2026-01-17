@@ -1,6 +1,7 @@
 FROM python:3.11-slim
 
 RUN groupadd -g 1000 user-app && useradd -u 1000 -g 1000 -r -m user-app
+COPY common/ /common/
 WORKDIR /app
 
 COPY services/planning_service/requirements.txt .
@@ -9,8 +10,11 @@ RUN python -m venv /venv \
  && /venv/bin/pip install --no-cache-dir -r requirements.txt \
  && chown -R user-app:user-app /venv
 
-COPY --chown=user-app:user-app services/planning_service/ .
-COPY services/shared/ /app/shared/
+RUN /venv/bin/pip install --no-cache-dir -e /common
+
+
+COPY --chown=user-app:user-app services/planning_service/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 USER user-app
 

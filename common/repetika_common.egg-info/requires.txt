@@ -1,0 +1,3 @@
+pymongo
+djangorestframework
+djangorestframework-simplejwt
