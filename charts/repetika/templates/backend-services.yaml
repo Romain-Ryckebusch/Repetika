@@ -1,0 +1,15 @@
+{{- range $key, $svc := .Values.backend.services }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $svc.name }}
+  namespace: {{ $.Values.global.namespace }}
+spec:
+  selector:
+    app: {{ $svc.name }}
+  ports:
+    - port: 8000
+      targetPort: {{ $svc.containerPort }}
+      protocol: TCP
+{{- end }}

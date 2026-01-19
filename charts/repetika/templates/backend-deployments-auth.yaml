@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentification-service
+  namespace: {{ .Values.global.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authentification-service
+  template:
+    metadata:
+      labels:
+        app: authentification-service
+    spec:
+      containers:
+        - name: authentification-service
+          image: "{{ .Values.image.registry }}/authentification-service:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DJANGO_ALLOWED_HOSTS
+              value: "{{ .Values.global.django.allowedHosts }}"
+            - name: MONGO_URI
+              value: "mongodb://{{ .Values.global.mongo.host }}:{{ .Values.global.mongo.port }}/{{ .Values.global.mongo.dbName }}"
+            - name: POSTGRES_HOST
+              value: "{{ .Values.global.postgres.host }}"
+            - name: POSTGRES_PORT
+              value: "{{ .Values.global.postgres.port }}"
+            - name: POSTGRES_DB
+              value: "{{ .Values.global.postgres.db }}"
+            - name: POSTGRES_USER
+              value: "{{ .Values.global.postgres.user }}"
+            - name: POSTGRES_PASSWORD
+              value: "{{ .Values.global.postgres.password }}"
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 8000
+            initialDelaySeconds: 60
+            periodSeconds: 20

@@ -1,65 +1,66 @@
-imagePullPolicy: IfNotPresent
+# charts/repetika/values.yaml
+
+global:
+  namespace: repetika
+
+  app:
+    secretKey: "change_me_dev_secret" # TODO: Change in prod
+
+  django:
+    allowedHosts: "*"
+
+  mongo:
+    host: mongodb        # K8s Service name
+    port: 27017
+    dbName: repetika     # Matches default DB name used by Repetika
+
+  postgres:
+    host: postgres
+    port: 5432
+    db: authdb
+    user: authuser
+    password: authpass
+
+image:
+  registry: repetika
+  tag: "local"
+  pullPolicy: IfNotPresent
+
+backend:
+  services:
+    main:
+      name: main-service
+      containerPort: 8000
+    decks:
+      name: decks-service
+      containerPort: 8000
+    cours:
+      name: cours-service
+      containerPort: 8000
+    planning:
+      name: planning-service
+      containerPort: 8000
+    session:
+      name: session-service
+      containerPort: 8000
+    quiz:
+      name: quiz-service
+      containerPort: 8000
+    auth:
+      name: authentification-service
+      containerPort: 8000
 
 mongo:
-  image: "mongo:7"
-  dbName: "repetika"
-  storage:
-    size: 2Gi
+  enabled: true
+  image: mongo:7
+  replicaCount: 1
+  persistence:
+    enabled: true
+    size: 1Gi
 
 postgres:
-  image: "postgres:16"
-  db: "authdb"
-  user: "authuser"
-  password: "authpass"
-  storage:
-    size: 2Gi
-
-app:
-  djangoAllowedHosts: "*"
-  secretKey: "placeholder_secret_key"
-
-gateway:
-  image: "nginx:1.25"
-  service:
-    type: NodePort
-    nodePort: 30080
-
-services:
-  - name: main-service
-    image: "repetika/main-service:local"
-    containerPort: 8000
-    command: ["./shared/entrypoint.sh"]
-    needsPostgres: false
-  - name: decks-service
-    image: "repetika/decks-service:local"
-    containerPort: 8000
-    command: ["./shared/entrypoint.sh"]
-    needsPostgres: false
-  - name: cours-service
-    image: "repetika/cours-service:local"
-    containerPort: 8000
-    command: ["./shared/entrypoint.sh"]
-    needsPostgres: false
-  - name: planning-service
-    image: "repetika/planning-service:local"
-    containerPort: 8000
-    command: ["./shared/entrypoint.sh"]
-    needsPostgres: false
-  - name: session-service
-    image: "repetika/session-service:local"
-    containerPort: 8000
-    command: ["./shared/entrypoint.sh"]
-    needsPostgres: false
-  - name: quiz-service
-    image: "repetika/quiz-service:local"
-    containerPort: 8000
-    command: ["./shared/entrypoint.sh"]
-    needsPostgres: false
-  - name: authentification-service
-    image: "repetika/authentification-service:local"
-    containerPort: 8000
-    command: ["/app/entrypoint.sh"]
-    needsPostgres: true
-
-mongoSeed:
   enabled: true
+  image: postgres:16
+  persistence:
+    enabled: true
+    size: 1Gi
