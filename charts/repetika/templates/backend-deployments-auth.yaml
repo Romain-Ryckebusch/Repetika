@@ -13,10 +13,16 @@ spec:
       labels:
         app: authentification-service
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
         - name: authentification-service
           image: "{{ .Values.image.registry }}/authentification-service:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 8000
           env:

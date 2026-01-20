@@ -17,6 +17,8 @@ spec:
       containers:
         - name: mongodb
           image: {{ .Values.mongo.image }}
+          securityContext:
+            allowPrivilegeEscalation: false # Here mainly to silence semgrep, doens't make much sense since the container is already root
           ports:
             - containerPort: 27017
               name: mongo

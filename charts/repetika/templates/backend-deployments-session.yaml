@@ -13,10 +13,16 @@ spec:
       labels:
         app: session-service
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
         - name: session-service
           image: "{{ .Values.image.registry }}/session-service:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false          
           ports:
             - containerPort: 8000
           env:

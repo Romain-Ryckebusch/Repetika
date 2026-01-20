@@ -16,6 +16,8 @@ spec:
       containers:
         - name: gateway
           image: nginx:1.25
+          securityContext:
+            allowPrivilegeEscalation: false
           volumeMounts:
             - name: nginx-config
               mountPath: /etc/nginx/nginx.conf

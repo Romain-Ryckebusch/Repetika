@@ -17,6 +17,8 @@ spec:
       containers:
         - name: postgres
           image: {{ .Values.postgres.image }}
+          securityContext:
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 5432
               name: postgres

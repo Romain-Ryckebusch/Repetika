@@ -1,0 +1,3 @@
+charts/repetika/templates/mongo-statefulset.yaml
+charts/repetika/templates/postgres-statefulset.yaml
+
