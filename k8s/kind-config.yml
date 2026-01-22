@@ -7,10 +7,10 @@ nodes:
       - containerPort: 30080    # K8s Service/Ingress for API
         hostPort: 8080
         protocol: TCP
-      - containerPort: 3000  # Grafana (optional)
+      - containerPort: 32000  # Grafana
         hostPort: 3000
         protocol: TCP
-      - containerPort: 9090  # Prometheus (optional)
+      - containerPort: 32001 # Prometheus
         hostPort: 9090
         protocol: TCP
 

@@ -64,3 +64,24 @@ postgres:
   persistence:
     enabled: true
     size: 1Gi
+
+monitoring:
+  enabled: true
+
+  prometheus:
+    enabled: true
+    image: prom/prometheus:latest
+
+  grafana:
+    enabled: true
+    image: grafana/grafana:latest
+    adminUser: admin
+    adminPassword: admin  # TODO: Change in prod
+
+  cadvisor:
+    enabled: true
+    image: gcr.io/cadvisor/cadvisor:latest
+
+  nodeExporter:
+    enabled: true
+    image: prom/node-exporter:latest

@@ -15,7 +15,7 @@ scrape_configs:
           - "cours-service:8000"
           - "decks-service:8000"
           - "planning-service:8000"
-          - "sessions-service:8000"
+          - "session-service:8000"
           - "quiz-service:8000"
           - "main-service:8000"
           - "gateway:8000"
