@@ -14,11 +14,46 @@ jobs:
     name: semgrep-oss/scan
     runs-on: ubuntu-latest
     container:
-      image: semgrep/semgrep
+      image: semgrep/semgrep:latest
     if: (github.actor != 'dependabot[bot]')
     steps:
       - uses: actions/checkout@v4
-      - run: semgrep scan --json --output=semgrep.json --exclude=./infra --verbose --error . # Temporary infra skip until kubernetes is reworked
+
+      # Install Helm in the container
+      - name: Install Helm
+        run: |
+          set -e
+          apk add --no-cache curl
+          curl -sSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | sh
+
+      # Render all Helm charts under ./charts into .semgrep-rendered/
+      - name: Render Helm charts for Semgrep
+        run: |
+          set -e
+          if [ -d charts ]; then
+            echo "Rendering Helm charts in ./charts to .semgrep-rendered/"
+            mkdir -p .semgrep-rendered
+            for chart in charts/*; do
+              if [ -d "$chart" ]; then
+                release_name="$(basename "$chart")"
+                echo "  - Rendering chart '$chart' (release name: $release_name)"
+                helm template "$release_name" "$chart" > ".semgrep-rendered/${release_name}.yaml"
+              fi
+            done
+          else
+            echo "No ./charts directory found, skipping Helm rendering."
+          fi
+
+      - name: Run Semgrep # We exclude the non-rendered templates to avoid false positives, they are rendered above.
+        run: |
+          set -e
+          semgrep scan \
+            --json --output=semgrep.json \
+            --error \
+            --exclude 'charts/**/templates/**' \
+            --exclude 'helm/**/templates/**' \
+            .
+
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
