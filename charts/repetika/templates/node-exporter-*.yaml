@@ -17,6 +17,8 @@ spec:
     spec:
       containers:
         - name: node-exporter
+          securityContext:
+            allowPrivilegeEscalation: false
           image: {{ .Values.monitoring.nodeExporter.image }}
           args:
             - --path.rootfs=/host

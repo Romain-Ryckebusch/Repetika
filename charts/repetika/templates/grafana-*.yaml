@@ -36,6 +36,8 @@ spec:
     spec:
       containers:
         - name: grafana
+          securityContext:
+            allowPrivilegeEscalation: false
           image: {{ .Values.monitoring.grafana.image }}
           env:
             - name: GF_SECURITY_ADMIN_USER

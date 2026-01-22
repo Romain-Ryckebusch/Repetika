@@ -1,3 +1,8 @@
+# Components intentionally allowed to run privileged
+
+# Monitoring daemon that needs host-level access
+charts/repetika/templates/cadvisor-*.yaml
+
+# Databases that run as root inside their official images
 charts/repetika/templates/mongo-statefulset.yaml
 charts/repetika/templates/postgres-statefulset.yaml
-

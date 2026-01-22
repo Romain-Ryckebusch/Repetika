@@ -55,6 +55,8 @@ spec:
     spec:
       containers:
         - name: prometheus
+          securityContext:
+            allowPrivilegeEscalation: false
           image: {{ .Values.monitoring.prometheus.image }}
           args:
             - "--config.file=/etc/prometheus/prometheus.yml"
