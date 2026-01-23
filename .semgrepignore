@@ -1,5 +1,9 @@
 # Components intentionally allowed to run privileged
 
+.semgrep-rendered/repetika/templates/node-exporter-*.yaml
+.semgrep-rendered/repetika/templates/gateway-deployment.yaml
+
+
 # Monitoring daemon that needs host-level access
 .semgrep-rendered/repetika/templates/cadvisor-*.yaml
 

@@ -53,6 +53,10 @@ spec:
       labels:
         app: prometheus
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
         - name: prometheus
           securityContext:
