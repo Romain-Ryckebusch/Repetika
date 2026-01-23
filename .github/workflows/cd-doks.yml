@@ -1,14 +1,21 @@
 name: repetika-doks-cd
 
+
 on:
-  workflow_run:
-    workflows:
-      - django-ci
-    types:
-      - completed
+  push:
     branches:
       - master
       - testing # Temporary while validating deployment. TODO: Remove later once validated
+
+#on:
+#  workflow_run:
+#    workflows:
+#      - django-ci
+#    types:
+#      - completed
+#    branches:
+#      - master
+#      - testing 
 
 jobs:
   build-and-deploy:
