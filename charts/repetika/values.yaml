@@ -24,7 +24,7 @@ global:
 image:
   registry: repetika
   tag: "local"
-  pullPolicy: IfNotPresent
+  pullPolicy: Never
 
 backend:
   services:
