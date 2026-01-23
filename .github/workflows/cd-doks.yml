@@ -1,7 +1,11 @@
 name: repetika-doks-cd
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - ci
+    types:
+      - completed
     branches:
       - master
       - testing # Temporary while validating deployment. TODO: Remove later once validated
