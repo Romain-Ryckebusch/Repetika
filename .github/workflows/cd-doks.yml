@@ -72,11 +72,9 @@ jobs:
           terraform_version: 1.10.0
 
       - name: Terraform init
-        # IMPORTANT: run at repo root if root main.tf defines providers + module "doks"
         working-directory: .
         env:
-          # Needed if using Terraform Cloud backend
-          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
           TF_VAR_do_token: ${{ env.DO_TOKEN }}
           TF_VAR_cluster_name: ${{ env.CLUSTER_NAME }}
           TF_VAR_image_registry: ${{ env.REGISTRY_NAME }}
@@ -88,7 +86,7 @@ jobs:
       - name: Terraform apply
         working-directory: .
         env:
-          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
           TF_VAR_do_token: ${{ env.DO_TOKEN }}
           TF_VAR_cluster_name: ${{ env.CLUSTER_NAME }}
           TF_VAR_image_registry: ${{ env.REGISTRY_NAME }}
