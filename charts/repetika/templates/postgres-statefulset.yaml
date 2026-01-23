@@ -27,7 +27,7 @@ spec:
                 name: postgres-secret
           volumeMounts:
             - name: pg-data
-              mountPath: /var/lib/postgresql/data
+              mountPath: /var/lib/postgresql/data/pgdata
           # Health checks
           livenessProbe:
             exec:
