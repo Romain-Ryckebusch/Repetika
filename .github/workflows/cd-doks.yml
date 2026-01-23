@@ -1,0 +1,97 @@
+name: repetika-doks-cd
+
+on:
+  push:
+    branches:
+      - master
+      - testing # Temporary while validating deployment. TODO: Remove later once validated
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
+      CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
+      DO_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ env.DO_TOKEN }}
+
+      - name: Log in to DigitalOcean Container Registry
+        run: doctl registry login --expiry-seconds 1200
+
+      # Compute a single tag once and reuse it everywhere
+      - name: Compute image tag
+        id: vars
+        run: echo "tag=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Build backend images
+        run: |
+          TAG="${{ steps.vars.outputs.tag }}"
+
+          docker build -t "$REGISTRY_NAME/main-service:$TAG" \
+            -f services/main_service/Dockerfile .
+          docker build -t "$REGISTRY_NAME/decks-service:$TAG" \
+            -f services/decks_service/Dockerfile .
+          docker build -t "$REGISTRY_NAME/cours-service:$TAG" \
+            -f services/cours_service/Dockerfile .
+          docker build -t "$REGISTRY_NAME/planning-service:$TAG" \
+            -f services/planning_service/Dockerfile .
+          docker build -t "$REGISTRY_NAME/session-service:$TAG" \
+            -f services/session_service/Dockerfile .
+          docker build -t "$REGISTRY_NAME/quiz-service:$TAG" \
+            -f services/quiz_service/Dockerfile .
+          docker build -t "$REGISTRY_NAME/authentification-service:$TAG" \
+            -f services/authentification_service/Dockerfile .
+
+      - name: Push backend images
+        run: |
+          TAG="${{ steps.vars.outputs.tag }}"
+
+          docker push "$REGISTRY_NAME/main-service:$TAG"
+          docker push "$REGISTRY_NAME/decks-service:$TAG"
+          docker push "$REGISTRY_NAME/cours-service:$TAG"
+          docker push "$REGISTRY_NAME/planning-service:$TAG"
+          docker push "$REGISTRY_NAME/session-service:$TAG"
+          docker push "$REGISTRY_NAME/quiz-service:$TAG"
+          docker push "$REGISTRY_NAME/authentification-service:$TAG"
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.10.0
+
+      - name: Terraform init
+        # IMPORTANT: run at repo root if root main.tf defines providers + module "doks"
+        working-directory: .
+        env:
+          # Needed if using Terraform Cloud backend
+          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+          TF_VAR_do_token: ${{ env.DO_TOKEN }}
+          TF_VAR_cluster_name: ${{ env.CLUSTER_NAME }}
+          TF_VAR_image_registry: ${{ env.REGISTRY_NAME }}
+          TF_VAR_image_tag: ${{ steps.vars.outputs.tag }}
+          TF_VAR_django_secret_key: ${{ env.DJANGO_SECRET_KEY }}
+          TF_VAR_postgres_password: ${{ env.POSTGRES_PASSWORD }}
+        run: terraform init -input=false
+
+      - name: Terraform apply
+        working-directory: .
+        env:
+          TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+          TF_VAR_do_token: ${{ env.DO_TOKEN }}
+          TF_VAR_cluster_name: ${{ env.CLUSTER_NAME }}
+          TF_VAR_image_registry: ${{ env.REGISTRY_NAME }}
+          TF_VAR_image_tag: ${{ steps.vars.outputs.tag }}
+          TF_VAR_django_secret_key: ${{ env.DJANGO_SECRET_KEY }}
+          TF_VAR_postgres_password: ${{ env.POSTGRES_PASSWORD }}
+        run: terraform apply -auto-approve -input=false

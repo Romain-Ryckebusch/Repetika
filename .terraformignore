@@ -1,0 +1,17 @@
+# Ignore everything by default
+*
+
+!main.tf
+
+!infra/
+!infra/**
+
+.tfvars
+.terraform/
+.terraform.lock.hcl
+.tfstate/
+
+
+
+!charts/
+!charts/**
