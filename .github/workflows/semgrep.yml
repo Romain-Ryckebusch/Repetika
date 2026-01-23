@@ -36,9 +36,9 @@ jobs:
             mkdir -p .semgrep-rendered
             for chart in charts/*; do
               if [ -d "$chart" ]; then
+                echo "  - Rendering chart '$chart'"
                 release_name="$(basename "$chart")"
-                echo "  - Rendering chart '$chart' (release name: $release_name)"
-                helm template "$release_name" "$chart" > ".semgrep-rendered/${release_name}.yaml"
+                helm template "$release_name" "$chart" --output-dir .semgrep-rendered
               fi
             done
           else
