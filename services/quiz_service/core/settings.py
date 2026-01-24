@@ -10,10 +10,16 @@ INSTALLED_APPS += [
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SQLITE_PATH = os.getenv("SQLITE_PATH")
+if SQLITE_PATH:
+    db_name = SQLITE_PATH
+else:
+    db_name = BASE_DIR / "db.sqlite3"
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": db_name,
     }
 }
 

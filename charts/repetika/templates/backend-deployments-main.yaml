@@ -30,6 +30,8 @@ spec:
               value: "{{ .Values.global.django.allowedHosts }}"
             - name: MONGO_URI
               value: "mongodb://{{ .Values.global.mongo.host }}:{{ .Values.global.mongo.port }}/{{ .Values.global.mongo.dbName }}"
+            - name: SQLITE_PATH
+              value: "/tmp/db.sqlite3"
           readinessProbe:
             httpGet:
               path: /metrics
