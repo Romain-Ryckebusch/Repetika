@@ -42,51 +42,61 @@ jobs:
       - name: Log in to DigitalOcean Container Registry
         run: doctl registry login --expiry-seconds 1200
 
-      # Compute a single tag once and reuse it everywhere
       - name: Compute image tag
         id: vars
         run: echo "tag=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
-
-      - name: Build web frontend image
-        run: |
-          TAG="${{ steps.vars.outputs.tag }}"
-
-          docker build \
-            --build-arg EXPO_PUBLIC_API_URL="$EXPO_PUBLIC_API_URL" \
-            -t "$REGISTRY_NAME/web-frontend:$TAG" \
-            -f apps/mobile/RepetikaApp/Dockerfile apps/mobile/RepetikaApp
+  
       
-      - name: Build backend images
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Build and push backend images
+        env:
+          TAG: ${{ steps.vars.outputs.tag }}
+          REGISTRY_NAME: ${{ env.REGISTRY_NAME }}
         run: |
-          TAG="${{ steps.vars.outputs.tag }}"
+          set -euo pipefail
 
-          docker build -t "$REGISTRY_NAME/main-service:$TAG" \
-            -f services/main_service/Dockerfile .
-          docker build -t "$REGISTRY_NAME/decks-service:$TAG" \
-            -f services/decks_service/Dockerfile .
-          docker build -t "$REGISTRY_NAME/cours-service:$TAG" \
-            -f services/cours_service/Dockerfile .
-          docker build -t "$REGISTRY_NAME/planning-service:$TAG" \
-            -f services/planning_service/Dockerfile .
-          docker build -t "$REGISTRY_NAME/session-service:$TAG" \
-            -f services/session_service/Dockerfile .
-          docker build -t "$REGISTRY_NAME/quiz-service:$TAG" \
-            -f services/quiz_service/Dockerfile .
-          docker build -t "$REGISTRY_NAME/authentification-service:$TAG" \
-            -f services/authentification_service/Dockerfile .
+          docker buildx create --use --name repetika-builder || docker buildx use repetika-builder
 
-      - name: Push images
-        run: |
-          TAG="${{ steps.vars.outputs.tag }}"
+          services=(
+            "main-service:services/main_service/Dockerfile"
+            "decks-service:services/decks_service/Dockerfile"
+            "cours-service:services/cours_service/Dockerfile"
+            "planning-service:services/planning_service/Dockerfile"
+            "session-service:services/session_service/Dockerfile"
+            "quiz-service:services/quiz_service/Dockerfile"
+            "authentification-service:services/authentification_service/Dockerfile"
+          )
 
-          docker push "$REGISTRY_NAME/main-service:$TAG"
-          docker push "$REGISTRY_NAME/decks-service:$TAG"
-          docker push "$REGISTRY_NAME/cours-service:$TAG"
-          docker push "$REGISTRY_NAME/planning-service:$TAG"
-          docker push "$REGISTRY_NAME/session-service:$TAG"
-          docker push "$REGISTRY_NAME/quiz-service:$TAG"
-          docker push "$REGISTRY_NAME/authentification-service:$TAG"
-          docker push "$REGISTRY_NAME/web-frontend:$TAG" 
+          for spec in "${services[@]}"; do
+            image_name="${spec%%:*}"
+            dockerfile="${spec#*:}"
+
+            echo "Building $image_name from $dockerfile"
+
+            docker buildx build \
+              --file "$dockerfile" \
+              --tag "$REGISTRY_NAME/$image_name:$TAG" \
+              --cache-from "type=registry,ref=$REGISTRY_NAME/$image_name:buildcache" \
+              --cache-to "type=registry,ref=$REGISTRY_NAME/$image_name:buildcache,mode=max" \
+              --push \
+              .
+          done
+
+      - name: Build and push web-frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: apps/mobile/RepetikaApp
+          file: apps/mobile/RepetikaApp/Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY_NAME }}/web-frontend:${{ steps.vars.outputs.tag }}
+          build-args: |
+            EXPO_PUBLIC_API_URL=${{ env.EXPO_PUBLIC_API_URL }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3

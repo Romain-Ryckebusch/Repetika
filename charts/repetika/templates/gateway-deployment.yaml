@@ -12,6 +12,8 @@ spec:
     metadata:
       labels:
         app: gateway
+      annotations:
+        checksum/nginx-config: {{ (.Files.Get "nginx.conf" | sha256sum) }} # To trigger rollout on nginx config change
     spec:
       containers:
         - name: gateway
