@@ -19,6 +19,7 @@ import * as navigation from "../navigation/NavigationService";
 import useFetch from '../utils/useFetch';
 import {AuthContext} from "../utils/AuthContext";
 import Config from "../config/config";
+import { API_URL } from "../config/config";
 
 
 /**
@@ -122,7 +123,7 @@ export default function ProfileScreen() {
     console.log(userId);
 
     // Appel API pour récupérer username et mail
-    const { data: userInfo, loading: userLoading, error: userError } = useFetch('http://localhost:8080/api/main/getInfos/?id_user='+userId);
+    const { data: userInfo, loading: userLoading, error: userError } = useFetch(`${API_URL}/getInfos/?id_user=`+userId);
 
     console.log('localhost:8080/api/main/getInfos/?id_user='+userId)
 

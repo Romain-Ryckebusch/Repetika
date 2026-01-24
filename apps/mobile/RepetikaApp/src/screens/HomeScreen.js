@@ -15,6 +15,7 @@ import useFetch from "../utils/useFetch";
 import {AuthContext} from "../utils/AuthContext";
 import {checkAchievements} from "../utils/achievements/checkAchievements";
 import config from "../config/config";
+import { API_URL } from "../config/config";
 import {CourseContext} from "../utils/CourseContext";
 
 
@@ -27,7 +28,7 @@ export default function HomeScreen() {
     const [lessons, setLessons] = useState([]);
     const [showNetworkError, setShowNetworkError] = useState(false);
     const {userId}=useContext(AuthContext);
-    const url = `http://localhost:8080/api/main/getAccessibleCourses?user_id=${userId}`;
+    const url = `${API_URL}/getAccessibleCourses?user_id=${userId}`;
     const { data, loading, error, refetch } = useFetch(url);
 
     // Rafraîchir la liste des cours à chaque focus

@@ -9,6 +9,7 @@ import useFetch from '../utils/useFetch';
 import Config from "../config/config";
 import { AuthContext } from '../utils/AuthContext';
 import config from "../config/config";
+import { API_URL } from "../config/config";
 import { CommonActions } from '@react-navigation/native';
 import { useContext } from 'react';
 import { useMemo } from 'react';
@@ -60,7 +61,7 @@ const ChooseCoursesScreen = ({ navigation }) => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/main/showAllSharedCourses');
+        const response = await fetch(`${API_URL}/showAllSharedCourses`);
         const data = await response.json();
 
         const formatted = data.map(c => ({

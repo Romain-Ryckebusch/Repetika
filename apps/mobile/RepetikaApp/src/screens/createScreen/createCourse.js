@@ -14,6 +14,7 @@ import * as FileSystem from 'expo-file-system';
 import {CreateCourseContext} from "../../utils/CreateCourseContext";
 import Config from "../../config/config";
 import config from "../../config/config";
+import { API_URL } from "../../config/config";
 import {saveSession} from "../../utils/session";
 import {useTranslation} from "react-i18next";
 
@@ -103,7 +104,7 @@ const CreateCourseScreen =  () => {
                     i++;
                 })
                 try {
-                    const response = await fetch('http://localhost:8080/api/main/createCards', {
+                    const response = await fetch(`${API_URL}/createCards`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -151,7 +152,7 @@ const CreateCourseScreen =  () => {
         const url =
             Platform.OS === "android"
             ? "http://10.0.2.2:8080/api/main/ajout-cours"
-            : "http://localhost:8080/api/main/ajout-cours";
+            : "${API_URL}/ajout-cours";
 
         try {
             if (Platform.OS === "web") {

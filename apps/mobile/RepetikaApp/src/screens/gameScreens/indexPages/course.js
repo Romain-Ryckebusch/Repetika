@@ -13,6 +13,7 @@ import {useContext, useEffect, useState, useMemo} from "react";
 import {AuthContext} from "../../../utils/AuthContext";
 import useFetch from "../../../utils/useFetch";
 import Config from "../../../config/config";
+import { API_URL } from "../../../config/config";
 
 /**
  * @function ChapterButton
@@ -64,7 +65,7 @@ function ChapterButton({chapter, onPress, style, widthCircle, colors}) {
  */
 export default function Course({courseId, deckId}) {
     const {userId} = useContext(AuthContext); // Récupère l'identifiant utilisateur depuis le contexte d'authentification.
-    const url = `http://localhost:8080/api/main/getCourseChapters?user_id=${userId}&id_course=${courseId}`; // URL de l'API pour récupérer les chapitres du cours.
+    const url = `${API_URL}/getCourseChapters?user_id=${userId}&id_course=${courseId}`; // URL de l'API pour récupérer les chapitres du cours.
     const [course, setCourse] = useState([]); // État pour stocker les données des chapitres du cours.
     const [lineList, setLineList] = useState([]); // État pour stocker les lignes de connexion entre les chapitres.
     const {data, loading, error} = useFetch(url); // Hook personnalisé pour effectuer la requête API.

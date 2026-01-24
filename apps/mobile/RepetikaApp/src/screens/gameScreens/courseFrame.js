@@ -8,13 +8,14 @@ import {useRoute} from "@react-navigation/native";
 import useFetch from "../../utils/useFetch";
 import {AuthContext} from "../../utils/AuthContext";
 import Config from "../../config/config";
+import { API_URL } from "../../config/config";
 import colors from "../../styles/colors";
 import {CourseContext} from "../../utils/CourseContext";
 
 export default function CourseFrame() {
     const { userId } = useContext(AuthContext);
     const {currentCoursId,currentCoursName}= useContext(CourseContext)
-    const pdfUrl = `http://localhost:8080/api/main/getPDF?user_id=${userId}&id_course=${currentCoursId}`;
+    const pdfUrl = `${API_URL}/getPDF?user_id=${userId}&id_course=${currentCoursId}`;
     const googleViewerUrl = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(pdfUrl)}`;
     const route = useRoute();
 
@@ -27,7 +28,7 @@ export default function CourseFrame() {
         const idChapitre = route.params?.chapterId;
         const idDeck = route.params?.deckId;
 
-        const url = `http://localhost:8080/api/main/completeQuiz?user_id=${userId}&id_chapitre=${idChapitre}&id_deck=${idDeck}`;
+        const url = `${API_URL}/completeQuiz?user_id=${userId}&id_chapitre=${idChapitre}&id_deck=${idDeck}`;
         console.log(url);
 
         try {

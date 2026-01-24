@@ -15,6 +15,7 @@ import {navigate} from "../../navigation/NavigationService";
 import {useRoute} from "@react-navigation/native";
 import Markdown from 'react-native-markdown-display';
 import config from "../../config/config";
+import { API_URL } from "../../config/config";
 import {saveSession} from "../../utils/session";
 import {AuthContext} from "../../utils/AuthContext";
 
@@ -65,7 +66,7 @@ export default function ReviewFrame() {
             };
 
 
-            const response = await fetch('http://localhost:8080/api/main/update-session', {
+            const response = await fetch(`${API_URL}/update-session`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

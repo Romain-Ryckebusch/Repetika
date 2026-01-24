@@ -17,6 +17,7 @@ import { useNavigation } from '@react-navigation/native';
 import {getSession, saveSession} from "../../utils/session";
 import {useState} from "react";
 import config from "../../config/config";
+import { API_URL } from "../../config/config";
 import { useContext } from 'react';
 import { AuthContext } from "../../utils/AuthContext"
 
@@ -37,7 +38,7 @@ export default function LoginScreen() {
 
     const loginFunction = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/main/login', {
+            const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

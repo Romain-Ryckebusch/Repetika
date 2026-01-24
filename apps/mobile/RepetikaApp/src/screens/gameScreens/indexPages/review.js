@@ -12,6 +12,7 @@ import colors from "../../../styles/colors";
 import Btn_Fill from "../../../components/btn_fill";
 import {navigate} from "../../../navigation/NavigationService";
 import config from "../../../config/config";
+import { API_URL } from "../../../config/config";
 import useFetch from "../../../utils/useFetch";
 import {AuthContext} from "../../../utils/AuthContext";
 
@@ -26,7 +27,7 @@ import {AuthContext} from "../../../utils/AuthContext";
 export default function Review({lessonId, deckId}) {
     const {t} = useTranslation(); // Hook pour la traduction des textes.
     const {userId} = useContext(AuthContext); // Récupère l'identifiant utilisateur depuis le contexte d'authentification.
-    const url = `http://localhost:8080/api/main/start-session?user_id=${userId}&deck_id=${deckId}`; // URL de l'API pour démarrer une session de révision.
+    const url = `${API_URL}/start-session?user_id=${userId}&deck_id=${deckId}`; // URL de l'API pour démarrer une session de révision.
 
     const defaultDeck = []; // Deck par défaut (vide).
     const [deck, setDeck] = useState([]); // État pour stocker les cartes du deck.

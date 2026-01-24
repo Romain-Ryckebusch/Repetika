@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import Decoration from "../../components/decoration";
 import {useState} from "react";
 import config from "../../config/config";
+import { API_URL } from "../../config/config";
 
 
 
@@ -66,7 +67,7 @@ export default function RegisterScreen() {
         }
 
         if (valid) {
-            fetch('http://localhost:8080/api/main/register', {
+            fetch(`${API_URL}/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
