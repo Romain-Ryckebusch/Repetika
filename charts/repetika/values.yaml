@@ -50,6 +50,14 @@ backend:
       name: authentification-service
       containerPort: 8000
 
+frontend:
+  enabled: true
+  replicaCount: 1
+  service:
+    type: LoadBalancer # DigitalOcean LoadBalancer
+    port: 80
+    targetPort: 80
+
 mongo:
   enabled: true
   image: mongo:7

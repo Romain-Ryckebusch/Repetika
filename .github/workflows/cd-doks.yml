@@ -28,6 +28,7 @@ jobs:
       DO_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
       DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      EXPO_PUBLIC_API_URL: ${{ vars.EXPO_PUBLIC_API_URL }}
 
     steps:
       - name: Checkout
@@ -46,6 +47,15 @@ jobs:
         id: vars
         run: echo "tag=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
+      - name: Build web frontend image
+        run: |
+          TAG="${{ steps.vars.outputs.tag }}"
+
+          docker build \
+            --build-arg EXPO_PUBLIC_API_URL="$EXPO_PUBLIC_API_URL" \
+            -t "$REGISTRY_NAME/web-frontend:$TAG" \
+            -f apps/mobile/RepetikaApp/Dockerfile apps/mobile/RepetikaApp
+      
       - name: Build backend images
         run: |
           TAG="${{ steps.vars.outputs.tag }}"
@@ -65,7 +75,7 @@ jobs:
           docker build -t "$REGISTRY_NAME/authentification-service:$TAG" \
             -f services/authentification_service/Dockerfile .
 
-      - name: Push backend images
+      - name: Push images
         run: |
           TAG="${{ steps.vars.outputs.tag }}"
 
@@ -76,6 +86,7 @@ jobs:
           docker push "$REGISTRY_NAME/session-service:$TAG"
           docker push "$REGISTRY_NAME/quiz-service:$TAG"
           docker push "$REGISTRY_NAME/authentification-service:$TAG"
+          docker push "$REGISTRY_NAME/web-frontend:$TAG" 
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
