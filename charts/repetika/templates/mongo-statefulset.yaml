@@ -28,17 +28,28 @@ spec:
           volumeMounts:
             - name: mongo-data
               mountPath: /data/db
-          # Optional health checks (similar to docker-compose)
           livenessProbe:
             exec:
-              command: ["mongosh", "--eval", "db.adminCommand('ping')"]
-            initialDelaySeconds: 30
+              command:
+                - mongosh
+                - --quiet
+                - --eval
+                - "db.adminCommand({ ping: 1 })"
+            initialDelaySeconds: 60
+            timeoutSeconds: 5
             periodSeconds: 30
+            failureThreshold: 5
           readinessProbe:
             exec:
-              command: ["mongosh", "--eval", "db.adminCommand('ping')"]
-            initialDelaySeconds: 10
+              command:
+                - mongosh
+                - --quiet
+                - --eval
+                - "db.adminCommand({ ping: 1 })"
+            initialDelaySeconds: 20
+            timeoutSeconds: 5
             periodSeconds: 10
+            failureThreshold: 5
   volumeClaimTemplates:
     - metadata:
         name: mongo-data
