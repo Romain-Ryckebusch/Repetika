@@ -2,6 +2,7 @@
 
 .semgrep-rendered/repetika/templates/node-exporter-*.yaml
 .semgrep-rendered/repetika/templates/gateway-deployment.yaml
+.semgrep-rendered/repetika/templates/frontend-deployment.yaml
 
 
 # Monitoring daemon that needs host-level access

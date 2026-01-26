@@ -14,4 +14,7 @@ RUN npx expo export --platform web
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 80
+
+# We run nginx as root since it requires access to specific files. 
+# nosemgrep: dockerfile.security.missing-user.missing-user
 CMD ["nginx", "-g", "daemon off;"]

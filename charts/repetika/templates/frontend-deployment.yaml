@@ -16,6 +16,8 @@ spec:
     spec:
       containers:
         - name: frontend
+          securityContext:
+            allowPrivilegeEscalation: false
           image: "{{ .Values.image.registry }}/web-frontend:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
