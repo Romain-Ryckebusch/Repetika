@@ -56,6 +56,11 @@ variable "postgres_password" {
   sensitive = true
 }
 
+variable "grafana_admin_password" {
+  type      = string
+  sensitive = true
+}
+
 variable "namespace" {
   type    = string
   default = "repetika"
@@ -105,4 +110,5 @@ module "doks" {
   image_tag          = var.image_tag
   django_secret_key  = var.django_secret_key
   postgres_password  = var.postgres_password
+  grafana_admin_password = var.grafana_admin_password
 }

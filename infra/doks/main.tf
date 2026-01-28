@@ -43,6 +43,11 @@ variable "postgres_password" {
   sensitive = true
 }
 
+variable "grafana_admin_password" {
+  type        = string
+  sensitive   = true
+}
+
 ########################
 # Resources
 ########################
@@ -92,6 +97,12 @@ resource "helm_release" "repetika" {
     name  = "global.postgres.password"
     value = var.postgres_password
   }
+
+  set_sensitive {
+    name  = "monitoring.grafana.adminPassword"
+    value = var.grafana_admin_password
+  }
+
 
   timeout = 300
 }

@@ -18,6 +18,7 @@ jobs:
       DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       EXPO_PUBLIC_API_URL: ${{ vars.EXPO_PUBLIC_API_URL }}
+      GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
 
     steps:
       - name: Checkout
@@ -102,6 +103,7 @@ jobs:
           TF_VAR_image_tag: ${{ steps.vars.outputs.tag }}
           TF_VAR_django_secret_key: ${{ env.DJANGO_SECRET_KEY }}
           TF_VAR_postgres_password: ${{ env.POSTGRES_PASSWORD }}
+          TF_VAR_grafana_admin_password: ${{ env.GRAFANA_ADMIN_PASSWORD }}
         run: terraform init -input=false
 
       - name: Terraform apply
@@ -114,4 +116,5 @@ jobs:
           TF_VAR_image_tag: ${{ steps.vars.outputs.tag }}
           TF_VAR_django_secret_key: ${{ env.DJANGO_SECRET_KEY }}
           TF_VAR_postgres_password: ${{ env.POSTGRES_PASSWORD }}
+          TF_VAR_grafana_admin_password: ${{ env.GRAFANA_ADMIN_PASSWORD }}
         run: terraform apply -auto-approve -input=false
