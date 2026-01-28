@@ -1,12 +1,12 @@
 # Components intentionally allowed to run privileged
 
-.semgrep-rendered/repetika/templates/node-exporter-*.yaml
+.semgrep-rendered/repetika/templates/node-exporter.yaml
 .semgrep-rendered/repetika/templates/gateway-deployment.yaml
 .semgrep-rendered/repetika/templates/frontend-deployment.yaml
 
 
 # Monitoring daemon that needs host-level access
-.semgrep-rendered/repetika/templates/cadvisor-*.yaml
+.semgrep-rendered/repetika/templates/cadvisor.yaml
 
 # Databases that run as root inside their official images
 .semgrep-rendered/repetika/templates/mongo-statefulset.yaml

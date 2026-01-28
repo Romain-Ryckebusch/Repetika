@@ -4,7 +4,7 @@ global:
   namespace: repetika
 
   app:
-    secretKey: "change_me_dev_secret" # TODO: Change in prod
+    secretKey: "change_me_dev_secret" # Changed in production via secret (see cd-doks.yml)
 
   django:
     allowedHosts: "*"
@@ -24,7 +24,7 @@ global:
 image:
   registry: repetika
   tag: "local"
-  pullPolicy: Never
+  pullPolicy: IfNotPresent
 
 backend:
   services:
@@ -84,7 +84,7 @@ monitoring:
     enabled: true
     image: grafana/grafana:latest
     adminUser: admin
-    adminPassword: admin  # TODO: Change in prod
+    adminPassword: overriden_password # Changed in production via secret (see cd-doks.yml)
 
   cadvisor:
     enabled: true

@@ -93,5 +93,5 @@ resource "helm_release" "repetika" {
     value = var.postgres_password
   }
 
-  timeout = 600
+  timeout = 300
 }
